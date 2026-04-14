@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Play, Star } from "lucide-react";
 import { IMAGES } from "@/lib/images";
+import { GoogleBadge } from "./GoogleBadge";
 
 export function Hero() {
   return (
@@ -79,6 +80,15 @@ export function Hero() {
             <Link href="/contact" className="btn-ghost group">
               <Play className="h-4 w-4 fill-white" /> Book Your Ride
             </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className="mt-8"
+          >
+            <GoogleBadge />
           </motion.div>
         </div>
 

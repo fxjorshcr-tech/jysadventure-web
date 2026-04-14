@@ -5,6 +5,7 @@ import { Marquee } from "@/components/Marquee";
 import { SectionHeader } from "@/components/SectionHeader";
 import { TourCard } from "@/components/TourCard";
 import { Gallery } from "@/components/Gallery";
+import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
 import { TOURS } from "@/lib/tours";
 import { IMAGES } from "@/lib/images";
 import {
@@ -13,7 +14,6 @@ import {
   HeartHandshake,
   Zap,
   ArrowRight,
-  Quote,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -161,50 +161,8 @@ export default function HomePage() {
               </>
             }
           />
-          <div className="mt-16 grid gap-6 md:grid-cols-3">
-            {[
-              {
-                name: "Sarah K.",
-                from: "Canada",
-                stars: 5,
-                text: "Best thing we did in Costa Rica — hands down. The jungle trail crossing the river felt like a movie scene!",
-              },
-              {
-                name: "Marcus T.",
-                from: "Germany",
-                stars: 5,
-                text: "Rode the Volcano Storm tour. Professional guides, brand new UTVs, unreal views. Already booked again for next year.",
-              },
-              {
-                name: "Luis & family",
-                from: "USA",
-                stars: 5,
-                text: "We took our 9-year-old on the family tour. Safe, fun, beautiful. My kid talks about it every single day.",
-              },
-            ].map((r, i) => (
-              <div
-                key={i}
-                className="rounded-3xl border border-white/10 bg-white/[0.03] p-8 backdrop-blur"
-              >
-                <Quote className="h-8 w-8 text-lava-500" />
-                <p className="mt-5 text-white/80">&ldquo;{r.text}&rdquo;</p>
-                <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-5">
-                  <div>
-                    <div className="font-display text-xl tracking-wide text-white">
-                      {r.name}
-                    </div>
-                    <div className="text-xs uppercase tracking-widest text-white/50">
-                      {r.from}
-                    </div>
-                  </div>
-                  <div className="flex gap-0.5 text-lava-400">
-                    {"★★★★★".split("").map((s, k) => (
-                      <span key={k}>{s}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="mt-16">
+            <TestimonialsCarousel />
           </div>
         </div>
       </section>

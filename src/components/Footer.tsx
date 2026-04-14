@@ -56,11 +56,14 @@ export function Footer() {
         <div className="grid gap-10 border-t border-white/10 pt-12 md:grid-cols-4">
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-3">
-              <div className="relative h-12 w-12 overflow-hidden rounded-full ring-2 ring-lava-500/60">
-                <Image src={IMAGES.logo} alt="JYS" fill sizes="48px" className="object-cover" />
-              </div>
-              <div className="font-display text-2xl tracking-wider">
-                JYS <span className="text-lava-500">ADVENTURE</span>
+              <div className="relative h-16 w-52">
+                <Image
+                  src={IMAGES.logo}
+                  alt="JYS Adventure Tour"
+                  fill
+                  sizes="208px"
+                  className="object-contain object-left drop-shadow-[0_4px_20px_rgba(249,115,22,0.4)]"
+                />
               </div>
             </Link>
             <p className="mt-5 max-w-sm text-sm text-white/60">

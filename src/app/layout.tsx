@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SocialRail } from "@/components/SocialRail";
 
 export const metadata: Metadata = {
   title: "JYS Adventure Tour — ATV & UTV Tours in Guanacaste, Costa Rica",
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-night-950 font-sans text-white antialiased">
         <Header />
         <main className="relative">{children}</main>
+        <SocialRail />
         <Footer />
       </body>
     </html>

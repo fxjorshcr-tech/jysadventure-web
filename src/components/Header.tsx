@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Menu, X, Flame } from "lucide-react";
+import { Menu, X, Flame, Instagram, Facebook, Youtube } from "lucide-react";
 import { IMAGES } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
@@ -36,22 +36,15 @@ export function Header() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative h-11 w-11 overflow-hidden rounded-full ring-2 ring-lava-500/60 transition group-hover:ring-lava-400">
+          <div className="relative h-12 w-40 transition group-hover:scale-[1.02] sm:h-14 sm:w-48">
             <Image
               src={IMAGES.logo}
               alt="JYS Adventure Tour"
               fill
-              sizes="44px"
-              className="object-cover"
+              sizes="192px"
+              className="object-contain object-left drop-shadow-[0_4px_20px_rgba(249,115,22,0.35)]"
+              priority
             />
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="font-display text-xl tracking-wider text-white">
-              JYS <span className="text-lava-500">ADVENTURE</span>
-            </span>
-            <span className="text-[10px] uppercase tracking-[0.3em] text-white/60">
-              Guanacaste · Costa Rica
-            </span>
           </div>
         </Link>
 
@@ -68,7 +61,19 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden lg:block">
+        <div className="hidden items-center gap-3 lg:flex">
+          <div className="flex items-center gap-1.5 border-r border-white/15 pr-3">
+            {[Instagram, Facebook, Youtube].map((Icon, i) => (
+              <a
+                key={i}
+                href="#"
+                aria-label="Social"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-lava-400 hover:bg-lava-500/20 hover:text-white"
+              >
+                <Icon className="h-3.5 w-3.5" />
+              </a>
+            ))}
+          </div>
           <Link href="/contact" className="btn-primary">
             <Flame className="h-4 w-4" /> Book Now
           </Link>
@@ -99,6 +104,18 @@ export function Header() {
             <Link href="/contact" onClick={() => setOpen(false)} className="btn-primary mt-5 w-full">
               <Flame className="h-4 w-4" /> Book Now
             </Link>
+            <div className="mt-6 flex items-center justify-center gap-3">
+              {[Instagram, Facebook, Youtube].map((Icon, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  aria-label="Social"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-lava-400 hover:bg-lava-500/20 hover:text-white"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       )}
