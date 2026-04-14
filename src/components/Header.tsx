@@ -28,10 +28,10 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        "fixed inset-x-0 top-0 z-50 transition-all duration-300 backdrop-blur-xl",
         scrolled
-          ? "border-b border-white/10 bg-night-950/80 backdrop-blur-xl"
-          : "bg-transparent"
+          ? "border-b border-white/10 bg-night-950/85 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.6)]"
+          : "border-b border-white/5 bg-night-950/40"
       )}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
