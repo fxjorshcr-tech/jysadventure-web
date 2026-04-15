@@ -26,7 +26,7 @@ export function SectionHeader({
           {kicker}
         </span>
       )}
-      <h2 className="mt-5 font-display text-5xl leading-[0.95] tracking-wider text-white md:text-7xl">
+      <h2 className="mt-5 font-display text-[clamp(2.25rem,10vw,3rem)] leading-[0.95] tracking-wide text-white [overflow-wrap:anywhere] sm:tracking-wider md:text-7xl">
         {title}
       </h2>
       {subtitle && (

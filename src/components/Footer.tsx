@@ -13,15 +13,15 @@ export function Footer() {
       />
       <div className="absolute inset-0 bg-grid-dark bg-[size:48px_48px] opacity-20" />
 
-      <div className="relative mx-auto max-w-7xl px-5 py-20 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-5 sm:py-20 lg:px-8">
         {/* CTA form block */}
-        <div className="mb-20 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 via-night-950 to-night-900 p-6 shadow-[0_40px_100px_-30px_rgba(249,115,22,0.35)] md:p-12">
+        <div className="mb-16 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 via-night-950 to-night-900 p-5 shadow-[0_40px_100px_-30px_rgba(249,115,22,0.35)] sm:mb-20 sm:p-6 md:p-12">
           <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
             <div>
               <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
                 Ready to ride?
               </span>
-              <h2 className="mt-5 font-display text-5xl leading-none tracking-wider text-white md:text-6xl">
+              <h2 className="mt-5 font-display text-[clamp(2.25rem,10vw,3.25rem)] leading-[0.95] tracking-wide text-white [overflow-wrap:anywhere] sm:tracking-wider md:text-6xl md:leading-none">
                 Let&apos;s <span className="text-gradient-fire">launch your</span>
                 <br />
                 adventure

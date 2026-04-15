@@ -24,7 +24,7 @@ export default function ToursPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative flex min-h-[70svh] items-end overflow-hidden bg-night-950 pb-20 pt-40">
+      <section className="relative flex min-h-[70svh] w-full max-w-full items-end overflow-hidden bg-night-950 pb-16 pt-32 sm:pb-20 sm:pt-40">
         <Image
           src={IMAGES.heroAlt}
           alt="Tours"
@@ -36,11 +36,11 @@ export default function ToursPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-night-950/70 via-night-950/50 to-night-950" />
         <div className="absolute inset-0 bg-hero-radial" />
 
-        <div className="relative mx-auto w-full max-w-7xl px-5 lg:px-8">
+        <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-5 lg:px-8">
           <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
             All tours
           </span>
-          <h1 className="mt-6 max-w-5xl font-display text-[14vw] leading-[0.85] tracking-wider text-white sm:text-8xl md:text-[9rem]">
+          <h1 className="mt-6 max-w-5xl font-display text-[clamp(3rem,13vw,6rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:text-8xl sm:leading-[0.85] sm:tracking-wider md:text-[9rem]">
             PICK YOUR
             <br />
             <span className="text-gradient-fire">ADVENTURE</span>
@@ -57,7 +57,7 @@ export default function ToursPage() {
 
       {/* Tours grid */}
       <section className="relative bg-night-950 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {TOURS.map((t, i) => (
               <TourCard key={t.slug} tour={t} index={i} />
@@ -69,7 +69,7 @@ export default function ToursPage() {
       {/* Tour details list */}
       <section className="relative bg-night-900 py-24 md:py-32">
         <div className="absolute inset-0 bg-grid-dark bg-[size:48px_48px] opacity-20" />
-        <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <SectionHeader
             kicker="The details"
             title={
@@ -108,7 +108,7 @@ export default function ToursPage() {
                   <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
                     Tour 0{i + 1}
                   </div>
-                  <h3 className="mt-3 font-display text-5xl leading-none tracking-wide text-white md:text-7xl">
+                  <h3 className="mt-3 font-display text-[clamp(2.25rem,10vw,3.75rem)] leading-[0.95] tracking-wide text-white [overflow-wrap:anywhere] md:text-7xl md:leading-none">
                     {t.title}
                   </h3>
                   <p className="mt-4 text-lg text-white/70">{t.tagline}</p>
@@ -169,8 +169,8 @@ export default function ToursPage() {
             ))}
           </div>
 
-          <div className="mt-24 rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-10 text-center">
-            <h3 className="font-display text-4xl tracking-wide text-white md:text-6xl">
+          <div className="mt-24 rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-6 text-center sm:p-10">
+            <h3 className="font-display text-[clamp(1.75rem,7vw,2.5rem)] leading-tight tracking-wide text-white [overflow-wrap:anywhere] md:text-6xl">
               Still not sure <span className="text-gradient-fire">which ride</span> fits you?
             </h3>
             <p className="mx-auto mt-4 max-w-xl text-white/60">

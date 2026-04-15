@@ -9,7 +9,7 @@ import { GoogleBadge } from "./GoogleBadge";
 
 export function Hero() {
   return (
-    <section className="relative min-h-[100svh] w-full overflow-hidden bg-night-950">
+    <section className="relative min-h-[100svh] w-full max-w-full overflow-hidden bg-night-950">
       {/* Background image */}
       <div className="absolute inset-0">
         <Image
@@ -28,7 +28,7 @@ export function Hero() {
       <div className="absolute inset-0 bg-grid-dark bg-[size:56px_56px] opacity-15" />
 
       {/* Content */}
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl flex-col justify-between px-5 pb-14 pt-36 lg:px-8 lg:pt-44">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col justify-between px-4 pb-14 pt-28 sm:px-5 sm:pt-36 lg:px-8 lg:pt-44">
         <div>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -49,7 +49,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.1 }}
-            className="mt-7 max-w-5xl font-display text-[14vw] leading-[0.85] tracking-wider text-white sm:text-8xl md:text-[9rem] lg:text-[11rem]"
+            className="mt-7 max-w-5xl font-display text-[clamp(3rem,13vw,6rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:text-8xl sm:leading-[0.85] sm:tracking-wider md:text-[9rem] lg:text-[11rem]"
           >
             UNLEASH
             <br />
@@ -97,7 +97,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.6 }}
-          className="mt-16 grid grid-cols-2 gap-4 rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-md md:grid-cols-4"
+          className="mt-12 grid grid-cols-2 gap-3 rounded-3xl border border-white/10 bg-white/[0.03] p-4 backdrop-blur-md sm:mt-16 sm:gap-4 sm:p-6 md:grid-cols-4"
         >
           {[
             { k: "8+", v: "Years riding" },
@@ -109,9 +109,9 @@ export function Hero() {
               key={i}
               className="flex flex-col items-start border-b border-white/10 pb-4 last:border-b-0 md:border-b-0 md:border-r md:pb-0 md:pr-4 md:last:border-r-0"
             >
-              <div className="flex items-center gap-2 font-display text-5xl tracking-wide text-white">
+              <div className="flex items-center gap-2 font-display text-4xl tracking-wide text-white sm:text-5xl">
                 {s.k}
-                {s.star && <Star className="h-6 w-6 fill-lava-500 text-lava-500" />}
+                {s.star && <Star className="h-5 w-5 fill-lava-500 text-lava-500 sm:h-6 sm:w-6" />}
               </div>
               <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.25em] text-white/50">
                 {s.v}

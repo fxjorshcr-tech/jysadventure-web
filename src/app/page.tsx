@@ -26,7 +26,7 @@ export default function HomePage() {
 
       {/* Featured tours */}
       <section className="relative bg-night-950 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <SectionHeader
               kicker="Signature Rides"
@@ -54,7 +54,7 @@ export default function HomePage() {
       <section className="relative overflow-hidden bg-night-900 py-24 md:py-32">
         <div className="absolute inset-0 bg-grid-dark bg-[size:48px_48px] opacity-20" />
         <div className="absolute inset-0 bg-hero-radial opacity-70" />
-        <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <div className="grid items-center gap-16 lg:grid-cols-2">
             <div className="relative">
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl border border-white/10">
@@ -130,7 +130,7 @@ export default function HomePage() {
 
       {/* Gallery */}
       <section className="relative bg-night-950 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <SectionHeader
             align="center"
             kicker="From the trails"
@@ -151,7 +151,7 @@ export default function HomePage() {
       {/* Testimonials */}
       <section className="relative overflow-hidden bg-night-900 py-24 md:py-32">
         <div className="absolute inset-0 bg-hero-radial opacity-60" />
-        <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <SectionHeader
             align="center"
             kicker="The hype"
@@ -179,8 +179,8 @@ export default function HomePage() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-night-950/70 via-night-950/80 to-night-950" />
         </div>
-        <div className="relative mx-auto max-w-5xl px-5 py-28 text-center lg:px-8">
-          <h2 className="font-display text-6xl leading-none tracking-wider text-white md:text-8xl">
+        <div className="relative mx-auto max-w-5xl px-4 py-24 text-center sm:px-5 sm:py-28 lg:px-8">
+          <h2 className="font-display text-[clamp(2.75rem,12vw,5rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:tracking-wider md:text-8xl md:leading-none">
             YOUR STORY
             <br />
             <span className="text-gradient-fire">STARTS TODAY</span>

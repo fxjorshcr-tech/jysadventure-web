@@ -16,7 +16,7 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative flex min-h-[70svh] items-end overflow-hidden bg-night-950 pb-20 pt-40">
+      <section className="relative flex min-h-[70svh] w-full max-w-full items-end overflow-hidden bg-night-950 pb-16 pt-32 sm:pb-20 sm:pt-40">
         <Image
           src={IMAGES.gallery[4]}
           alt="JYS crew"
@@ -27,11 +27,11 @@ export default function AboutPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-night-950/70 via-night-950/50 to-night-950" />
         <div className="absolute inset-0 bg-hero-radial" />
-        <div className="relative mx-auto w-full max-w-7xl px-5 lg:px-8">
+        <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-5 lg:px-8">
           <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
             Our story
           </span>
-          <h1 className="mt-6 max-w-5xl font-display text-[14vw] leading-[0.85] tracking-wider text-white sm:text-8xl md:text-[9rem]">
+          <h1 className="mt-6 max-w-5xl font-display text-[clamp(3rem,13vw,6rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:text-8xl sm:leading-[0.85] sm:tracking-wider md:text-[9rem]">
             BORN IN THE
             <br />
             <span className="text-gradient-fire">JUNGLE</span>
@@ -48,7 +48,7 @@ export default function AboutPage() {
 
       {/* Story */}
       <section className="relative bg-night-950 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <div className="grid items-center gap-16 lg:grid-cols-2">
             <div className="relative">
               <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-white/10">
@@ -105,7 +105,7 @@ export default function AboutPage() {
       {/* Values */}
       <section className="relative overflow-hidden bg-night-900 py-24 md:py-32">
         <div className="absolute inset-0 bg-hero-radial opacity-70" />
-        <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <SectionHeader
             align="center"
             kicker="Our values"
@@ -157,8 +157,8 @@ export default function AboutPage() {
 
       {/* Numbers */}
       <section className="relative bg-night-950 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <div className="grid gap-8 rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-10 md:grid-cols-4 md:p-14">
+        <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
+          <div className="grid grid-cols-2 gap-6 rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-6 sm:gap-8 sm:p-10 md:grid-cols-4 md:p-14">
             {[
               { k: "8+", v: "Years of rides" },
               { k: "12k+", v: "Happy riders" },
@@ -166,7 +166,7 @@ export default function AboutPage() {
               { k: "4.9★", v: "Average review" },
             ].map((s, i) => (
               <div key={i} className="border-b border-white/10 pb-6 md:border-b-0 md:border-r md:pb-0 md:pr-6 md:last:border-r-0">
-                <div className="font-display text-6xl tracking-wide text-white">
+                <div className="font-display text-4xl tracking-wide text-white sm:text-5xl md:text-6xl">
                   {s.k}
                 </div>
                 <div className="mt-2 text-[10px] font-bold uppercase tracking-[0.3em] text-white/50">
@@ -180,7 +180,7 @@ export default function AboutPage() {
 
       {/* Gallery */}
       <section className="relative bg-night-900 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <SectionHeader
             align="center"
             kicker="Behind the wheel"

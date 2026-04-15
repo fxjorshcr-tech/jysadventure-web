@@ -28,20 +28,29 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300 backdrop-blur-xl",
+        // Always keep the same border + bg alpha so the header never shifts
+        // layout when the scroll state changes (was causing a visible jump
+        // right after ~10–16px of scroll on iPhone).
+        "fixed inset-x-0 top-0 z-50 w-full border-b backdrop-blur-xl transition-[background-color,box-shadow] duration-300",
         scrolled
-          ? "border-b border-white/10 bg-night-950/85 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.6)]"
-          : "border-b border-white/5 bg-night-950/40"
+          ? "border-white/10 bg-night-950/85 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.6)]"
+          : "border-white/10 bg-night-950/40"
       )}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative h-12 w-40 transition group-hover:scale-[1.02] sm:h-14 sm:w-48">
+      <div
+        className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-5 sm:py-4 lg:px-8"
+        style={{
+          paddingLeft: "max(1rem, env(safe-area-inset-left))",
+          paddingRight: "max(1rem, env(safe-area-inset-right))",
+        }}
+      >
+        <Link href="/" className="group flex min-w-0 flex-1 items-center gap-3">
+          <div className="relative h-11 w-36 shrink-0 transition group-hover:scale-[1.02] sm:h-14 sm:w-48">
             <Image
               src={IMAGES.logo}
               alt="JYS Adventure Tour"
               fill
-              sizes="192px"
+              sizes="(max-width: 640px) 144px, 192px"
               className="object-contain object-left drop-shadow-[0_4px_20px_rgba(249,115,22,0.35)]"
               priority
             />
@@ -80,17 +89,25 @@ export function Header() {
         </div>
 
         <button
-          className="rounded-full border border-white/20 bg-white/5 p-2.5 text-white lg:hidden"
+          type="button"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white lg:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label="Menu"
+          aria-expanded={open}
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
 
       {open && (
-        <div className="border-t border-white/10 bg-night-950/95 backdrop-blur-xl lg:hidden">
-          <div className="flex flex-col p-5">
+        <div className="w-full border-t border-white/10 bg-night-950/95 backdrop-blur-xl lg:hidden">
+          <div
+            className="mx-auto flex w-full max-w-7xl flex-col px-4 py-5 sm:px-5"
+            style={{
+              paddingLeft: "max(1rem, env(safe-area-inset-left))",
+              paddingRight: "max(1rem, env(safe-area-inset-right))",
+            }}
+          >
             {NAV.map((n) => (
               <Link
                 key={n.href}
@@ -101,7 +118,11 @@ export function Header() {
                 {n.label}
               </Link>
             ))}
-            <Link href="/contact" onClick={() => setOpen(false)} className="btn-primary mt-5 w-full">
+            <Link
+              href="/contact"
+              onClick={() => setOpen(false)}
+              className="btn-primary mt-5 w-full"
+            >
               <Flame className="h-4 w-4" /> Book Now
             </Link>
             <div className="mt-6 flex items-center justify-center gap-3">

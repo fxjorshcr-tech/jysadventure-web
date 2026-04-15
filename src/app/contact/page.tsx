@@ -13,7 +13,7 @@ export default function ContactPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative flex min-h-[60svh] items-end overflow-hidden bg-night-950 pb-16 pt-40">
+      <section className="relative flex min-h-[60svh] w-full max-w-full items-end overflow-hidden bg-night-950 pb-12 pt-32 sm:pb-16 sm:pt-40">
         <Image
           src={IMAGES.gallery[2]}
           alt="Contact JYS"
@@ -25,11 +25,11 @@ export default function ContactPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-night-950/70 via-night-950/50 to-night-950" />
         <div className="absolute inset-0 bg-hero-radial" />
 
-        <div className="relative mx-auto w-full max-w-7xl px-5 lg:px-8">
+        <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-5 lg:px-8">
           <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
             Let&apos;s talk
           </span>
-          <h1 className="mt-6 max-w-5xl font-display text-[14vw] leading-[0.85] tracking-wider text-white sm:text-8xl md:text-[9rem]">
+          <h1 className="mt-6 max-w-5xl font-display text-[clamp(3rem,13vw,6rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:text-8xl sm:leading-[0.85] sm:tracking-wider md:text-[9rem]">
             BOOK YOUR
             <br />
             <span className="text-gradient-fire">RIDE</span>
@@ -42,12 +42,12 @@ export default function ContactPage() {
       </section>
 
       <section className="relative bg-night-950 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
             {/* Info card */}
             <div className="space-y-6">
-              <div className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-8">
-                <h2 className="font-display text-4xl tracking-wide text-white md:text-5xl">
+              <div className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-6 sm:p-8">
+                <h2 className="font-display text-[clamp(2rem,8vw,2.75rem)] leading-tight tracking-wide text-white [overflow-wrap:anywhere] md:text-5xl">
                   Get in <span className="text-gradient-fire">touch</span>
                 </h2>
                 <p className="mt-3 text-white/60">
@@ -130,12 +130,12 @@ export default function ContactPage() {
 
             {/* Form */}
             <div>
-              <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-6 md:p-10">
+              <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-5 sm:p-6 md:p-10">
                 <div>
                   <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
                     Quick booking
                   </span>
-                  <h2 className="mt-5 font-display text-4xl leading-none tracking-wide text-white md:text-5xl">
+                  <h2 className="mt-5 font-display text-[clamp(2rem,8vw,2.75rem)] leading-tight tracking-wide text-white [overflow-wrap:anywhere] md:text-5xl md:leading-none">
                     Send us the <span className="text-gradient-fire">details</span>
                   </h2>
                   <p className="mt-3 max-w-md text-white/60">
