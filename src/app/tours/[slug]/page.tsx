@@ -10,7 +10,6 @@ import {
   Gauge,
   Users,
   Check,
-  Flame,
   Baby,
   IdCard,
   ArrowRight,
@@ -54,7 +53,7 @@ export default async function TourDetailPage({
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-55"
+          className="object-cover object-[center_25%] opacity-55"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-night-950/70 via-night-950/50 to-night-950" />
         <div className="absolute inset-0 bg-hero-radial" />
@@ -228,25 +227,11 @@ export default async function TourDetailPage({
             {/* Right: booking card */}
             <aside className="lg:sticky lg:top-28 lg:self-start">
               <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-6 sm:p-8">
-                <div className="flex items-end justify-between">
-                  <div>
-                    <div className="text-[10px] uppercase tracking-[0.25em] text-white/60">
-                      From
-                    </div>
-                    <div className="font-display text-5xl text-lava-400">
-                      ${tour.price}
-                      <span className="ml-1 text-sm text-white/50">
-                        / person
-                      </span>
-                    </div>
-                  </div>
-                  <span className="rounded-full border border-lava-500/40 bg-lava-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-lava-400">
-                    <Flame className="mr-1 inline h-3 w-3" />
-                    Book now
-                  </span>
-                </div>
-                <p className="mt-4 text-sm text-white/60">
-                  Reserve your spot. We confirm availability within the hour.
+                <h2 className="font-display text-2xl tracking-wide text-white">
+                  Book your <span className="text-gradient-fire">ride</span>
+                </h2>
+                <p className="mt-2 text-sm text-white/60">
+                  We confirm availability within the hour.
                 </p>
                 <div className="mt-6">
                   <BookingForm preselectedSlug={tour.slug} />
@@ -294,12 +279,14 @@ function Stat({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+    <div className="min-w-0 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
       <Icon className="h-4 w-4 text-lava-400" />
       <div className="mt-2 text-[10px] uppercase tracking-widest text-white/50">
         {label}
       </div>
-      <div className="font-display text-2xl text-white">{value}</div>
+      <div className="mt-0.5 font-display text-lg leading-tight text-white [overflow-wrap:anywhere] sm:text-xl">
+        {value}
+      </div>
     </div>
   );
 }

@@ -23,7 +23,7 @@ export default function AboutPage() {
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-60"
+          className="object-cover object-[center_25%] opacity-60"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-night-950/70 via-night-950/50 to-night-950" />
         <div className="absolute inset-0 bg-hero-radial" />

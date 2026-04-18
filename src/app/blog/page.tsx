@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { IMAGES } from "@/lib/images";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
@@ -84,7 +83,7 @@ export default function BlogPage() {
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-55"
+          className="object-cover object-[center_25%] opacity-55"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-night-950/70 via-night-950/50 to-night-950" />
         <div className="absolute inset-0 bg-hero-radial" />
@@ -160,18 +159,6 @@ export default function BlogPage() {
             ))}
           </div>
 
-          <div className="mt-24 rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-6 text-center sm:p-10">
-            <h3 className="font-display text-[clamp(1.75rem,7vw,2.5rem)] leading-tight tracking-wide text-white [overflow-wrap:anywhere] md:text-5xl">
-              While you wait — <span className="text-gradient-fire">ride</span>
-            </h3>
-            <p className="mx-auto mt-4 max-w-xl text-white/60">
-              New posts will land here soon. In the meantime, pick your adventure
-              and we&apos;ll hit the trail.
-            </p>
-            <Link href="/tours" className="btn-primary mt-8 inline-flex">
-              Explore tours <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
         </div>
       </section>
     </>

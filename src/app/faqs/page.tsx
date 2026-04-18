@@ -1,11 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import { IMAGES } from "@/lib/images";
 import { SectionHeader } from "@/components/SectionHeader";
-import { Plus, Minus, ArrowRight } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 
 const FAQ_GROUPS: {
   title: string;
@@ -129,7 +128,7 @@ export default function FAQsPage() {
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-55"
+          className="object-cover object-[center_25%] opacity-55"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-night-950/70 via-night-950/50 to-night-950" />
         <div className="absolute inset-0 bg-hero-radial" />
@@ -165,18 +164,6 @@ export default function FAQsPage() {
             </div>
           ))}
 
-          <div className="mt-24 rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-6 text-center sm:p-10">
-            <h3 className="font-display text-[clamp(1.75rem,7vw,2.5rem)] leading-tight tracking-wide text-white [overflow-wrap:anywhere] md:text-5xl">
-              Still have <span className="text-gradient-fire">questions?</span>
-            </h3>
-            <p className="mx-auto mt-4 max-w-xl text-white/60">
-              Drop us a message and we&apos;ll get back within the hour during
-              office time.
-            </p>
-            <Link href="/contact" className="btn-primary mt-8 inline-flex">
-              Contact us <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
         </div>
       </section>
     </>

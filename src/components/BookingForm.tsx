@@ -11,7 +11,6 @@ import {
   Minus,
   Plus,
   ChevronDown,
-  Flame,
 } from "lucide-react";
 import { TOURS, getTour } from "@/lib/tours";
 import { DatePicker } from "./DatePicker";
@@ -148,46 +147,31 @@ export function BookingForm({
           {errors.date && <p className={errorCls}>{errors.date.message}</p>}
         </div>
 
-        {/* Tour: locked card when preselected, dropdown otherwise */}
-        <div className="sm:col-span-2">
-          <label className={label}>Tour</label>
-          {lockedTour ? (
-            <>
-              <input type="hidden" {...register("tour")} value={lockedTour.slug} />
-              <div className="flex items-center justify-between gap-3 rounded-2xl border border-lava-500/40 bg-lava-500/10 px-4 py-3">
-                <div className="min-w-0">
-                  <div className="font-display text-base tracking-wide text-white">
-                    {lockedTour.title}
-                  </div>
-                  <div className="truncate text-[11px] text-white/60">
-                    {lockedTour.tagline}
-                  </div>
-                </div>
-                <Flame className="h-5 w-5 shrink-0 text-lava-400" />
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="relative">
-                <select
-                  {...register("tour")}
-                  className={`${field} appearance-none pr-11`}
-                >
-                  <option value="" className="bg-night-900">
-                    Choose your ride…
+        {/* Tour: hidden when already on a tour page, dropdown otherwise */}
+        {lockedTour ? (
+          <input type="hidden" {...register("tour")} value={lockedTour.slug} />
+        ) : (
+          <div className="sm:col-span-2">
+            <label className={label}>Tour</label>
+            <div className="relative">
+              <select
+                {...register("tour")}
+                className={`${field} appearance-none pr-11`}
+              >
+                <option value="" className="bg-night-900">
+                  Choose your ride…
+                </option>
+                {TOURS.map((t) => (
+                  <option key={t.slug} value={t.slug} className="bg-night-900">
+                    {t.title}
                   </option>
-                  {TOURS.map((t) => (
-                    <option key={t.slug} value={t.slug} className="bg-night-900">
-                      {t.title}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-lava-400" />
-              </div>
-              {errors.tour && <p className={errorCls}>{errors.tour.message}</p>}
-            </>
-          )}
-        </div>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-lava-400" />
+            </div>
+            {errors.tour && <p className={errorCls}>{errors.tour.message}</p>}
+          </div>
+        )}
 
         {/* Quantity pickers depend on tour */}
         {hasVariants ? (
