@@ -1,6 +1,23 @@
+@import "react-day-picker/dist/style.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* DayPicker overrides so our themed classNames from DatePicker.tsx are not
+   washed out by the default library CSS. */
+.rdp {
+  --rdp-cell-size: 36px;
+  --rdp-accent-color: theme("colors.lava.500");
+  --rdp-background-color: transparent;
+  margin: 0;
+}
+.rdp-day_selected,
+.rdp-day_selected:focus-visible,
+.rdp-day_selected:hover {
+  background-color: theme("colors.lava.500") !important;
+  color: #fff !important;
+}
 
 :root {
   --background: #060809;

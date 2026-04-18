@@ -64,18 +64,18 @@ export default function ContactPage() {
                     },
                     {
                       icon: Mail,
-                      label: "Email",
-                      value: "info@jysadventuretour.com",
+                      label: "Reservations",
+                      value: "reservations@jysadventuretours.com",
                     },
                     {
                       icon: MapPin,
                       label: "Location",
-                      value: "Guanacaste, Costa Rica",
+                      value: "Sardinal, Guanacaste · Costa Rica",
                     },
                     {
                       icon: Clock,
                       label: "Hours",
-                      value: "Every day · 7AM — 7PM",
+                      value: "Every day · 7AM — 5PM",
                     },
                   ].map((c, i) => (
                     <div

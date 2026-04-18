@@ -116,6 +116,49 @@ export default async function TourDetailPage({
                 <p className="mt-4 text-white/70">{tour.description}</p>
               </div>
 
+              {/* Variants (ATV only) */}
+              {tour.variants && (
+                <div className="mt-10">
+                  <h3 className="font-display text-xl tracking-wide text-white">
+                    Pick your setup
+                  </h3>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    {tour.variants.map((v) => (
+                      <div
+                        key={v.type}
+                        className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <div className="font-display text-lg tracking-wide text-white">
+                              {v.label}
+                            </div>
+                            <div className="mt-1 text-[11px] uppercase tracking-widest text-white/50">
+                              {v.seats === 1 ? "1 rider" : "2 riders"}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-display text-2xl text-lava-400">
+                              ${v.price}
+                            </div>
+                            <div className="text-[10px] uppercase tracking-widest text-white/50">
+                              per quad
+                            </div>
+                          </div>
+                        </div>
+                        <p className="mt-3 text-sm text-white/65">
+                          {v.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-xs text-white/50">
+                    Mix Singles and Doubles in the same group — choose how many
+                    of each in the booking form.
+                  </p>
+                </div>
+              )}
+
               <div className="mt-10 grid gap-6 sm:grid-cols-2">
                 <div>
                   <h3 className="font-display text-xl tracking-wide text-white">
