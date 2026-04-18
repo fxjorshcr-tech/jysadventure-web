@@ -1,11 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
 import { BASE_TOURS, COMBO_TOURS } from "@/lib/tours";
 import { IMAGES } from "@/lib/images";
 import { TourCard } from "@/components/TourCard";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Marquee } from "@/components/Marquee";
-import { ArrowRight, IdCard, Users, Baby } from "lucide-react";
+import { IdCard, Users, Baby } from "lucide-react";
 
 export const metadata = {
   title: "Tours — JYS Adventure Tour",
@@ -120,23 +119,6 @@ export default function ToursPage() {
             />
           </div>
 
-          <div className="mt-20 rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-6 text-center sm:p-10">
-            <h3 className="font-display text-[clamp(1.75rem,7vw,2.5rem)] leading-tight tracking-wide text-white [overflow-wrap:anywhere] md:text-5xl">
-              Still not sure <span className="text-gradient-fire">which ride</span> fits you?
-            </h3>
-            <p className="mx-auto mt-4 max-w-xl text-white/60">
-              We&apos;ll help you choose based on your crew, experience level and
-              how much adrenaline you can handle.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link href="/contact" className="btn-primary">
-                Chat with a guide <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link href="/faqs" className="btn-ghost">
-                Read FAQs
-              </Link>
-            </div>
-          </div>
         </div>
       </section>
     </>

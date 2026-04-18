@@ -1,8 +1,16 @@
 import type { Metadata, Viewport } from "next";
+import { Lexend } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SocialRail } from "@/components/SocialRail";
+
+const lexend = Lexend({
+  subsets: ["latin"],
+  variable: "--font-lexend",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "JYS Adventure Tour — ATV & UTV Tours in Guanacaste, Costa Rica",
@@ -28,7 +36,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={lexend.variable}>
       <body className="min-h-[100dvh] w-full overflow-x-hidden bg-night-950 font-sans text-white antialiased">
         <Header />
         <main className="relative w-full overflow-x-hidden">{children}</main>

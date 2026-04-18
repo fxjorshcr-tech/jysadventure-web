@@ -4,6 +4,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Display headings: reuse Lexend at a heavy weight so they feel strong
+   without needing a second font. */
+.font-display {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
 /* DayPicker overrides so our themed classNames from DatePicker.tsx are not
    washed out by the default library CSS. */
 .rdp {

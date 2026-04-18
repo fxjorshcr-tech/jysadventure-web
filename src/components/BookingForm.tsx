@@ -4,7 +4,14 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Send, Loader2, CheckCircle2, Minus, Plus } from "lucide-react";
+import {
+  Send,
+  Loader2,
+  CheckCircle2,
+  Minus,
+  Plus,
+  ChevronDown,
+} from "lucide-react";
 import { TOURS, getTour } from "@/lib/tours";
 import { DatePicker } from "./DatePicker";
 
@@ -129,19 +136,25 @@ export function BookingForm({ preselectedSlug }: { preselectedSlug?: string } = 
 
         <div className="sm:col-span-2">
           <label className={label}>Tour</label>
-          <select
-            {...register("tour")}
-            className={`${field} appearance-none`}
-          >
-            <option value="" className="bg-night-900">
-              Choose your ride…
-            </option>
-            {TOURS.map((t) => (
-              <option key={t.slug} value={t.slug} className="bg-night-900">
-                {t.title}
+          <div className="relative">
+            <select
+              {...register("tour")}
+              className={`${field} appearance-none pr-11`}
+            >
+              <option value="" className="bg-night-900">
+                Choose your ride…
               </option>
-            ))}
-          </select>
+              {TOURS.map((t) => (
+                <option key={t.slug} value={t.slug} className="bg-night-900">
+                  {t.title}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-lava-400" />
+          </div>
+          <p className="mt-1.5 text-[11px] text-white/50">
+            You can switch to any other tour here before submitting.
+          </p>
           {errors.tour && <p className={errorCls}>{errors.tour.message}</p>}
         </div>
 
