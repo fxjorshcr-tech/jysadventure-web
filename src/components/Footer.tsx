@@ -93,6 +93,8 @@ export function Footer() {
               <li><Link href="/" className="hover:text-white">Home</Link></li>
               <li><Link href="/tours" className="hover:text-white">Tours</Link></li>
               <li><Link href="/about" className="hover:text-white">About</Link></li>
+              <li><Link href="/blog" className="hover:text-white">Blog</Link></li>
+              <li><Link href="/faqs" className="hover:text-white">FAQs</Link></li>
               <li><Link href="/contact" className="hover:text-white">Contact</Link></li>
             </ul>
           </div>
@@ -100,10 +102,11 @@ export function Footer() {
           <div>
             <h4 className="font-display text-lg tracking-widest text-white">Rides</h4>
             <ul className="mt-4 space-y-2 text-sm text-white/60">
-              <li><Link href="/tours/jungle-rush" className="hover:text-white">Jungle Rush</Link></li>
-              <li><Link href="/tours/volcano-storm" className="hover:text-white">Volcano Storm</Link></li>
-              <li><Link href="/tours/sunset-beach-blast" className="hover:text-white">Sunset Beach Blast</Link></li>
-              <li><Link href="/tours/canyon-breaker" className="hover:text-white">Canyon Breaker</Link></li>
+              <li><Link href="/tours/atv-single" className="hover:text-white">ATV Single</Link></li>
+              <li><Link href="/tours/atv-double" className="hover:text-white">ATV Double</Link></li>
+              <li><Link href="/tours/utv" className="hover:text-white">UTV Side by Side</Link></li>
+              <li><Link href="/tours/utv-canopy" className="hover:text-white">UTV + Canopy</Link></li>
+              <li><Link href="/tours/atv-single-cabalgata" className="hover:text-white">ATV + Cabalgata</Link></li>
             </ul>
           </div>
         </div>

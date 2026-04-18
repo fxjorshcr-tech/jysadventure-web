@@ -13,12 +13,13 @@ const schema = z.object({
   date: z.string().min(1, "Pick a date"),
   people: z.coerce.number().min(1, "Min 1 rider").max(30, "Max 30 riders"),
   tour: z.string().min(1, "Choose a tour"),
+  license: z.boolean().optional(),
   message: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
 
-export function BookingForm() {
+export function BookingForm({ preselectedSlug }: { preselectedSlug?: string } = {}) {
   const [sent, setSent] = useState(false);
 
   const {
@@ -28,13 +29,13 @@ export function BookingForm() {
     reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { people: 2 },
+    defaultValues: { people: 2, tour: preselectedSlug ?? "" },
   });
 
   const onSubmit = async (_data: FormData) => {
     await new Promise((r) => setTimeout(r, 900));
     setSent(true);
-    reset();
+    reset({ people: 2, tour: preselectedSlug ?? "" });
     setTimeout(() => setSent(false), 4500);
   };
 
@@ -88,11 +89,25 @@ export function BookingForm() {
         </div>
 
         <div className="sm:col-span-2">
+          <label className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/75">
+            <input
+              type="checkbox"
+              {...register("license")}
+              className="mt-1 h-4 w-4 accent-lava-500"
+            />
+            <span>
+              I confirm the driver has a valid driver&apos;s license. Required for
+              all ATV and UTV rides.
+            </span>
+          </label>
+        </div>
+
+        <div className="sm:col-span-2">
           <label className={label}>Message (optional)</label>
           <textarea
             rows={3}
             {...register("message")}
-            placeholder="Tell us about your crew, birthdays, special requests…"
+            placeholder="Ages of passengers, pickup location, special requests…"
             className={field}
           />
         </div>
