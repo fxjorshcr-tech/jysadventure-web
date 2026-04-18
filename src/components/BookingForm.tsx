@@ -11,6 +11,7 @@ import {
   Minus,
   Plus,
   ChevronDown,
+  Flame,
 } from "lucide-react";
 import { TOURS, getTour } from "@/lib/tours";
 import { DatePicker } from "./DatePicker";
@@ -45,8 +46,13 @@ const schema = z
 
 type FormData = z.infer<typeof schema>;
 
-export function BookingForm({ preselectedSlug }: { preselectedSlug?: string } = {}) {
+export function BookingForm({
+  preselectedSlug,
+}: {
+  preselectedSlug?: string;
+} = {}) {
   const [sent, setSent] = useState(false);
+  const lockedTour = preselectedSlug ? getTour(preselectedSlug) : undefined;
 
   const {
     register,
@@ -61,7 +67,7 @@ export function BookingForm({ preselectedSlug }: { preselectedSlug?: string } = 
     defaultValues: {
       singles: 0,
       doubles: 0,
-      riders: 2,
+      riders: lockedTour && !lockedTour.variants ? 2 : 0,
       tour: preselectedSlug ?? "",
     },
   });
@@ -71,7 +77,15 @@ export function BookingForm({ preselectedSlug }: { preselectedSlug?: string } = 
   const hasVariants = !!currentTour?.variants;
   const singles = watch("singles") ?? 0;
   const doubles = watch("doubles") ?? 0;
-  const totalRiders = hasVariants ? singles + doubles * 2 : watch("riders") ?? 0;
+  const riders = watch("riders") ?? 0;
+
+  const totalRiders = hasVariants ? singles + doubles * 2 : riders;
+  const totalPrice = currentTour
+    ? hasVariants
+      ? singles * (currentTour.variants![0].price) +
+        doubles * (currentTour.variants![1].price)
+      : riders * currentTour.price
+    : 0;
 
   const onSubmit = async (_data: FormData) => {
     await new Promise((r) => setTimeout(r, 900));
@@ -79,7 +93,7 @@ export function BookingForm({ preselectedSlug }: { preselectedSlug?: string } = 
     reset({
       singles: 0,
       doubles: 0,
-      riders: 2,
+      riders: lockedTour && !lockedTour.variants ? 2 : 0,
       tour: preselectedSlug ?? "",
     });
     setTimeout(() => setSent(false), 4500);
@@ -134,74 +148,121 @@ export function BookingForm({ preselectedSlug }: { preselectedSlug?: string } = 
           {errors.date && <p className={errorCls}>{errors.date.message}</p>}
         </div>
 
+        {/* Tour: locked card when preselected, dropdown otherwise */}
         <div className="sm:col-span-2">
           <label className={label}>Tour</label>
-          <div className="relative">
-            <select
-              {...register("tour")}
-              className={`${field} appearance-none pr-11`}
-            >
-              <option value="" className="bg-night-900">
-                Choose your ride…
-              </option>
-              {TOURS.map((t) => (
-                <option key={t.slug} value={t.slug} className="bg-night-900">
-                  {t.title}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-lava-400" />
-          </div>
-          <p className="mt-1.5 text-[11px] text-white/50">
-            You can switch to any other tour here before submitting.
-          </p>
-          {errors.tour && <p className={errorCls}>{errors.tour.message}</p>}
+          {lockedTour ? (
+            <>
+              <input type="hidden" {...register("tour")} value={lockedTour.slug} />
+              <div className="flex items-center justify-between gap-3 rounded-2xl border border-lava-500/40 bg-lava-500/10 px-4 py-3">
+                <div className="min-w-0">
+                  <div className="font-display text-base tracking-wide text-white">
+                    {lockedTour.title}
+                  </div>
+                  <div className="truncate text-[11px] text-white/60">
+                    {lockedTour.tagline}
+                  </div>
+                </div>
+                <Flame className="h-5 w-5 shrink-0 text-lava-400" />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="relative">
+                <select
+                  {...register("tour")}
+                  className={`${field} appearance-none pr-11`}
+                >
+                  <option value="" className="bg-night-900">
+                    Choose your ride…
+                  </option>
+                  {TOURS.map((t) => (
+                    <option key={t.slug} value={t.slug} className="bg-night-900">
+                      {t.title}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-lava-400" />
+              </div>
+              {errors.tour && <p className={errorCls}>{errors.tour.message}</p>}
+            </>
+          )}
         </div>
 
         {/* Quantity pickers depend on tour */}
         {hasVariants ? (
           <div className="sm:col-span-2">
             <label className={label}>How many of each?</label>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <QuantityField
-                title="ATV Single"
-                sub={`$${currentTour!.variants![0].price} / quad · 1 rider`}
+            <div className="space-y-3">
+              <QuantityRow
+                title={currentTour!.variants![0].label}
+                subtitle="1 rider per quad"
+                price={currentTour!.variants![0].price}
                 value={singles}
                 onChange={(v) => setValue("singles", v, { shouldValidate: true })}
               />
-              <QuantityField
-                title="ATV Double"
-                sub={`$${currentTour!.variants![1].price} / quad · 2 riders (5+)`}
+              <QuantityRow
+                title={currentTour!.variants![1].label}
+                subtitle={`2 riders per quad · passenger ${currentTour!.minPassengerAge}+`}
+                price={currentTour!.variants![1].price}
                 value={doubles}
                 onChange={(v) => setValue("doubles", v, { shouldValidate: true })}
               />
             </div>
-            <div className="mt-2 flex items-center justify-between text-xs text-white/60">
-              <span>
-                Total riders:{" "}
-                <span className="font-bold text-white">{totalRiders}</span>
-              </span>
-              {errors.riders && (
-                <span className="text-lava-400">{errors.riders.message}</span>
-              )}
-            </div>
+            {errors.riders && (
+              <p className={errorCls}>{errors.riders.message}</p>
+            )}
           </div>
         ) : (
           <div className="sm:col-span-2">
             <label className={label}>Riders</label>
-            <QuantityField
+            <QuantityRow
               title="Total riders"
-              sub={
+              subtitle={
                 currentTour
-                  ? `$${currentTour.price} / person`
+                  ? `Up to 4 per UTV · passenger ${currentTour.minPassengerAge}+`
                   : "Group size"
               }
-              value={watch("riders") ?? 0}
+              price={currentTour?.price ?? 0}
+              priceLabel="per person"
+              value={riders}
               onChange={(v) => setValue("riders", v, { shouldValidate: true })}
             />
             {errors.riders && (
               <p className={errorCls}>{errors.riders.message}</p>
             )}
+          </div>
+        )}
+
+        {/* Live total */}
+        {currentTour && (
+          <div className="sm:col-span-2">
+            <div className="flex items-end justify-between gap-4 rounded-2xl border border-lava-500/40 bg-lava-500/10 px-5 py-4">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
+                  Total
+                </div>
+                <div className="mt-0.5 text-sm text-white/75">
+                  {totalRiders} {totalRiders === 1 ? "rider" : "riders"}
+                  {hasVariants && (singles > 0 || doubles > 0) && (
+                    <span className="text-white/55">
+                      {" "}
+                      ({singles > 0 && `${singles} Single`}
+                      {singles > 0 && doubles > 0 && " + "}
+                      {doubles > 0 && `${doubles} Double`})
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="font-display text-3xl text-lava-400">
+                  ${totalPrice}
+                </div>
+                <div className="text-[10px] uppercase tracking-widest text-white/50">
+                  estimated
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
@@ -253,47 +314,54 @@ export function BookingForm({ preselectedSlug }: { preselectedSlug?: string } = 
   );
 }
 
-function QuantityField({
+function QuantityRow({
   title,
-  sub,
+  subtitle,
+  price,
+  priceLabel = "per quad",
   value,
   onChange,
 }: {
   title: string;
-  sub: string;
+  subtitle: string;
+  price: number;
+  priceLabel?: string;
   value: number;
   onChange: (n: number) => void;
 }) {
   const dec = () => onChange(Math.max(0, value - 1));
   const inc = () => onChange(Math.min(30, value + 1));
   return (
-    <div className="flex items-center justify-between rounded-2xl border border-white/15 bg-white/[0.04] px-4 py-3">
-      <div className="min-w-0">
-        <div className="truncate font-display text-base tracking-wide text-white">
+    <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/15 bg-white/[0.04] px-4 py-3">
+      <div className="min-w-0 flex-1">
+        <div className="font-display text-base tracking-wide text-white">
           {title}
         </div>
-        <div className="truncate text-[11px] text-white/55">{sub}</div>
+        <div className="mt-0.5 text-[11px] text-white/55">{subtitle}</div>
+        <div className="mt-1 text-xs text-lava-400">
+          ${price} <span className="text-white/50">{priceLabel}</span>
+        </div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex shrink-0 items-center gap-2">
         <button
           type="button"
           onClick={dec}
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-lava-400 hover:text-white disabled:opacity-40"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-lava-400 hover:text-white disabled:opacity-40"
           disabled={value <= 0}
           aria-label="Decrease"
         >
-          <Minus className="h-3.5 w-3.5" />
+          <Minus className="h-4 w-4" />
         </button>
-        <span className="w-6 text-center font-display text-lg text-white">
+        <span className="w-7 text-center font-display text-xl text-white">
           {value}
         </span>
         <button
           type="button"
           onClick={inc}
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-lava-400 hover:text-white"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-lava-400 hover:text-white"
           aria-label="Increase"
         >
-          <Plus className="h-3.5 w-3.5" />
+          <Plus className="h-4 w-4" />
         </button>
       </div>
     </div>
