@@ -21,7 +21,7 @@ export function TourCard({ tour, index = 0 }: { tour: Tour; index?: number }) {
       transition={{ duration: 0.6, delay: index * 0.07 }}
       className="group relative overflow-hidden rounded-3xl border border-white/10 bg-night-900"
     >
-      <Link href={`/tours#${tour.slug}`} className="block">
+      <Link href={`/tours/${tour.slug}`} className="block">
         <div className="relative aspect-[4/5] w-full overflow-hidden">
           <Image
             src={tour.image}

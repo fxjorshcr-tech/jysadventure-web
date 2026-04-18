@@ -167,38 +167,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Final CTA banner */}
-      <section className="relative overflow-hidden bg-night-950">
-        <div className="absolute inset-0">
-          <Image
-            src={IMAGES.gallery[6]}
-            alt="Adventure"
-            fill
-            sizes="100vw"
-            className="object-cover opacity-50"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-night-950/70 via-night-950/80 to-night-950" />
-        </div>
-        <div className="relative mx-auto max-w-5xl px-4 py-24 text-center sm:px-5 sm:py-28 lg:px-8">
-          <h2 className="font-display text-[clamp(2.75rem,12vw,5rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:tracking-wider md:text-8xl md:leading-none">
-            YOUR STORY
-            <br />
-            <span className="text-gradient-fire">STARTS TODAY</span>
-          </h2>
-          <p className="mx-auto mt-6 max-w-xl text-white/70">
-            Don&apos;t let your trip to Costa Rica be just another vacation. Make
-            it the story you&apos;ll never stop telling.
-          </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Link href="/tours" className="btn-primary">
-              Choose My Ride <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link href="/contact" className="btn-ghost">
-              Talk To Us
-            </Link>
-          </div>
-        </div>
-      </section>
     </>
   );
 }

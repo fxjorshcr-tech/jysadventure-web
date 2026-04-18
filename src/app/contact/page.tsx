@@ -20,7 +20,7 @@ export default function ContactPage() {
           fill
           priority
           sizes="100vw"
-          className="object-cover opacity-50"
+          className="object-cover object-[center_25%] opacity-50"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-night-950/70 via-night-950/50 to-night-950" />
         <div className="absolute inset-0 bg-hero-radial" />
@@ -64,18 +64,18 @@ export default function ContactPage() {
                     },
                     {
                       icon: Mail,
-                      label: "Email",
-                      value: "info@jysadventuretour.com",
+                      label: "Reservations",
+                      value: "reservations@jysadventuretours.com",
                     },
                     {
                       icon: MapPin,
                       label: "Location",
-                      value: "Guanacaste, Costa Rica",
+                      value: "Sardinal, Guanacaste · Costa Rica",
                     },
                     {
                       icon: Clock,
                       label: "Hours",
-                      value: "Every day · 7AM — 7PM",
+                      value: "Every day · 7AM — 5PM",
                     },
                   ].map((c, i) => (
                     <div

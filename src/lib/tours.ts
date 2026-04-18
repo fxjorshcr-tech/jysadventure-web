@@ -1,5 +1,15 @@
 import { IMAGES } from "./images";
 
+export type TourCategory = "base" | "combo";
+
+export type TourVariant = {
+  type: "single" | "double";
+  label: string;
+  price: number;
+  seats: number;
+  description: string;
+};
+
 export type Tour = {
   slug: string;
   title: string;
@@ -9,94 +19,185 @@ export type Tour = {
   difficulty: "Easy" | "Moderate" | "Extreme";
   price: number;
   minAge: number;
-  vehicle: "ATV" | "UTV" | "ATV / UTV";
+  minPassengerAge: number | null;
+  licenseRequired: boolean;
+  vehicle: "ATV" | "UTV";
+  category: TourCategory;
+  addon: "Cabalgata" | "Canopy" | null;
+  variants?: TourVariant[];
   highlights: string[];
+  includes: string[];
   image: string;
 };
 
 export const TOURS: Tour[] = [
   {
-    slug: "jungle-rush",
-    title: "Jungle Rush",
-    tagline: "Deep jungle trails, river crossings & hidden waterfalls",
+    slug: "atv",
+    title: "ATV Adventure",
+    tagline: "Solo rider or 2-up. You pick.",
     description:
-      "Carve through dense Guanacaste rainforest, splash across crystal rivers and chase the roar of a hidden waterfall. Our most thrilling entry-level ride — pure adrenaline, zero boredom.",
+      "Our flagship off-road ride through Guanacaste rainforest, river crossings and hidden trails. Available as Single (one pilot per quad, for pure solo control) or Double (driver + one passenger from 5+ years old, for couples, parents with a teen or friends who want to ride together).",
     duration: "2 hours",
     difficulty: "Moderate",
     price: 95,
-    minAge: 12,
+    minAge: 18,
+    minPassengerAge: 5,
+    licenseRequired: true,
     vehicle: "ATV",
-    highlights: ["Jungle trails", "River crossing", "Waterfall stop", "Photo ops"],
+    category: "base",
+    addon: null,
+    variants: [
+      {
+        type: "single",
+        label: "ATV Single",
+        price: 95,
+        seats: 1,
+        description: "One rider, one quad. Full control, full throttle.",
+      },
+      {
+        type: "double",
+        label: "ATV Double",
+        price: 120,
+        seats: 2,
+        description: "Driver + one passenger (5+ years). Shared thrill.",
+      },
+    ],
+    highlights: ["Jungle trails", "River crossing", "Viewpoint stop", "Mix singles & doubles in one group"],
+    includes: ["Helmet & gloves", "Bilingual guide", "Fuel", "Bottled water"],
     image: IMAGES.gallery[0],
   },
   {
-    slug: "volcano-storm",
-    title: "Volcano Storm",
-    tagline: "Black-sand ridges with a view of Rincón de la Vieja",
+    slug: "utv",
+    title: "UTV Side by Side",
+    tagline: "The whole family in one beast.",
     description:
-      "Climb the volcanic backbone of Guanacaste. Rugged ascents, wide-open sky, sulfuric winds and a panorama of the Rincón de la Vieja volcano that will melt your SD card.",
-    duration: "3 hours",
-    difficulty: "Extreme",
-    price: 145,
-    minAge: 16,
-    vehicle: "UTV",
-    highlights: ["Volcano viewpoints", "Rocky ascents", "Panoramic ridge", "Pro driver optional"],
-    image: IMAGES.gallery[1],
-  },
-  {
-    slug: "sunset-beach-blast",
-    title: "Sunset Beach Blast",
-    tagline: "Ride the Pacific coastline as the sky turns gold",
-    description:
-      "Blast down empty Pacific beaches, cut through coastal forest and arrive at a secret cove for the most unreal sunset in Costa Rica. Cold drink included — memories, priceless.",
-    duration: "2.5 hours",
+      "Our most family-friendly ride. Up to 4 seats in a roofed UTV with seatbelts and roll cage. Tackle the same wild trails in total comfort — ideal for small kids (2+), grandparents and anyone who wants the view without holding on.",
+    duration: "2 hours",
     difficulty: "Easy",
-    price: 120,
-    minAge: 10,
-    vehicle: "ATV / UTV",
-    highlights: ["Pacific beach", "Sunset viewpoint", "Welcome drink", "Secret cove"],
-    image: IMAGES.gallery[2],
-  },
-  {
-    slug: "canyon-breaker",
-    title: "Canyon Breaker",
-    tagline: "Narrow canyon descents and a full-send dry riverbed",
-    description:
-      "Drop into a cinematic canyon full of switchbacks, tight turns and a dry riverbed straight out of a movie chase. Built for riders who want maximum throttle and zero limits.",
-    duration: "3.5 hours",
-    difficulty: "Extreme",
-    price: 165,
+    price: 180,
     minAge: 18,
+    minPassengerAge: 2,
+    licenseRequired: true,
     vehicle: "UTV",
-    highlights: ["Canyon descent", "Dry riverbed", "Technical turns", "GoPro footage"],
-    image: IMAGES.gallery[3],
-  },
-  {
-    slug: "family-expedition",
-    title: "Family Expedition",
-    tagline: "An unforgettable first off-road ride for the whole crew",
-    description:
-      "The perfect intro for families. Gentle trails, expert guides, quick photo stops at a local finca and lots of laughs. Side-by-side UTVs mean everyone rides together.",
-    duration: "1.5 hours",
-    difficulty: "Easy",
-    price: 85,
-    minAge: 6,
-    vehicle: "UTV",
-    highlights: ["Kid-friendly", "Finca visit", "Easy trails", "Group photos"],
+    category: "base",
+    addon: null,
+    highlights: ["Up to 4 riders", "Roll cage & seatbelts", "Family friendly", "Finca visit"],
+    includes: ["Helmets for all", "Bilingual guide", "Fuel", "Bottled water"],
     image: IMAGES.gallery[4],
   },
   {
-    slug: "night-predator",
-    title: "Night Predator",
-    tagline: "Headlight-only jungle ride under a Guanacaste sky",
+    slug: "atv-cabalgata",
+    title: "ATV + Cabalgata",
+    tagline: "Off-road ride paired with a horseback finca tour.",
     description:
-      "When the sun drops, the jungle wakes up. Follow your headlights through glowing trails, listen to howler monkeys and feel the pulse of a Costa Rica you've never seen before.",
-    duration: "2 hours",
+      "Double the adventure. Start on an ATV — Single or Double — carving through the jungle, then trade handlebars for reins on a guided horseback ride across our family finca. Two classic Costa Rican experiences in a single half-day.",
+    duration: "4 hours",
     difficulty: "Moderate",
-    price: 135,
-    minAge: 14,
+    price: 145,
+    minAge: 18,
+    minPassengerAge: 5,
+    licenseRequired: true,
     vehicle: "ATV",
-    highlights: ["Night ride", "Wildlife sounds", "Stargazing stop", "Hot chocolate"],
-    image: IMAGES.gallery[5],
+    category: "combo",
+    addon: "Cabalgata",
+    variants: [
+      {
+        type: "single",
+        label: "ATV Single + Cabalgata",
+        price: 145,
+        seats: 1,
+        description: "Solo ATV + horseback tour.",
+      },
+      {
+        type: "double",
+        label: "ATV Double + Cabalgata",
+        price: 175,
+        seats: 2,
+        description: "2-up ATV (5+ passenger) + horseback tour.",
+      },
+    ],
+    highlights: ["ATV jungle ride", "Guided horseback", "Finca stop", "Snack break"],
+    includes: ["Helmet & gloves", "Trained horses", "Bilingual guide", "Light snack"],
+    image: IMAGES.gallery[1],
+  },
+  {
+    slug: "atv-canopy",
+    title: "ATV + Canopy",
+    tagline: "Ride the dirt. Fly the canopy.",
+    description:
+      "Kick off with an ATV blast — Single or Double — through Guanacaste trails, then strap in for a zipline canopy tour soaring above the forest floor. The ultimate adrenaline combo for riders who want wheels and wings.",
+    duration: "4 hours",
+    difficulty: "Extreme",
+    price: 155,
+    minAge: 18,
+    minPassengerAge: 5,
+    licenseRequired: true,
+    vehicle: "ATV",
+    category: "combo",
+    addon: "Canopy",
+    variants: [
+      {
+        type: "single",
+        label: "ATV Single + Canopy",
+        price: 155,
+        seats: 1,
+        description: "Solo ATV + zipline canopy.",
+      },
+      {
+        type: "double",
+        label: "ATV Double + Canopy",
+        price: 185,
+        seats: 2,
+        description: "2-up ATV (5+ passenger) + zipline canopy.",
+      },
+    ],
+    highlights: ["ATV jungle ride", "Zipline canopy", "Treetop views", "Full harness gear"],
+    includes: ["Helmet & gloves", "Canopy harness", "Bilingual guide", "Bottled water"],
+    image: IMAGES.gallery[3],
+  },
+  {
+    slug: "utv-cabalgata",
+    title: "UTV + Cabalgata",
+    tagline: "Family off-road + horseback finca ride.",
+    description:
+      "Load the whole family into the UTV for a trail adventure, then swap wheels for saddles on a relaxed guided horseback ride. The best combo for mixed-age groups who want variety without the extreme.",
+    duration: "4 hours",
+    difficulty: "Easy",
+    price: 230,
+    minAge: 18,
+    minPassengerAge: 2,
+    licenseRequired: true,
+    vehicle: "UTV",
+    category: "combo",
+    addon: "Cabalgata",
+    highlights: ["Up to 4 in UTV", "Guided horseback", "Finca visit", "Snack break"],
+    includes: ["Helmets for all", "Trained horses", "Bilingual guide", "Light snack"],
+    image: IMAGES.gallery[7],
+  },
+  {
+    slug: "utv-canopy",
+    title: "UTV + Canopy",
+    tagline: "Drive the beast. Fly the forest.",
+    description:
+      "Our UTV trail ride paired with a high-flying zipline canopy tour. Comfortable for kids and grandparents on the trail, thrilling for everyone in the air. Costa Rica's greatest hits in one trip.",
+    duration: "4 hours",
+    difficulty: "Moderate",
+    price: 240,
+    minAge: 18,
+    minPassengerAge: 2,
+    licenseRequired: true,
+    vehicle: "UTV",
+    category: "combo",
+    addon: "Canopy",
+    highlights: ["Up to 4 in UTV", "Zipline canopy", "Treetop views", "Full harness gear"],
+    includes: ["Helmets for all", "Canopy harness", "Bilingual guide", "Bottled water"],
+    image: IMAGES.gallery[8],
   },
 ];
+
+export function getTour(slug: string): Tour | undefined {
+  return TOURS.find((t) => t.slug === slug);
+}
+
+export const BASE_TOURS = TOURS.filter((t) => t.category === "base");
+export const COMBO_TOURS = TOURS.filter((t) => t.category === "combo");

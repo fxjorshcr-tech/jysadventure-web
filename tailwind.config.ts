@@ -36,8 +36,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ['"Impact"', '"Haettenschweiler"', '"Arial Narrow Bold"', "system-ui", "sans-serif"],
-        sans: ['-apple-system', "BlinkMacSystemFont", '"Segoe UI"', "Roboto", '"Helvetica Neue"', "Arial", "sans-serif"],
+        display: ['var(--font-lexend)', "system-ui", "sans-serif"],
+        sans: ['var(--font-lexend)', "system-ui", "sans-serif"],
       },
       animation: {
         "marquee": "marquee 40s linear infinite",
