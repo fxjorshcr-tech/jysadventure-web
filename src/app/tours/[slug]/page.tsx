@@ -72,7 +72,7 @@ export default async function TourDetailPage({
               </span>
             )}
           </div>
-          <h1 className="mt-6 max-w-5xl font-display text-[clamp(2.75rem,11vw,5.5rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:leading-[0.85] sm:tracking-wider md:text-[7.5rem]">
+          <h1 className="mt-6 max-w-5xl font-display text-[clamp(2.25rem,10vw,5.5rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:leading-[0.85] sm:tracking-wider md:text-[7.5rem]">
             {tour.title}
           </h1>
           <p className="mt-6 max-w-2xl text-white/75 md:text-lg">
@@ -87,7 +87,7 @@ export default async function TourDetailPage({
           <div className="grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
             {/* Left: content */}
             <div>
-              <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
+              <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-4 sm:p-6 md:p-8">
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   <Stat icon={Clock} label="Duration" value={tour.duration} />
                   <Stat icon={Gauge} label="Level" value={tour.difficulty} />
@@ -194,7 +194,7 @@ export default async function TourDetailPage({
               </div>
 
               {/* Requirements */}
-              <div className="mt-10 rounded-3xl border border-lava-500/30 bg-lava-500/5 p-6 sm:p-8">
+              <div className="mt-10 rounded-3xl border border-lava-500/30 bg-lava-500/5 p-5 sm:p-6 md:p-8">
                 <div className="flex items-center gap-3">
                   <ShieldCheck className="h-5 w-5 text-lava-400" />
                   <h3 className="font-display text-xl tracking-wide text-white">
@@ -226,7 +226,7 @@ export default async function TourDetailPage({
 
             {/* Right: booking card */}
             <aside className="lg:sticky lg:top-28 lg:self-start">
-              <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-6 sm:p-8">
+              <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-4 sm:p-6 md:p-8">
                 <h2 className="font-display text-2xl tracking-wide text-white">
                   Book your <span className="text-gradient-fire">ride</span>
                 </h2>

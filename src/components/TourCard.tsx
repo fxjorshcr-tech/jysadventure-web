@@ -45,8 +45,8 @@ export function TourCard({ tour, index = 0 }: { tour: Tour; index?: number }) {
           </div>
 
           {/* Bottom content */}
-          <div className="absolute inset-x-0 bottom-0 p-6">
-            <div className="mb-2 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-white/60">
+          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+            <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] uppercase tracking-[0.2em] text-white/60">
               <span className="flex items-center gap-1">
                 <Clock className="h-3 w-3" /> {tour.duration}
               </span>
@@ -57,22 +57,22 @@ export function TourCard({ tour, index = 0 }: { tour: Tour; index?: number }) {
                 <Gauge className="h-3 w-3" /> 4x4
               </span>
             </div>
-            <h3 className="font-display text-4xl leading-none tracking-wide text-white">
+            <h3 className="font-display text-3xl leading-none tracking-wide text-white sm:text-4xl">
               {tour.title}
             </h3>
             <p className="mt-2 line-clamp-2 text-sm text-white/70">{tour.tagline}</p>
 
-            <div className="mt-5 flex items-end justify-between">
-              <div>
+            <div className="mt-5 flex items-end justify-between gap-3">
+              <div className="min-w-0">
                 <div className="text-[10px] uppercase tracking-[0.25em] text-white/50">
                   From
                 </div>
-                <div className="font-display text-3xl text-lava-400">
+                <div className="font-display text-2xl text-lava-400 sm:text-3xl">
                   ${tour.price}
                   <span className="ml-1 text-xs text-white/50">/ person</span>
                 </div>
               </div>
-              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white transition group-hover:border-lava-400 group-hover:bg-lava-500">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white transition group-hover:border-lava-400 group-hover:bg-lava-500">
                 <ArrowUpRight className="h-5 w-5" />
               </div>
             </div>

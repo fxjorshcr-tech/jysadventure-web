@@ -29,7 +29,7 @@ export default function ContactPage() {
           <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
             Let&apos;s talk
           </span>
-          <h1 className="mt-6 max-w-5xl font-display text-[clamp(3rem,13vw,6rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:text-8xl sm:leading-[0.85] sm:tracking-wider md:text-[9rem]">
+          <h1 className="mt-6 max-w-5xl font-display text-[clamp(2.75rem,12vw,6rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:text-8xl sm:leading-[0.85] sm:tracking-wider md:text-[9rem]">
             BOOK YOUR
             <br />
             <span className="text-gradient-fire">RIDE</span>
@@ -46,8 +46,8 @@ export default function ContactPage() {
           <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
             {/* Info card */}
             <div className="space-y-6">
-              <div className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-6 sm:p-8">
-                <h2 className="font-display text-[clamp(2rem,8vw,2.75rem)] leading-tight tracking-wide text-white [overflow-wrap:anywhere] md:text-5xl">
+              <div className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-5 sm:p-8">
+                <h2 className="font-display text-[clamp(1.75rem,7vw,2.75rem)] leading-tight tracking-wide text-white [overflow-wrap:anywhere] md:text-5xl">
                   Get in <span className="text-gradient-fire">touch</span>
                 </h2>
                 <p className="mt-3 text-white/60">
@@ -80,16 +80,16 @@ export default function ContactPage() {
                   ].map((c, i) => (
                     <div
                       key={i}
-                      className="flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-lava-400/50"
+                      className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-lava-400/50 sm:gap-4"
                     >
-                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-lava-500/20 text-lava-400 ring-1 ring-lava-500/40">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-lava-500/20 text-lava-400 ring-1 ring-lava-500/40">
                         <c.icon className="h-4 w-4" />
                       </div>
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/50">
                           {c.label}
                         </div>
-                        <div className="mt-1 text-white">{c.value}</div>
+                        <div className="mt-1 break-all text-white">{c.value}</div>
                       </div>
                     </div>
                   ))}
@@ -130,12 +130,12 @@ export default function ContactPage() {
 
             {/* Form */}
             <div>
-              <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-5 sm:p-6 md:p-10">
+              <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-4 sm:p-6 md:p-10">
                 <div>
                   <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
                     Quick booking
                   </span>
-                  <h2 className="mt-5 font-display text-[clamp(2rem,8vw,2.75rem)] leading-tight tracking-wide text-white [overflow-wrap:anywhere] md:text-5xl md:leading-none">
+                  <h2 className="mt-5 font-display text-[clamp(1.75rem,7vw,2.75rem)] leading-tight tracking-wide text-white [overflow-wrap:anywhere] md:text-5xl md:leading-none">
                     Send us the <span className="text-gradient-fire">details</span>
                   </h2>
                   <p className="mt-3 max-w-md text-white/60">

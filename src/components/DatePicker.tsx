@@ -42,7 +42,7 @@ export function DatePicker({ value, onChange, placeholder = "Pick a date" }: Pro
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 z-50 mt-2 origin-top rounded-2xl border border-white/15 bg-night-950/95 p-3 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.8)] backdrop-blur-xl sm:right-auto sm:min-w-[320px]">
+        <div className="absolute left-0 right-0 z-50 mt-2 flex origin-top justify-center overflow-hidden rounded-2xl border border-white/15 bg-night-950/95 p-2 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.8)] backdrop-blur-xl sm:right-auto sm:min-w-[320px] sm:p-3">
           <DayPicker
             mode="single"
             selected={selected}

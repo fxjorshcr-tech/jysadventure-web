@@ -96,8 +96,8 @@ export function TestimonialsCarousel() {
     <div className="relative">
       {/* Card */}
       <div className="relative mx-auto max-w-4xl">
-        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 via-night-950 to-night-900 p-8 md:p-14">
-          <Quote className="absolute -right-4 -top-4 h-40 w-40 text-lava-500/10" />
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 via-night-950 to-night-900 p-6 sm:p-8 md:p-14">
+          <Quote className="absolute -right-2 -top-2 h-20 w-20 text-lava-500/10 sm:-right-4 sm:-top-4 sm:h-28 sm:w-28 md:h-40 md:w-40" />
 
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
@@ -115,19 +115,19 @@ export function TestimonialsCarousel() {
                 ))}
               </div>
 
-              <p className="mt-6 font-display text-2xl leading-snug tracking-wide text-white md:text-4xl">
+              <p className="mt-5 font-display text-xl leading-snug tracking-wide text-white sm:mt-6 sm:text-2xl md:text-4xl">
                 &ldquo;{review.text}&rdquo;
               </p>
 
-              <div className="mt-8 flex items-center gap-4 border-t border-white/10 pt-6">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-lava-500 to-lava-700 font-display text-xl tracking-wider text-white">
+              <div className="mt-6 flex items-center gap-3 border-t border-white/10 pt-5 sm:mt-8 sm:gap-4 sm:pt-6">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-lava-500 to-lava-700 font-display text-base tracking-wider text-white sm:h-14 sm:w-14 sm:text-xl">
                   {review.avatar}
                 </div>
-                <div className="flex-1">
-                  <div className="font-display text-2xl tracking-wide text-white">
+                <div className="min-w-0 flex-1">
+                  <div className="truncate font-display text-lg tracking-wide text-white sm:text-2xl">
                     {review.name}
                   </div>
-                  <div className="text-xs uppercase tracking-[0.2em] text-white/50">
+                  <div className="mt-0.5 text-[10px] uppercase tracking-[0.2em] text-white/50 sm:text-xs">
                     {review.from} · rode {review.tour}
                   </div>
                 </div>
