@@ -107,7 +107,7 @@ export function BookingForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="relative rounded-3xl border border-white/10 bg-white/[0.02] p-6 backdrop-blur md:p-8"
+      className="relative rounded-3xl border border-white/10 bg-white/[0.02] p-4 backdrop-blur sm:p-6 md:p-8"
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
@@ -221,8 +221,8 @@ export function BookingForm({
         {/* Live total */}
         {currentTour && (
           <div className="sm:col-span-2">
-            <div className="flex items-end justify-between gap-4 rounded-2xl border border-lava-500/40 bg-lava-500/10 px-5 py-4">
-              <div>
+            <div className="flex items-end justify-between gap-3 rounded-2xl border border-lava-500/40 bg-lava-500/10 px-4 py-4 sm:gap-4 sm:px-5">
+              <div className="min-w-0 flex-1">
                 <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
                   Total
                 </div>
@@ -238,8 +238,8 @@ export function BookingForm({
                   )}
                 </div>
               </div>
-              <div className="text-right">
-                <div className="font-display text-3xl text-lava-400">
+              <div className="shrink-0 text-right">
+                <div className="font-display text-2xl text-lava-400 sm:text-3xl">
                   ${totalPrice}
                 </div>
                 <div className="text-[10px] uppercase tracking-widest text-white/50">
@@ -316,9 +316,9 @@ function QuantityRow({
   const dec = () => onChange(Math.max(0, value - 1));
   const inc = () => onChange(Math.min(30, value + 1));
   return (
-    <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/15 bg-white/[0.04] px-4 py-3">
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/[0.04] px-3 py-3 sm:gap-4 sm:px-4">
       <div className="min-w-0 flex-1">
-        <div className="font-display text-base tracking-wide text-white">
+        <div className="font-display text-sm tracking-wide text-white sm:text-base">
           {title}
         </div>
         <div className="mt-0.5 text-[11px] text-white/55">{subtitle}</div>
@@ -326,23 +326,23 @@ function QuantityRow({
           ${price} <span className="text-white/50">{priceLabel}</span>
         </div>
       </div>
-      <div className="flex shrink-0 items-center gap-2">
+      <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
         <button
           type="button"
           onClick={dec}
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-lava-400 hover:text-white disabled:opacity-40"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-lava-400 hover:text-white disabled:opacity-40 sm:h-9 sm:w-9"
           disabled={value <= 0}
           aria-label="Decrease"
         >
           <Minus className="h-4 w-4" />
         </button>
-        <span className="w-7 text-center font-display text-xl text-white">
+        <span className="w-6 text-center font-display text-xl text-white sm:w-7">
           {value}
         </span>
         <button
           type="button"
           onClick={inc}
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-lava-400 hover:text-white"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-lava-400 hover:text-white sm:h-9 sm:w-9"
           aria-label="Increase"
         >
           <Plus className="h-4 w-4" />

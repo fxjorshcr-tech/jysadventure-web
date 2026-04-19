@@ -136,7 +136,7 @@ export default function FAQsPage() {
           <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
             Got questions?
           </span>
-          <h1 className="mt-6 max-w-5xl font-display text-[clamp(3rem,13vw,6rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:text-8xl sm:leading-[0.85] sm:tracking-wider md:text-[9rem]">
+          <h1 className="mt-6 max-w-5xl font-display text-[clamp(2.75rem,12vw,6rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:text-8xl sm:leading-[0.85] sm:tracking-wider md:text-[9rem]">
             FAQ
             <span className="text-gradient-fire">S</span>
           </h1>
@@ -183,10 +183,10 @@ function FaqItem({ q, a }: { q: string; a: string }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-6 px-5 py-5 text-left sm:px-6"
+        className="flex w-full items-center justify-between gap-4 px-4 py-5 text-left sm:gap-6 sm:px-6"
         aria-expanded={open}
       >
-        <span className="font-display text-base tracking-wide text-white sm:text-lg">
+        <span className="font-display text-base leading-snug tracking-wide text-white sm:text-lg">
           {q}
         </span>
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white">
@@ -194,7 +194,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         </span>
       </button>
       {open && (
-        <div className="px-5 pb-5 text-sm text-white/70 sm:px-6 sm:pb-6">
+        <div className="px-4 pb-5 text-sm leading-relaxed text-white/70 sm:px-6 sm:pb-6">
           {a}
         </div>
       )}

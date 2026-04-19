@@ -14,23 +14,23 @@ export function Footer() {
 
       <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-5 sm:py-20 lg:px-8">
         {/* Simple CTA block (no form — forms live on /contact and tour pages) */}
-        <div className="mb-16 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 via-night-950 to-night-900 p-6 text-center shadow-[0_40px_100px_-30px_rgba(249,115,22,0.35)] sm:mb-20 sm:p-10 md:p-14">
+        <div className="mb-16 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 via-night-950 to-night-900 p-5 text-center shadow-[0_40px_100px_-30px_rgba(249,115,22,0.35)] sm:mb-20 sm:p-10 md:p-14">
           <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
             Ready to ride?
           </span>
-          <h2 className="mx-auto mt-5 max-w-3xl font-display text-[clamp(2.25rem,9vw,3.25rem)] leading-[0.95] tracking-wide text-white [overflow-wrap:anywhere] sm:tracking-wider md:text-6xl md:leading-none">
+          <h2 className="mx-auto mt-5 max-w-3xl font-display text-[clamp(2rem,8vw,3.25rem)] leading-[0.95] tracking-wide text-white [overflow-wrap:anywhere] sm:tracking-wider md:text-6xl md:leading-none">
             Let&apos;s <span className="text-gradient-fire">launch your</span>{" "}
             adventure
           </h2>
-          <p className="mx-auto mt-5 max-w-xl text-white/70">
+          <p className="mx-auto mt-5 max-w-xl text-sm text-white/70 sm:text-base">
             Pick your ride or reach out directly — we reply within the hour
             during office time.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/tours" className="btn-primary">
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
+            <Link href="/tours" className="btn-primary w-full sm:w-auto">
               <Flame className="h-4 w-4" /> Explore tours
             </Link>
-            <Link href="/contact" className="btn-ghost">
+            <Link href="/contact" className="btn-ghost w-full sm:w-auto">
               Contact us <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -57,15 +57,15 @@ export function Footer() {
 
             <div className="mt-6 space-y-2 text-sm text-white/70">
               <div className="flex items-center gap-3">
-                <Phone className="h-4 w-4 text-lava-400" />
+                <Phone className="h-4 w-4 shrink-0 text-lava-400" />
                 +506 0000 0000
               </div>
               <div className="flex items-center gap-3">
-                <Mail className="h-4 w-4 text-lava-400" />
-                reservations@jysadventuretours.com
+                <Mail className="h-4 w-4 shrink-0 text-lava-400" />
+                <span className="break-all">reservations@jysadventuretours.com</span>
               </div>
               <div className="flex items-center gap-3">
-                <MapPin className="h-4 w-4 text-lava-400" />
+                <MapPin className="h-4 w-4 shrink-0 text-lava-400" />
                 Sardinal, Guanacaste · Costa Rica
               </div>
             </div>
