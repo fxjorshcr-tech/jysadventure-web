@@ -27,7 +27,8 @@ const schema = z
     tour: z.string().min(1, "Choose a tour"),
     singles: z.coerce.number().min(0).max(20),
     doubles: z.coerce.number().min(0).max(20),
-    riders: z.coerce.number().min(0).max(30),
+    utvs: z.coerce.number().min(0).max(10),
+    riders: z.coerce.number().min(0).max(50),
     canopyOperator: z.string().optional(),
     bandanas: z.coerce.number().min(0).max(30),
     license: z.boolean().optional(),
@@ -45,17 +46,27 @@ const schema = z
         });
       }
     } else {
-      if ((d.riders ?? 0) <= 0) {
+      const utvs = d.utvs ?? 0;
+      const riders = d.riders ?? 0;
+      const maxSeats = tour.maxSeats ?? 5;
+      if (utvs <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Add at least 1 UTV",
+          path: ["utvs"],
+        });
+      }
+      if (riders <= 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Add at least 1 rider",
           path: ["riders"],
         });
       }
-      if (tour.maxSeats && (d.riders ?? 0) > tour.maxSeats) {
+      if (utvs > 0 && riders > utvs * maxSeats) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: `Max ${tour.maxSeats} riders per UTV`,
+          message: `Max ${maxSeats} riders per UTV (${utvs * maxSeats} total)`,
           path: ["riders"],
         });
       }
@@ -92,6 +103,7 @@ export function BookingForm({
     defaultValues: {
       singles: 0,
       doubles: 0,
+      utvs: lockedTour && lockedTour.pricingMode !== "per-variant" ? 1 : 0,
       riders: lockedTour && lockedTour.pricingMode !== "per-variant" ? 2 : 0,
       tour: preselectedSlug ?? "",
       canopyOperator: "",
@@ -104,6 +116,7 @@ export function BookingForm({
   const hasVariants = currentTour?.pricingMode === "per-variant";
   const singles = watch("singles") ?? 0;
   const doubles = watch("doubles") ?? 0;
+  const utvs = watch("utvs") ?? 0;
   const riders = watch("riders") ?? 0;
   const bandanas = watch("bandanas") ?? 0;
   const canopyOperator = watch("canopyOperator") ?? "";
@@ -115,6 +128,17 @@ export function BookingForm({
     }
   }, [currentTour, canopyOperator, setValue]);
 
+  // Clamp riders when utvs decreases
+  useEffect(() => {
+    const maxSeats = currentTour?.maxSeats ?? 5;
+    if (currentTour && currentTour.pricingMode !== "per-variant") {
+      const cap = utvs * maxSeats;
+      if (riders > cap) {
+        setValue("riders", cap, { shouldValidate: true });
+      }
+    }
+  }, [utvs, currentTour, riders, setValue]);
+
   const totalRiders = hasVariants ? singles + doubles * 2 : riders;
 
   let tourSubtotal = 0;
@@ -124,12 +148,10 @@ export function BookingForm({
         singles * currentTour.variants[0].price +
         doubles * currentTour.variants[1].price;
     } else if (currentTour.pricingMode === "flat-vehicle") {
-      tourSubtotal = riders > 0 ? currentTour.price : 0;
+      tourSubtotal = utvs * currentTour.price;
     } else if (currentTour.pricingMode === "flat-plus-per-person") {
       tourSubtotal =
-        riders > 0
-          ? currentTour.price + riders * (currentTour.perPersonAddon ?? 0)
-          : 0;
+        utvs * currentTour.price + riders * (currentTour.perPersonAddon ?? 0);
     }
   }
   const bandanaSubtotal = bandanas * BANDANA.price;
@@ -141,6 +163,7 @@ export function BookingForm({
     reset({
       singles: 0,
       doubles: 0,
+      utvs: lockedTour && lockedTour.pricingMode !== "per-variant" ? 1 : 0,
       riders: lockedTour && lockedTour.pricingMode !== "per-variant" ? 2 : 0,
       tour: preselectedSlug ?? "",
       canopyOperator: "",
@@ -238,7 +261,7 @@ export function BookingForm({
               />
               <QuantityRow
                 title={currentTour.variants![1].label}
-                subtitle={`2 riders per quad · passenger ${currentTour.minPassengerAge}+`}
+                subtitle={`2 riders per quad · passenger ${currentTour.minPassengerAge}+ yrs`}
                 price={currentTour.variants![1].price}
                 value={doubles}
                 onChange={(v) => setValue("doubles", v, { shouldValidate: true })}
@@ -250,35 +273,45 @@ export function BookingForm({
           </div>
         ) : (
           <div className="sm:col-span-2">
-            <label className={label}>Riders</label>
+            <label className={label}>
+              {currentTour ? "UTVs & riders" : "Riders"}
+            </label>
             {currentTour ? (
-              <QuantityRow
-                title="Total riders"
-                subtitle={
-                  currentTour.seatingNote ??
-                  (currentTour.maxSeats
-                    ? `Up to ${currentTour.maxSeats} per UTV · passenger ${currentTour.minPassengerAge}+`
-                    : "Group size")
-                }
-                price={
-                  currentTour.pricingMode === "flat-vehicle"
-                    ? currentTour.price
-                    : currentTour.perPersonAddon ?? 0
-                }
-                priceLabel={
-                  currentTour.pricingMode === "flat-vehicle"
-                    ? "per UTV"
-                    : "per person"
-                }
-                prefix={
-                  currentTour.pricingMode === "flat-plus-per-person"
-                    ? `$${currentTour.price} UTV +`
-                    : undefined
-                }
-                max={currentTour.maxSeats ?? 30}
-                value={riders}
-                onChange={(v) => setValue("riders", v, { shouldValidate: true })}
-              />
+              <div className="space-y-3">
+                <QuantityRow
+                  title="UTV vehicles"
+                  subtitle={`Each UTV seats up to ${currentTour.maxSeats ?? 5}. Book multiple UTVs for larger groups.`}
+                  price={currentTour.price}
+                  priceLabel="per UTV"
+                  max={10}
+                  value={utvs}
+                  onChange={(v) => setValue("utvs", v, { shouldValidate: true })}
+                />
+                <QuantityRow
+                  title="Total riders"
+                  subtitle={
+                    currentTour.pricingMode === "flat-plus-per-person"
+                      ? `Priced per person. Passenger ${currentTour.minPassengerAge}+ yrs.`
+                      : `Headcount across all UTVs. Passenger ${currentTour.minPassengerAge}+ yrs.`
+                  }
+                  price={
+                    currentTour.pricingMode === "flat-plus-per-person"
+                      ? currentTour.perPersonAddon ?? 0
+                      : 0
+                  }
+                  priceLabel={
+                    currentTour.pricingMode === "flat-plus-per-person"
+                      ? "per person"
+                      : "included"
+                  }
+                  max={Math.max(1, utvs) * (currentTour.maxSeats ?? 5)}
+                  value={riders}
+                  onChange={(v) => setValue("riders", v, { shouldValidate: true })}
+                />
+                {currentTour.seatingNote && (
+                  <p className="text-xs text-white/55">{currentTour.seatingNote}</p>
+                )}
+              </div>
             ) : (
               <QuantityRow
                 title="Total riders"
@@ -288,6 +321,9 @@ export function BookingForm({
                 value={riders}
                 onChange={(v) => setValue("riders", v, { shouldValidate: true })}
               />
+            )}
+            {errors.utvs && (
+              <p className={errorCls}>{errors.utvs.message}</p>
             )}
             {errors.riders && (
               <p className={errorCls}>{errors.riders.message}</p>
@@ -356,6 +392,11 @@ export function BookingForm({
                   Total
                 </div>
                 <div className="mt-0.5 text-sm text-white/75">
+                  {!hasVariants && utvs > 0 && (
+                    <span>
+                      {utvs} UTV{utvs > 1 ? "s" : ""} ·{" "}
+                    </span>
+                  )}
                   {totalRiders} {totalRiders === 1 ? "rider" : "riders"}
                   {hasVariants && (singles > 0 || doubles > 0) && (
                     <span className="text-white/55">

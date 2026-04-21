@@ -94,14 +94,14 @@ export default async function TourDetailPage({
                   <Stat
                     icon={Users}
                     label="Driver age"
-                    value={`${tour.minAge}+`}
+                    value={`${tour.minAge}+ yrs`}
                   />
                   <Stat
                     icon={Baby}
                     label="Passenger"
                     value={
                       tour.minPassengerAge !== null
-                        ? `${tour.minPassengerAge}+`
+                        ? `${tour.minPassengerAge}+ yrs`
                         : "Solo"
                     }
                   />
@@ -370,7 +370,7 @@ function Stat({
       <div className="mt-2 text-[10px] uppercase tracking-widest text-white/50">
         {label}
       </div>
-      <div className="mt-0.5 font-display text-lg leading-tight text-white [overflow-wrap:anywhere] sm:text-xl">
+      <div className="mt-0.5 font-display text-base leading-tight text-white sm:text-lg">
         {value}
       </div>
     </div>

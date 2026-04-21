@@ -27,7 +27,7 @@ export const CANOPY_OPERATORS: CanopyOperator[] = [
   },
   {
     slug: "skyline",
-    name: "Skyline",
+    name: "Skyline Canopy Tour",
     recommendedZone: "Tamarindo / Flamingo",
     description:
       "Recommended for guests coming from the Tamarindo or Flamingo area.",
