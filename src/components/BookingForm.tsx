@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -13,7 +13,10 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { TOURS, getTour } from "@/lib/tours";
+import { ADD_ONS } from "@/lib/info";
 import { DatePicker } from "./DatePicker";
+
+const BANDANA = ADD_ONS.find((a) => a.slug === "bandana")!;
 
 const schema = z
   .object({
@@ -24,24 +27,58 @@ const schema = z
     tour: z.string().min(1, "Choose a tour"),
     singles: z.coerce.number().min(0).max(20),
     doubles: z.coerce.number().min(0).max(20),
-    riders: z.coerce.number().min(0).max(30),
+    utvs: z.coerce.number().min(0).max(10),
+    riders: z.coerce.number().min(0).max(50),
+    canopyOperator: z.string().optional(),
+    bandanas: z.coerce.number().min(0).max(30),
     license: z.boolean().optional(),
     message: z.string().optional(),
   })
-  .refine(
-    (d) => {
-      const tour = getTour(d.tour);
-      if (!tour) return true;
-      if (tour.variants) {
-        return (d.singles ?? 0) + (d.doubles ?? 0) > 0;
+  .superRefine((d, ctx) => {
+    const tour = getTour(d.tour);
+    if (!tour) return;
+    if (tour.pricingMode === "per-variant") {
+      if ((d.singles ?? 0) + (d.doubles ?? 0) <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Add at least 1 rider or vehicle",
+          path: ["riders"],
+        });
       }
-      return (d.riders ?? 0) > 0;
-    },
-    {
-      message: "Add at least 1 rider or vehicle",
-      path: ["riders"],
+    } else {
+      const utvs = d.utvs ?? 0;
+      const riders = d.riders ?? 0;
+      const maxSeats = tour.maxSeats ?? 5;
+      if (utvs <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Add at least 1 UTV",
+          path: ["utvs"],
+        });
+      }
+      if (riders <= 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Add at least 1 rider",
+          path: ["riders"],
+        });
+      }
+      if (utvs > 0 && riders > utvs * maxSeats) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Max ${maxSeats} riders per UTV (${utvs * maxSeats} total)`,
+          path: ["riders"],
+        });
+      }
     }
-  );
+    if (tour.canopyOperators && !d.canopyOperator) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Choose a canopy operator",
+        path: ["canopyOperator"],
+      });
+    }
+  });
 
 type FormData = z.infer<typeof schema>;
 
@@ -66,25 +103,59 @@ export function BookingForm({
     defaultValues: {
       singles: 0,
       doubles: 0,
-      riders: lockedTour && !lockedTour.variants ? 2 : 0,
+      utvs: lockedTour && lockedTour.pricingMode !== "per-variant" ? 1 : 0,
+      riders: lockedTour && lockedTour.pricingMode !== "per-variant" ? 2 : 0,
       tour: preselectedSlug ?? "",
+      canopyOperator: "",
+      bandanas: 0,
     },
   });
 
   const currentSlug = watch("tour");
   const currentTour = getTour(currentSlug);
-  const hasVariants = !!currentTour?.variants;
+  const hasVariants = currentTour?.pricingMode === "per-variant";
   const singles = watch("singles") ?? 0;
   const doubles = watch("doubles") ?? 0;
+  const utvs = watch("utvs") ?? 0;
   const riders = watch("riders") ?? 0;
+  const bandanas = watch("bandanas") ?? 0;
+  const canopyOperator = watch("canopyOperator") ?? "";
+
+  // Reset operator when tour changes
+  useEffect(() => {
+    if (!currentTour?.canopyOperators && canopyOperator) {
+      setValue("canopyOperator", "");
+    }
+  }, [currentTour, canopyOperator, setValue]);
+
+  // Clamp riders when utvs decreases
+  useEffect(() => {
+    const maxSeats = currentTour?.maxSeats ?? 5;
+    if (currentTour && currentTour.pricingMode !== "per-variant") {
+      const cap = utvs * maxSeats;
+      if (riders > cap) {
+        setValue("riders", cap, { shouldValidate: true });
+      }
+    }
+  }, [utvs, currentTour, riders, setValue]);
 
   const totalRiders = hasVariants ? singles + doubles * 2 : riders;
-  const totalPrice = currentTour
-    ? hasVariants
-      ? singles * (currentTour.variants![0].price) +
-        doubles * (currentTour.variants![1].price)
-      : riders * currentTour.price
-    : 0;
+
+  let tourSubtotal = 0;
+  if (currentTour) {
+    if (hasVariants && currentTour.variants) {
+      tourSubtotal =
+        singles * currentTour.variants[0].price +
+        doubles * currentTour.variants[1].price;
+    } else if (currentTour.pricingMode === "flat-vehicle") {
+      tourSubtotal = utvs * currentTour.price;
+    } else if (currentTour.pricingMode === "flat-plus-per-person") {
+      tourSubtotal =
+        utvs * currentTour.price + riders * (currentTour.perPersonAddon ?? 0);
+    }
+  }
+  const bandanaSubtotal = bandanas * BANDANA.price;
+  const totalPrice = tourSubtotal + bandanaSubtotal;
 
   const onSubmit = async (_data: FormData) => {
     await new Promise((r) => setTimeout(r, 900));
@@ -92,8 +163,11 @@ export function BookingForm({
     reset({
       singles: 0,
       doubles: 0,
-      riders: lockedTour && !lockedTour.variants ? 2 : 0,
+      utvs: lockedTour && lockedTour.pricingMode !== "per-variant" ? 1 : 0,
+      riders: lockedTour && lockedTour.pricingMode !== "per-variant" ? 2 : 0,
       tour: preselectedSlug ?? "",
+      canopyOperator: "",
+      bandanas: 0,
     });
     setTimeout(() => setSent(false), 4500);
   };
@@ -174,21 +248,21 @@ export function BookingForm({
         )}
 
         {/* Quantity pickers depend on tour */}
-        {hasVariants ? (
+        {hasVariants && currentTour ? (
           <div className="sm:col-span-2">
             <label className={label}>How many of each?</label>
             <div className="space-y-3">
               <QuantityRow
-                title={currentTour!.variants![0].label}
+                title={currentTour.variants![0].label}
                 subtitle="1 rider per quad"
-                price={currentTour!.variants![0].price}
+                price={currentTour.variants![0].price}
                 value={singles}
                 onChange={(v) => setValue("singles", v, { shouldValidate: true })}
               />
               <QuantityRow
-                title={currentTour!.variants![1].label}
-                subtitle={`2 riders per quad · passenger ${currentTour!.minPassengerAge}+`}
-                price={currentTour!.variants![1].price}
+                title={currentTour.variants![1].label}
+                subtitle={`2 riders per quad · passenger ${currentTour.minPassengerAge}+ yrs`}
+                price={currentTour.variants![1].price}
                 value={doubles}
                 onChange={(v) => setValue("doubles", v, { shouldValidate: true })}
               />
@@ -199,24 +273,115 @@ export function BookingForm({
           </div>
         ) : (
           <div className="sm:col-span-2">
-            <label className={label}>Riders</label>
-            <QuantityRow
-              title="Total riders"
-              subtitle={
-                currentTour
-                  ? `Up to 4 per UTV · passenger ${currentTour.minPassengerAge}+`
-                  : "Group size"
-              }
-              price={currentTour?.price ?? 0}
-              priceLabel="per person"
-              value={riders}
-              onChange={(v) => setValue("riders", v, { shouldValidate: true })}
-            />
+            <label className={label}>
+              {currentTour ? "UTVs & riders" : "Riders"}
+            </label>
+            {currentTour ? (
+              <div className="space-y-3">
+                <QuantityRow
+                  title="UTV vehicles"
+                  subtitle={`Each UTV seats up to ${currentTour.maxSeats ?? 5}. Book multiple UTVs for larger groups.`}
+                  price={currentTour.price}
+                  priceLabel="per UTV"
+                  max={10}
+                  value={utvs}
+                  onChange={(v) => setValue("utvs", v, { shouldValidate: true })}
+                />
+                <QuantityRow
+                  title="Total riders"
+                  subtitle={
+                    currentTour.pricingMode === "flat-plus-per-person"
+                      ? `Priced per person. Passenger ${currentTour.minPassengerAge}+ yrs.`
+                      : `Headcount across all UTVs. Passenger ${currentTour.minPassengerAge}+ yrs.`
+                  }
+                  price={
+                    currentTour.pricingMode === "flat-plus-per-person"
+                      ? currentTour.perPersonAddon ?? 0
+                      : 0
+                  }
+                  priceLabel={
+                    currentTour.pricingMode === "flat-plus-per-person"
+                      ? "per person"
+                      : "included"
+                  }
+                  max={Math.max(1, utvs) * (currentTour.maxSeats ?? 5)}
+                  value={riders}
+                  onChange={(v) => setValue("riders", v, { shouldValidate: true })}
+                />
+                {currentTour.seatingNote && (
+                  <p className="text-xs text-white/55">{currentTour.seatingNote}</p>
+                )}
+              </div>
+            ) : (
+              <QuantityRow
+                title="Total riders"
+                subtitle="Group size"
+                price={0}
+                priceLabel="per person"
+                value={riders}
+                onChange={(v) => setValue("riders", v, { shouldValidate: true })}
+              />
+            )}
+            {errors.utvs && (
+              <p className={errorCls}>{errors.utvs.message}</p>
+            )}
             {errors.riders && (
               <p className={errorCls}>{errors.riders.message}</p>
             )}
           </div>
         )}
+
+        {/* Canopy operator picker */}
+        {currentTour?.canopyOperators && (
+          <div className="sm:col-span-2">
+            <label className={label}>Canopy operator</label>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {currentTour.canopyOperators.map((op) => {
+                const selected = canopyOperator === op.slug;
+                return (
+                  <button
+                    key={op.slug}
+                    type="button"
+                    onClick={() =>
+                      setValue("canopyOperator", op.slug, { shouldValidate: true })
+                    }
+                    className={`rounded-2xl border p-4 text-left transition ${
+                      selected
+                        ? "border-lava-400 bg-lava-500/10"
+                        : "border-white/15 bg-white/[0.03] hover:border-white/30"
+                    }`}
+                  >
+                    <div className="font-display text-base tracking-wide text-white">
+                      {op.name}
+                    </div>
+                    <div className="mt-0.5 text-[10px] uppercase tracking-widest text-lava-400">
+                      {op.recommendedZone}
+                    </div>
+                    <div className="mt-2 text-xs text-white/65">
+                      {op.description}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+            {errors.canopyOperator && (
+              <p className={errorCls}>{errors.canopyOperator.message}</p>
+            )}
+          </div>
+        )}
+
+        {/* Bandana add-on */}
+        <div className="sm:col-span-2">
+          <label className={label}>Add-on</label>
+          <QuantityRow
+            title={BANDANA.name}
+            subtitle={BANDANA.description}
+            price={BANDANA.price}
+            priceLabel="each"
+            value={bandanas}
+            onChange={(v) => setValue("bandanas", v, { shouldValidate: true })}
+          />
+        </div>
 
         {/* Live total */}
         {currentTour && (
@@ -227,6 +392,11 @@ export function BookingForm({
                   Total
                 </div>
                 <div className="mt-0.5 text-sm text-white/75">
+                  {!hasVariants && utvs > 0 && (
+                    <span>
+                      {utvs} UTV{utvs > 1 ? "s" : ""} ·{" "}
+                    </span>
+                  )}
                   {totalRiders} {totalRiders === 1 ? "rider" : "riders"}
                   {hasVariants && (singles > 0 || doubles > 0) && (
                     <span className="text-white/55">
@@ -236,6 +406,15 @@ export function BookingForm({
                       {doubles > 0 && `${doubles} Double`})
                     </span>
                   )}
+                  {bandanas > 0 && (
+                    <span className="text-white/55">
+                      {" "}
+                      · {bandanas} bandana{bandanas > 1 ? "s" : ""}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-1 text-[10px] uppercase tracking-widest text-white/45">
+                  Tax included
                 </div>
               </div>
               <div className="shrink-0 text-right">
@@ -303,6 +482,8 @@ function QuantityRow({
   subtitle,
   price,
   priceLabel = "per quad",
+  prefix,
+  max = 30,
   value,
   onChange,
 }: {
@@ -310,11 +491,13 @@ function QuantityRow({
   subtitle: string;
   price: number;
   priceLabel?: string;
+  prefix?: string;
+  max?: number;
   value: number;
   onChange: (n: number) => void;
 }) {
   const dec = () => onChange(Math.max(0, value - 1));
-  const inc = () => onChange(Math.min(30, value + 1));
+  const inc = () => onChange(Math.min(max, value + 1));
   return (
     <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/[0.04] px-3 py-3 sm:gap-4 sm:px-4">
       <div className="min-w-0 flex-1">
@@ -323,7 +506,8 @@ function QuantityRow({
         </div>
         <div className="mt-0.5 text-[11px] text-white/55">{subtitle}</div>
         <div className="mt-1 text-xs text-lava-400">
-          ${price} <span className="text-white/50">{priceLabel}</span>
+          {prefix && <span className="mr-1 text-white/70">{prefix}</span>}${price}{" "}
+          <span className="text-white/50">{priceLabel}</span>
         </div>
       </div>
       <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
@@ -343,6 +527,7 @@ function QuantityRow({
           type="button"
           onClick={inc}
           className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-lava-400 hover:text-white sm:h-9 sm:w-9"
+          disabled={value >= max}
           aria-label="Increase"
         >
           <Plus className="h-4 w-4" />

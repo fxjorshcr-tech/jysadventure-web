@@ -86,7 +86,11 @@ const FAQ_GROUPS: {
       },
       {
         q: "Do you offer hotel pickup?",
-        a: "Yes, we provide pickup and drop-off from hotels in El Coco, Playa Hermosa, Playa Panamá and nearby areas. Contact us for rates to other locations.",
+        a: "Yes. Round-trip transport is complimentary from Hotel RIU. Rates from El Coco, Playa Hermosa and Playa Panamá start at $60 for up to 5 riders; Andaz and Planet Hollywood at $130; Four Seasons and Ritz at $150. See the full zone list on the Tours page. All prices include tax.",
+      },
+      {
+        q: "What time do tours depart?",
+        a: "We run three daily departures: 8:00 AM, 11:00 AM and 2:00 PM. Our schedule is flexible — contact us if you need a different start time and we'll do our best to fit you in.",
       },
       {
         q: "Are your guides bilingual?",
@@ -107,7 +111,19 @@ const FAQ_GROUPS: {
       },
       {
         q: "What does the ATV + Canopy combo include?",
-        a: "The ATV ride followed by a zipline canopy tour above the rainforest. Full harness, helmet and certified canopy guides are included.",
+        a: "The ATV ride followed by a zipline canopy tour above the rainforest. You can choose between two canopy operators at booking: Congo Trail (recommended if you're staying in Playa Hermosa or El Coco) or Skyline (recommended if you're coming from the Tamarindo / Flamingo area). Full harness, helmet and certified canopy guides are included.",
+      },
+      {
+        q: "How does UTV combo pricing work?",
+        a: "The UTV is priced per vehicle ($339, tax included, up to 5 riders). On combo tours, each rider adds the horseback portion ($45/person) or the canopy portion ($40/person). We recommend a max of 4 adults in the UTV for extra comfort.",
+      },
+      {
+        q: "Does the tour include safety gear?",
+        a: "Yes — every tour includes helmet, goggles and bottled water. Baby seats are available on request. Guests with mobility needs can ride in the rear of the UTV (max 2–3 passengers in that configuration).",
+      },
+      {
+        q: "What are the seasonal routes?",
+        a: "In the green season (May–November) we ride to the Las Pilas waterfall and local villages. In the dry season (December–April) we cross rivers and visit Guanacaste villages. Both routes showcase the best of what's flowing that time of year.",
       },
       {
         q: "Can kids do the Cabalgata or Canopy combo?",
