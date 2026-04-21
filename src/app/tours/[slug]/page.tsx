@@ -141,7 +141,7 @@ export default async function TourDetailPage({
                               ${v.price}
                             </div>
                             <div className="text-[10px] uppercase tracking-widest text-white/50">
-                              per quad
+                              per quad · tax incl.
                             </div>
                           </div>
                         </div>
@@ -155,6 +155,92 @@ export default async function TourDetailPage({
                     Mix Singles and Doubles in the same group — choose how many
                     of each in the booking form.
                   </p>
+                </div>
+              )}
+
+              {/* UTV pricing */}
+              {!tour.variants && tour.pricingMode !== "per-variant" && (
+                <div className="mt-10">
+                  <h3 className="font-display text-xl tracking-wide text-white">
+                    Pricing
+                  </h3>
+                  <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="font-display text-lg tracking-wide text-white">
+                          UTV vehicle
+                        </div>
+                        <div className="mt-1 text-[11px] uppercase tracking-widest text-white/50">
+                          Up to {tour.maxSeats ?? 5} riders
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-display text-2xl text-lava-400">
+                          ${tour.price}
+                        </div>
+                        <div className="text-[10px] uppercase tracking-widest text-white/50">
+                          per UTV · tax incl.
+                        </div>
+                      </div>
+                    </div>
+                    {tour.pricingMode === "flat-plus-per-person" &&
+                      tour.perPersonAddon && (
+                        <div className="mt-4 flex items-start justify-between gap-3 border-t border-white/10 pt-4">
+                          <div>
+                            <div className="font-display text-base tracking-wide text-white">
+                              + {tour.addon} per rider
+                            </div>
+                            <div className="mt-1 text-[11px] uppercase tracking-widest text-white/50">
+                              Added for each person in the UTV
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="font-display text-xl text-lava-400">
+                              ${tour.perPersonAddon}
+                            </div>
+                            <div className="text-[10px] uppercase tracking-widest text-white/50">
+                              per person
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    {tour.seatingNote && (
+                      <p className="mt-4 text-xs text-white/55">
+                        {tour.seatingNote}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Canopy operators */}
+              {tour.canopyOperators && (
+                <div className="mt-10">
+                  <h3 className="font-display text-xl tracking-wide text-white">
+                    Choose your <span className="text-gradient-fire">canopy</span>
+                  </h3>
+                  <p className="mt-2 text-sm text-white/65">
+                    Two canopy operators — we recommend the one closest to where
+                    you&apos;re staying.
+                  </p>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    {tour.canopyOperators.map((op) => (
+                      <div
+                        key={op.slug}
+                        className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+                      >
+                        <div className="font-display text-lg tracking-wide text-white">
+                          {op.name}
+                        </div>
+                        <div className="mt-1 text-[11px] uppercase tracking-widest text-lava-400">
+                          {op.recommendedZone}
+                        </div>
+                        <p className="mt-3 text-sm text-white/65">
+                          {op.description}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 

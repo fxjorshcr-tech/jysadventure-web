@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { IMAGES } from "@/lib/images";
 import { BookingForm } from "@/components/BookingForm";
-import { Mail, Phone, MapPin, Clock, Instagram, Facebook, Youtube } from "lucide-react";
+import { CONTACT, SCHEDULE, SOCIAL_LINKS } from "@/lib/info";
+import { Mail, Phone, MapPin, Clock, Instagram, Facebook, Star } from "lucide-react";
 
 export const metadata = {
   title: "Contact — JYS Adventure Tour",
@@ -60,22 +61,22 @@ export default function ContactPage() {
                     {
                       icon: Phone,
                       label: "Phone / WhatsApp",
-                      value: "+506 0000 0000",
+                      value: CONTACT.phone,
                     },
                     {
                       icon: Mail,
                       label: "Reservations",
-                      value: "reservations@jysadventuretours.com",
+                      value: CONTACT.email,
                     },
                     {
                       icon: MapPin,
                       label: "Location",
-                      value: "Sardinal, Guanacaste · Costa Rica",
+                      value: CONTACT.location,
                     },
                     {
                       icon: Clock,
-                      label: "Hours",
-                      value: "Every day · 7AM — 5PM",
+                      label: "Departures",
+                      value: `Daily · ${SCHEDULE.departures.join(" · ")}`,
                     },
                   ].map((c, i) => (
                     <div
@@ -95,11 +96,22 @@ export default function ContactPage() {
                   ))}
                 </div>
 
+                <div className="mt-6 text-[10px] font-bold uppercase tracking-[0.25em] text-white/50">
+                  Flexible — contact us for other start times
+                </div>
+
                 <div className="mt-8 flex gap-3">
-                  {[Instagram, Facebook, Youtube].map((Icon, i) => (
+                  {[
+                    { Icon: Instagram, href: SOCIAL_LINKS.instagram, label: "Instagram" },
+                    { Icon: Facebook, href: SOCIAL_LINKS.facebook, label: "Facebook" },
+                    { Icon: Star, href: SOCIAL_LINKS.tripadvisor, label: "TripAdvisor" },
+                  ].map(({ Icon, href, label }) => (
                     <a
-                      key={i}
-                      href="#"
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
                       className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/70 transition hover:border-lava-400 hover:bg-lava-500/20 hover:text-white"
                     >
                       <Icon className="h-4 w-4" />

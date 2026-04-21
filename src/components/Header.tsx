@@ -3,9 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Menu, X, Flame, Instagram, Facebook, Youtube } from "lucide-react";
+import { Menu, X, Flame, Instagram, Facebook, Star } from "lucide-react";
 import { IMAGES } from "@/lib/images";
+import { SOCIAL_LINKS } from "@/lib/info";
 import { cn } from "@/lib/utils";
+
+const HEADER_SOCIALS = [
+  { Icon: Instagram, href: SOCIAL_LINKS.instagram, label: "Instagram" },
+  { Icon: Facebook, href: SOCIAL_LINKS.facebook, label: "Facebook" },
+  { Icon: Star, href: SOCIAL_LINKS.tripadvisor, label: "TripAdvisor" },
+];
 
 const NAV = [
   { href: "/", label: "Home" },
@@ -74,11 +81,13 @@ export function Header() {
 
         <div className="hidden items-center gap-3 lg:flex">
           <div className="flex items-center gap-1.5 border-r border-white/15 pr-3">
-            {[Instagram, Facebook, Youtube].map((Icon, i) => (
+            {HEADER_SOCIALS.map(({ Icon, href, label }) => (
               <a
-                key={i}
-                href="#"
-                aria-label="Social"
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition hover:border-lava-400 hover:bg-lava-500/20 hover:text-white"
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -128,11 +137,13 @@ export function Header() {
               <Flame className="h-4 w-4" /> Book Now
             </Link>
             <div className="mt-6 flex items-center justify-center gap-3">
-              {[Instagram, Facebook, Youtube].map((Icon, i) => (
+              {HEADER_SOCIALS.map(({ Icon, href, label }) => (
                 <a
-                  key={i}
-                  href="#"
-                  aria-label="Social"
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
                   className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-lava-400 hover:bg-lava-500/20 hover:text-white"
                 >
                   <Icon className="h-4 w-4" />

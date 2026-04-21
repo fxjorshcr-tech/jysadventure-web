@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Instagram, Facebook, Mail, Phone, MapPin, Youtube, Flame, ArrowRight } from "lucide-react";
+import { Instagram, Facebook, Mail, Phone, MapPin, Star, Flame, ArrowRight } from "lucide-react";
 import { IMAGES } from "@/lib/images";
+import { CONTACT, SOCIAL_LINKS } from "@/lib/info";
 
 export function Footer() {
   return (
@@ -58,30 +59,33 @@ export function Footer() {
             <div className="mt-6 space-y-2 text-sm text-white/70">
               <div className="flex items-center gap-3">
                 <Phone className="h-4 w-4 shrink-0 text-lava-400" />
-                +506 0000 0000
+                {CONTACT.phone}
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="h-4 w-4 shrink-0 text-lava-400" />
-                <span className="break-all">reservations@jysadventuretours.com</span>
+                <span className="break-all">{CONTACT.email}</span>
               </div>
               <div className="flex items-center gap-3">
                 <MapPin className="h-4 w-4 shrink-0 text-lava-400" />
-                Sardinal, Guanacaste · Costa Rica
+                {CONTACT.location}
               </div>
             </div>
 
             <div className="mt-6 flex gap-3">
               {[
-                { icon: Instagram, href: "#" },
-                { icon: Facebook, href: "#" },
-                { icon: Youtube, href: "#" },
-              ].map((s, i) => (
+                { Icon: Instagram, href: SOCIAL_LINKS.instagram, label: "Instagram" },
+                { Icon: Facebook, href: SOCIAL_LINKS.facebook, label: "Facebook" },
+                { Icon: Star, href: SOCIAL_LINKS.tripadvisor, label: "TripAdvisor" },
+              ].map(({ Icon, href, label }) => (
                 <a
-                  key={i}
-                  href={s.href}
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
                   className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/70 transition hover:border-lava-400 hover:bg-lava-500/20 hover:text-white"
                 >
-                  <s.icon className="h-4 w-4" />
+                  <Icon className="h-4 w-4" />
                 </a>
               ))}
             </div>

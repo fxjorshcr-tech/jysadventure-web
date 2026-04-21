@@ -69,7 +69,13 @@ export function TourCard({ tour, index = 0 }: { tour: Tour; index?: number }) {
                 </div>
                 <div className="font-display text-2xl text-lava-400 sm:text-3xl">
                   ${tour.price}
-                  <span className="ml-1 text-xs text-white/50">/ person</span>
+                  <span className="ml-1 text-xs text-white/50">
+                    {tour.pricingMode === "flat-vehicle"
+                      ? "/ UTV"
+                      : tour.pricingMode === "flat-plus-per-person"
+                        ? "+ per person"
+                        : "/ person"}
+                  </span>
                 </div>
               </div>
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white transition group-hover:border-lava-400 group-hover:bg-lava-500">
