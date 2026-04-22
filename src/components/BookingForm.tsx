@@ -13,10 +13,11 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { TOURS, getTour } from "@/lib/tours";
-import { ADD_ONS } from "@/lib/info";
+import { ADD_ONS, SCHEDULE, TRANSPORT_ZONES } from "@/lib/info";
 import { DatePicker } from "./DatePicker";
 
 const BANDANA = ADD_ONS.find((a) => a.slug === "bandana")!;
+const DEPARTURE_OPTIONS = [...SCHEDULE.departures, "Other — we'll confirm"];
 
 const schema = z
   .object({
@@ -24,6 +25,7 @@ const schema = z
     email: z.string().email("Invalid email address"),
     phone: z.string().optional(),
     date: z.string().min(1, "Pick a date"),
+    departure: z.string().min(1, "Pick a departure time"),
     tour: z.string().min(1, "Choose a tour"),
     singles: z.coerce.number().min(0).max(20),
     doubles: z.coerce.number().min(0).max(20),
@@ -31,6 +33,8 @@ const schema = z
     riders: z.coerce.number().min(0).max(50),
     canopyOperator: z.string().optional(),
     bandanas: z.coerce.number().min(0).max(30),
+    pickupZone: z.string().optional(),
+    pickupOther: z.string().optional(),
     license: z.boolean().optional(),
     message: z.string().optional(),
   })
@@ -56,10 +60,10 @@ const schema = z
           path: ["utvs"],
         });
       }
-      if (riders <= 0) {
+      if (riders < utvs) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Add at least 1 rider",
+          message: "At least 1 rider per UTV",
           path: ["riders"],
         });
       }
@@ -76,6 +80,13 @@ const schema = z
         code: z.ZodIssueCode.custom,
         message: "Choose a canopy operator",
         path: ["canopyOperator"],
+      });
+    }
+    if (d.pickupZone === "other" && !d.pickupOther?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Tell us your pickup hotel/location",
+        path: ["pickupOther"],
       });
     }
   });
@@ -106,8 +117,11 @@ export function BookingForm({
       utvs: lockedTour && lockedTour.pricingMode !== "per-variant" ? 1 : 0,
       riders: lockedTour && lockedTour.pricingMode !== "per-variant" ? 2 : 0,
       tour: preselectedSlug ?? "",
+      departure: "",
       canopyOperator: "",
       bandanas: 0,
+      pickupZone: "",
+      pickupOther: "",
     },
   });
 
@@ -120,6 +134,7 @@ export function BookingForm({
   const riders = watch("riders") ?? 0;
   const bandanas = watch("bandanas") ?? 0;
   const canopyOperator = watch("canopyOperator") ?? "";
+  const pickupZone = watch("pickupZone") ?? "";
 
   // Reset operator when tour changes
   useEffect(() => {
@@ -128,13 +143,15 @@ export function BookingForm({
     }
   }, [currentTour, canopyOperator, setValue]);
 
-  // Clamp riders when utvs decreases
+  // Keep riders within [utvs, utvs*maxSeats]
   useEffect(() => {
     const maxSeats = currentTour?.maxSeats ?? 5;
     if (currentTour && currentTour.pricingMode !== "per-variant") {
       const cap = utvs * maxSeats;
       if (riders > cap) {
         setValue("riders", cap, { shouldValidate: true });
+      } else if (riders < utvs) {
+        setValue("riders", utvs, { shouldValidate: true });
       }
     }
   }, [utvs, currentTour, riders, setValue]);
@@ -166,8 +183,11 @@ export function BookingForm({
       utvs: lockedTour && lockedTour.pricingMode !== "per-variant" ? 1 : 0,
       riders: lockedTour && lockedTour.pricingMode !== "per-variant" ? 2 : 0,
       tour: preselectedSlug ?? "",
+      departure: "",
       canopyOperator: "",
       bandanas: 0,
+      pickupZone: "",
+      pickupOther: "",
     });
     setTimeout(() => setSent(false), 4500);
   };
@@ -219,6 +239,34 @@ export function BookingForm({
             )}
           />
           {errors.date && <p className={errorCls}>{errors.date.message}</p>}
+        </div>
+
+        <div className="sm:col-span-2">
+          <label className={label}>Departure time</label>
+          <div className="flex flex-wrap gap-2">
+            {DEPARTURE_OPTIONS.map((t) => {
+              const selected = watch("departure") === t;
+              return (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() =>
+                    setValue("departure", t, { shouldValidate: true })
+                  }
+                  className={`rounded-full border px-4 py-2 text-sm transition ${
+                    selected
+                      ? "border-lava-400 bg-lava-500/15 text-white"
+                      : "border-white/15 bg-white/[0.03] text-white/75 hover:border-white/30"
+                  }`}
+                >
+                  {t}
+                </button>
+              );
+            })}
+          </div>
+          {errors.departure && (
+            <p className={errorCls}>{errors.departure.message}</p>
+          )}
         </div>
 
         {/* Tour: hidden when already on a tour page, dropdown otherwise */}
@@ -383,48 +431,157 @@ export function BookingForm({
           />
         </div>
 
+        {/* Pickup / transport */}
+        <div className="sm:col-span-2">
+          <label className={label}>Need hotel pickup?</label>
+          <div className="relative">
+            <select
+              {...register("pickupZone")}
+              className={`${field} appearance-none pr-11`}
+            >
+              <option value="" className="bg-night-900">
+                No thanks — I&apos;ll meet at base camp
+              </option>
+              {TRANSPORT_ZONES.map((z) => (
+                <option key={z.slug} value={z.slug} className="bg-night-900">
+                  {z.name}
+                  {z.basePrice === 0
+                    ? " — free"
+                    : ` — from $${z.basePrice}`}
+                </option>
+              ))}
+              <option value="other" className="bg-night-900">
+                Other location / hotel (we&apos;ll confirm rate)
+              </option>
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-lava-400" />
+          </div>
+          {pickupZone === "other" && (
+            <div className="mt-3">
+              <input
+                {...register("pickupOther")}
+                placeholder="Hotel name or location"
+                className={field}
+              />
+              {errors.pickupOther && (
+                <p className={errorCls}>{errors.pickupOther.message}</p>
+              )}
+            </div>
+          )}
+          {pickupZone && pickupZone !== "" && (
+            <p className="mt-3 text-xs text-white/60">
+              Transport rates cover 1–5 riders with an extra-rider surcharge
+              above that. Shown in the booking summary is the tour total only —
+              our team will confirm the exact transport cost for your hotel
+              when we reply to your booking.
+            </p>
+          )}
+        </div>
+
         {/* Live total */}
         {currentTour && (
           <div className="sm:col-span-2">
-            <div className="flex items-end justify-between gap-3 rounded-2xl border border-lava-500/40 bg-lava-500/10 px-4 py-4 sm:gap-4 sm:px-5">
-              <div className="min-w-0 flex-1">
-                <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
-                  Total
+            <div className="rounded-2xl border border-lava-500/40 bg-lava-500/10 px-4 py-4 sm:px-5">
+              <div className="flex items-end justify-between gap-3 sm:gap-4">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
+                    Total
+                  </div>
+                  <div className="mt-0.5 text-sm text-white/75">
+                    {!hasVariants && utvs > 0 && (
+                      <span>
+                        {utvs} UTV{utvs > 1 ? "s" : ""} ·{" "}
+                      </span>
+                    )}
+                    {totalRiders} {totalRiders === 1 ? "rider" : "riders"}
+                    {hasVariants && (singles > 0 || doubles > 0) && (
+                      <span className="text-white/55">
+                        {" "}
+                        ({singles > 0 && `${singles} Single`}
+                        {singles > 0 && doubles > 0 && " + "}
+                        {doubles > 0 && `${doubles} Double`})
+                      </span>
+                    )}
+                    {bandanas > 0 && (
+                      <span className="text-white/55">
+                        {" "}
+                        · {bandanas} bandana{bandanas > 1 ? "s" : ""}
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-1 text-[10px] uppercase tracking-widest text-white/45">
+                    Tax included · transport not included
+                  </div>
                 </div>
-                <div className="mt-0.5 text-sm text-white/75">
+                <div className="shrink-0 text-right">
+                  <div className="font-display text-2xl text-lava-400 sm:text-3xl">
+                    ${totalPrice}
+                  </div>
+                  <div className="text-[10px] uppercase tracking-widest text-white/50">
+                    estimated
+                  </div>
+                </div>
+              </div>
+
+              {/* Breakdown */}
+              {totalPrice > 0 && (
+                <ul className="mt-3 space-y-1 border-t border-white/10 pt-3 text-xs text-white/60">
+                  {hasVariants && currentTour.variants && (
+                    <>
+                      {singles > 0 && (
+                        <li className="flex justify-between gap-3">
+                          <span>
+                            {singles} × {currentTour.variants[0].label}
+                          </span>
+                          <span>
+                            ${singles * currentTour.variants[0].price}
+                          </span>
+                        </li>
+                      )}
+                      {doubles > 0 && (
+                        <li className="flex justify-between gap-3">
+                          <span>
+                            {doubles} × {currentTour.variants[1].label}
+                          </span>
+                          <span>
+                            ${doubles * currentTour.variants[1].price}
+                          </span>
+                        </li>
+                      )}
+                    </>
+                  )}
                   {!hasVariants && utvs > 0 && (
-                    <span>
-                      {utvs} UTV{utvs > 1 ? "s" : ""} ·{" "}
-                    </span>
+                    <li className="flex justify-between gap-3">
+                      <span>
+                        {utvs} × UTV (${currentTour.price})
+                      </span>
+                      <span>${utvs * currentTour.price}</span>
+                    </li>
                   )}
-                  {totalRiders} {totalRiders === 1 ? "rider" : "riders"}
-                  {hasVariants && (singles > 0 || doubles > 0) && (
-                    <span className="text-white/55">
-                      {" "}
-                      ({singles > 0 && `${singles} Single`}
-                      {singles > 0 && doubles > 0 && " + "}
-                      {doubles > 0 && `${doubles} Double`})
-                    </span>
-                  )}
+                  {!hasVariants &&
+                    currentTour.pricingMode === "flat-plus-per-person" &&
+                    riders > 0 &&
+                    (currentTour.perPersonAddon ?? 0) > 0 && (
+                      <li className="flex justify-between gap-3">
+                        <span>
+                          {riders} × {currentTour.addon} (${currentTour.perPersonAddon}
+                          /person)
+                        </span>
+                        <span>
+                          ${riders * (currentTour.perPersonAddon ?? 0)}
+                        </span>
+                      </li>
+                    )}
                   {bandanas > 0 && (
-                    <span className="text-white/55">
-                      {" "}
-                      · {bandanas} bandana{bandanas > 1 ? "s" : ""}
-                    </span>
+                    <li className="flex justify-between gap-3">
+                      <span>
+                        {bandanas} × Bandana (${BANDANA.price})
+                      </span>
+                      <span>${bandanaSubtotal}</span>
+                    </li>
                   )}
-                </div>
-                <div className="mt-1 text-[10px] uppercase tracking-widest text-white/45">
-                  Tax included
-                </div>
-              </div>
-              <div className="shrink-0 text-right">
-                <div className="font-display text-2xl text-lava-400 sm:text-3xl">
-                  ${totalPrice}
-                </div>
-                <div className="text-[10px] uppercase tracking-widest text-white/50">
-                  estimated
-                </div>
-              </div>
+                </ul>
+              )}
             </div>
           </div>
         )}
