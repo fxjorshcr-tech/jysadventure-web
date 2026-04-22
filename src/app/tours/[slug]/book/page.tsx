@@ -55,7 +55,7 @@ export default async function BookTourPage({
             Booking
           </span>
           <h1 className="mt-5 max-w-3xl font-display text-[clamp(2rem,8vw,3.75rem)] leading-[0.95] tracking-wide text-white md:text-6xl">
-            Book <span className="text-gradient-fire">{tour.title}</span>
+            Book your <span className="text-gradient-fire">{tour.title}</span>
           </h1>
           <p className="mt-4 max-w-2xl text-white/70 md:text-lg">
             Fill in the details and we&apos;ll review your booking on the next

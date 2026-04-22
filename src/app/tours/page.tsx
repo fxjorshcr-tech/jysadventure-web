@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { BASE_TOURS, COMBO_TOURS } from "@/lib/tours";
+import Link from "next/link";
+import { BASE_TOURS, COMBO_TOURS, TOURS } from "@/lib/tours";
 import {
   TRANSPORT_ZONES,
   TRANSPORT_INFO,
@@ -8,7 +9,7 @@ import {
   SCHEDULE,
 } from "@/lib/info";
 import { IMAGES } from "@/lib/images";
-import { TourCard } from "@/components/TourCard";
+import { FeaturedTourCard, ComboTourCard } from "@/components/TourCard";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Marquee } from "@/components/Marquee";
 import {
@@ -20,7 +21,11 @@ import {
   Sun,
   Clock,
   Plus,
+  Flame,
 } from "lucide-react";
+
+const ATV_COMBOS = COMBO_TOURS.filter((t) => t.vehicle === "ATV");
+const UTV_COMBOS = COMBO_TOURS.filter((t) => t.vehicle === "UTV");
 
 export const metadata = {
   title: "Tours — JYS Adventure Tour",
@@ -73,11 +78,31 @@ export default function ToursPage() {
                 Base <span className="text-gradient-fire">tours</span>
               </>
             }
-            subtitle="Our three core off-road experiences in Guanacaste. Perfect on their own or as the foundation for a combo."
+            subtitle="Three core off-road experiences in Guanacaste. Ride them on their own or pair with Cabalgata or Canopy for a full half-day."
           />
-          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+          {/* Quick compare strip */}
+          <div className="mt-10 grid gap-3 sm:grid-cols-3">
+            <QuickCompare
+              label="ATV Single"
+              price="$105"
+              detail="1 rider · 18+ driver"
+            />
+            <QuickCompare
+              label="ATV Double"
+              price="$120"
+              detail="2 riders · passenger 5+"
+            />
+            <QuickCompare
+              label="UTV"
+              price="$339"
+              detail="Up to 5 riders · kids 2+"
+            />
+          </div>
+
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {BASE_TOURS.map((t, i) => (
-              <TourCard key={t.slug} tour={t} index={i} />
+              <FeaturedTourCard key={t.slug} tour={t} index={i} />
             ))}
           </div>
         </div>
@@ -94,11 +119,118 @@ export default function ToursPage() {
                 Combo <span className="text-gradient-fire">tours</span>
               </>
             }
-            subtitle="Mix any of our off-road rides with a horseback Cabalgata or a zipline Canopy for an unforgettable half-day."
+            subtitle="Pair any ride with a horseback Cabalgata or a zipline Canopy. Canopy combos let you pick between Congo Trail and Skyline depending on where you're staying."
           />
-          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {COMBO_TOURS.map((t, i) => (
-              <TourCard key={t.slug} tour={t} index={i} />
+
+          <div className="mt-14 space-y-14">
+            <div>
+              <div className="flex items-end justify-between gap-4">
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/50">
+                    ATV combos
+                  </div>
+                  <h3 className="mt-2 font-display text-3xl tracking-wide text-white md:text-4xl">
+                    Ride solo or 2-up, then <span className="text-gradient-fire">level up</span>
+                  </h3>
+                </div>
+              </div>
+              <div className="mt-8 grid gap-6 md:grid-cols-2">
+                {ATV_COMBOS.map((t, i) => (
+                  <ComboTourCard key={t.slug} tour={t} index={i} />
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-end justify-between gap-4">
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/50">
+                    UTV combos
+                  </div>
+                  <h3 className="mt-2 font-display text-3xl tracking-wide text-white md:text-4xl">
+                    Up to 5 in the UTV, <span className="text-gradient-fire">plus</span> the extra
+                  </h3>
+                </div>
+              </div>
+              <div className="mt-8 grid gap-6 md:grid-cols-2">
+                {UTV_COMBOS.map((t, i) => (
+                  <ComboTourCard key={t.slug} tour={t} index={i} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Compare table */}
+      <section className="relative bg-night-950 py-24 md:py-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
+          <SectionHeader
+            kicker="Side by side"
+            title={
+              <>
+                Every ride at a <span className="text-gradient-fire">glance</span>
+              </>
+            }
+            subtitle="Quick look at all seven tours — price, duration, difficulty and the minimum passenger age."
+          />
+
+          <div className="mt-14 overflow-hidden rounded-3xl border border-white/10 bg-night-900/50">
+            <div className="hidden grid-cols-[1.5fr_0.8fr_0.6fr_0.6fr_0.8fr_auto] gap-4 border-b border-white/10 px-6 py-4 text-[10px] font-bold uppercase tracking-[0.25em] text-white/50 md:grid">
+              <div>Tour</div>
+              <div>Type</div>
+              <div>Duration</div>
+              <div>Level</div>
+              <div>From</div>
+              <div></div>
+            </div>
+            {TOURS.map((t) => (
+              <div
+                key={t.slug}
+                className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 border-b border-white/5 px-5 py-4 last:border-0 md:grid-cols-[1.5fr_0.8fr_0.6fr_0.6fr_0.8fr_auto] md:items-center md:px-6"
+              >
+                <div className="min-w-0">
+                  <div className="font-display text-base tracking-wide text-white sm:text-lg">
+                    {t.title}
+                  </div>
+                  <div className="mt-0.5 text-xs text-white/55 md:hidden">
+                    {t.vehicle}
+                    {t.addon ? ` + ${t.addon}` : ""} · {t.duration} · {t.difficulty}
+                  </div>
+                </div>
+                <div className="hidden text-sm text-white/75 md:block">
+                  {t.vehicle}
+                  {t.addon && (
+                    <span className="text-white/50"> + {t.addon}</span>
+                  )}
+                </div>
+                <div className="hidden text-sm text-white/75 md:block">
+                  {t.duration}
+                </div>
+                <div className="hidden text-sm text-white/75 md:block">
+                  {t.difficulty}
+                </div>
+                <div className="row-start-2 col-span-2 flex items-center gap-3 md:row-auto md:col-auto md:block">
+                  <span className="font-display text-lg text-lava-400">
+                    ${t.price}
+                  </span>
+                  <span className="text-[10px] uppercase tracking-widest text-white/45">
+                    {t.pricingMode === "flat-vehicle"
+                      ? "/ UTV"
+                      : t.pricingMode === "flat-plus-per-person"
+                        ? "+/person"
+                        : "/ person"}
+                  </span>
+                </div>
+                <div className="col-start-2 row-start-1 flex shrink-0 items-center justify-end md:col-auto md:row-auto">
+                  <Link
+                    href={`/tours/${t.slug}/book`}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-lava-500 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white transition hover:bg-lava-400 sm:px-4 sm:py-2"
+                  >
+                    <Flame className="h-3 w-3" /> Book
+                  </Link>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -328,6 +460,32 @@ function RequirementCard({
         {title}
       </h3>
       <p className="mt-2 text-sm text-white/65">{text}</p>
+    </div>
+  );
+}
+
+function QuickCompare({
+  label,
+  price,
+  detail,
+}: {
+  label: string;
+  price: string;
+  detail: string;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4">
+      <div className="min-w-0">
+        <div className="font-display text-base tracking-wide text-white sm:text-lg">
+          {label}
+        </div>
+        <div className="mt-0.5 text-[11px] uppercase tracking-widest text-white/55">
+          {detail}
+        </div>
+      </div>
+      <div className="shrink-0 font-display text-xl text-lava-400 sm:text-2xl">
+        {price}
+      </div>
     </div>
   );
 }
