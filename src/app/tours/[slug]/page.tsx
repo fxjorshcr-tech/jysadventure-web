@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { TOURS, getTour } from "@/lib/tours";
-import { BookingForm } from "@/components/BookingForm";
 import { SectionHeader } from "@/components/SectionHeader";
 import { TourCard } from "@/components/TourCard";
 import {
@@ -14,6 +13,7 @@ import {
   IdCard,
   ArrowRight,
   ShieldCheck,
+  Flame,
 } from "lucide-react";
 
 type Params = { slug: string };
@@ -83,9 +83,8 @@ export default async function TourDetailPage({
 
       {/* Details + booking */}
       <section className="relative bg-night-950 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
-          <div className="grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
-            {/* Left: content */}
+        <div className="mx-auto max-w-4xl px-4 sm:px-5 lg:px-8">
+          <div>
             <div>
               <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-4 sm:p-6 md:p-8">
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -310,20 +309,22 @@ export default async function TourDetailPage({
               </div>
             </div>
 
-            {/* Right: booking card */}
-            <aside className="lg:sticky lg:top-28 lg:self-start">
-              <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-4 sm:p-6 md:p-8">
-                <h2 className="font-display text-2xl tracking-wide text-white">
-                  Book your <span className="text-gradient-fire">ride</span>
-                </h2>
-                <p className="mt-2 text-sm text-white/60">
-                  We confirm availability within the hour.
-                </p>
-                <div className="mt-6">
-                  <BookingForm preselectedSlug={tour.slug} />
-                </div>
-              </div>
-            </aside>
+            {/* Booking CTA */}
+            <div className="mt-10 overflow-hidden rounded-3xl border border-lava-500/40 bg-gradient-to-br from-lava-500/15 via-night-900 to-night-950 p-6 text-center sm:p-10">
+              <h2 className="font-display text-3xl tracking-wide text-white sm:text-4xl">
+                Ready to <span className="text-gradient-fire">ride</span>?
+              </h2>
+              <p className="mx-auto mt-3 max-w-md text-sm text-white/70">
+                Pick your date, group size and pickup — we&apos;ll confirm
+                availability within the hour.
+              </p>
+              <Link
+                href={`/tours/${tour.slug}/book`}
+                className="btn-primary mt-7 inline-flex"
+              >
+                <Flame className="h-4 w-4" /> Let&apos;s book
+              </Link>
+            </div>
           </div>
         </div>
       </section>

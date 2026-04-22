@@ -1,23 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
   Send,
   Loader2,
-  CheckCircle2,
   Minus,
   Plus,
   ChevronDown,
 } from "lucide-react";
 import { TOURS, getTour } from "@/lib/tours";
-import { ADD_ONS, SCHEDULE, TRANSPORT_ZONES } from "@/lib/info";
+import {
+  ADD_ONS,
+  SCHEDULE,
+  TRANSPORT_ZONES,
+  TRANSPORT_INFO,
+} from "@/lib/info";
 import { DatePicker } from "./DatePicker";
 
 const BANDANA = ADD_ONS.find((a) => a.slug === "bandana")!;
 const DEPARTURE_OPTIONS = [...SCHEDULE.departures, "Other — we'll confirm"];
+
+function computeTransport(zoneSlug: string, riders: number) {
+  const zone = TRANSPORT_ZONES.find((z) => z.slug === zoneSlug);
+  if (!zone) return { zone: null, cost: 0, confirmed: true };
+  const included = TRANSPORT_INFO.includedPassengers;
+  const extras = Math.max(0, riders - included);
+  const cost = zone.basePrice + extras * zone.extraPerPerson;
+  return { zone, cost, confirmed: true };
+}
 
 const schema = z
   .object({
@@ -98,7 +112,6 @@ export function BookingForm({
 }: {
   preselectedSlug?: string;
 } = {}) {
-  const [sent, setSent] = useState(false);
   const lockedTour = preselectedSlug ? getTour(preselectedSlug) : undefined;
 
   const {
@@ -108,7 +121,6 @@ export function BookingForm({
     watch,
     setValue,
     formState: { errors, isSubmitting },
-    reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -172,24 +184,73 @@ export function BookingForm({
     }
   }
   const bandanaSubtotal = bandanas * BANDANA.price;
-  const totalPrice = tourSubtotal + bandanaSubtotal;
+  const transport = computeTransport(pickupZone, totalRiders);
+  const transportSubtotal = transport.cost;
+  const totalPrice = tourSubtotal + bandanaSubtotal + transportSubtotal;
 
-  const onSubmit = async (_data: FormData) => {
-    await new Promise((r) => setTimeout(r, 900));
-    setSent(true);
-    reset({
-      singles: 0,
-      doubles: 0,
-      utvs: lockedTour && lockedTour.pricingMode !== "per-variant" ? 1 : 0,
-      riders: lockedTour && lockedTour.pricingMode !== "per-variant" ? 2 : 0,
-      tour: preselectedSlug ?? "",
-      departure: "",
-      canopyOperator: "",
-      bandanas: 0,
-      pickupZone: "",
-      pickupOther: "",
-    });
-    setTimeout(() => setSent(false), 4500);
+  const router = useRouter();
+
+  const onSubmit = async (data: FormData) => {
+    await new Promise((r) => setTimeout(r, 400));
+
+    const tour = getTour(data.tour);
+    const operator = tour?.canopyOperators?.find(
+      (o) => o.slug === data.canopyOperator
+    );
+    const summary = {
+      contact: {
+        name: data.name,
+        email: data.email,
+        phone: data.phone ?? "",
+      },
+      tour: {
+        slug: tour?.slug ?? "",
+        title: tour?.title ?? "",
+      },
+      schedule: {
+        date: data.date,
+        departure: data.departure,
+      },
+      vehicles: hasVariants
+        ? {
+            mode: "atv" as const,
+            singles: data.singles,
+            doubles: data.doubles,
+            totalRiders,
+          }
+        : {
+            mode: "utv" as const,
+            utvs: data.utvs,
+            riders: data.riders,
+            totalRiders,
+          },
+      canopyOperator: operator
+        ? { slug: operator.slug, name: operator.name }
+        : null,
+      addons: {
+        bandanas: data.bandanas,
+      },
+      pickup: {
+        zoneSlug: data.pickupZone ?? "",
+        zoneName: transport.zone?.name ?? (data.pickupZone === "other" ? "Other" : ""),
+        otherDetail: data.pickupOther ?? "",
+        cost: transportSubtotal,
+        confirmedRate: data.pickupZone !== "other",
+      },
+      message: data.message ?? "",
+      pricing: {
+        tourSubtotal,
+        bandanaSubtotal,
+        transportSubtotal,
+        total: totalPrice,
+      },
+    };
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("jys-booking", JSON.stringify(summary));
+    }
+
+    router.push("/book/confirmation");
   };
 
   const field =
@@ -468,12 +529,18 @@ export function BookingForm({
               )}
             </div>
           )}
-          {pickupZone && pickupZone !== "" && (
+          {pickupZone && pickupZone !== "" && pickupZone !== "other" && (
             <p className="mt-3 text-xs text-white/60">
-              Transport rates cover 1–5 riders with an extra-rider surcharge
-              above that. Shown in the booking summary is the tour total only —
-              our team will confirm the exact transport cost for your hotel
-              when we reply to your booking.
+              Listed rate covers 1–{TRANSPORT_INFO.includedPassengers} riders;
+              extra riders add to the base. The transport cost is added to
+              your total below — our team will confirm everything when we
+              reply to your booking.
+            </p>
+          )}
+          {pickupZone === "other" && (
+            <p className="mt-3 text-xs text-white/60">
+              We don&apos;t have a fixed rate for this location — our team will
+              reach out to confirm the transport cost before charging anything.
             </p>
           )}
         </div>
@@ -510,7 +577,12 @@ export function BookingForm({
                     )}
                   </div>
                   <div className="mt-1 text-[10px] uppercase tracking-widest text-white/45">
-                    Tax included · transport not included
+                    Tax included
+                    {transport.zone
+                      ? " · transport included"
+                      : pickupZone === "other"
+                        ? " · transport TBC"
+                        : " · base camp pickup"}
                   </div>
                 </div>
                 <div className="shrink-0 text-right">
@@ -580,6 +652,27 @@ export function BookingForm({
                       <span>${bandanaSubtotal}</span>
                     </li>
                   )}
+                  {transport.zone && (
+                    <li className="flex justify-between gap-3">
+                      <span>
+                        Transport — {transport.zone.name}
+                        {totalRiders > TRANSPORT_INFO.includedPassengers &&
+                          transport.zone.extraPerPerson > 0 &&
+                          ` (incl. ${totalRiders - TRANSPORT_INFO.includedPassengers} extra)`}
+                      </span>
+                      <span>
+                        {transportSubtotal === 0
+                          ? "Free"
+                          : `$${transportSubtotal}`}
+                      </span>
+                    </li>
+                  )}
+                  {pickupZone === "other" && (
+                    <li className="flex justify-between gap-3 text-white/45">
+                      <span>Transport — to be confirmed</span>
+                      <span>—</span>
+                    </li>
+                  )}
                 </ul>
               )}
             </div>
@@ -613,20 +706,16 @@ export function BookingForm({
 
       <button
         type="submit"
-        disabled={isSubmitting || sent}
+        disabled={isSubmitting}
         className="btn-primary mt-6 w-full disabled:opacity-70"
       >
         {isSubmitting ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" /> Sending
-          </>
-        ) : sent ? (
-          <>
-            <CheckCircle2 className="h-4 w-4" /> Sent! We&apos;ll be in touch
+            <Loader2 className="h-4 w-4 animate-spin" /> Reviewing
           </>
         ) : (
           <>
-            <Send className="h-4 w-4" /> Launch my adventure
+            <Send className="h-4 w-4" /> Review my booking
           </>
         )}
       </button>
