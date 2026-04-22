@@ -1,6 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
-import { BASE_TOURS, COMBO_TOURS, TOURS } from "@/lib/tours";
+import { BASE_TOURS, COMBO_TOURS } from "@/lib/tours";
 import {
   TRANSPORT_ZONES,
   TRANSPORT_INFO,
@@ -21,7 +20,6 @@ import {
   Sun,
   Clock,
   Plus,
-  Flame,
 } from "lucide-react";
 
 const ATV_COMBOS = COMBO_TOURS.filter((t) => t.vehicle === "ATV");
@@ -162,79 +160,6 @@ export default function ToursPage() {
         </div>
       </section>
 
-      {/* Compare table */}
-      <section className="relative bg-night-950 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
-          <SectionHeader
-            kicker="Side by side"
-            title={
-              <>
-                Every ride at a <span className="text-gradient-fire">glance</span>
-              </>
-            }
-            subtitle="Quick look at all seven tours — price, duration, difficulty and the minimum passenger age."
-          />
-
-          <div className="mt-14 overflow-hidden rounded-3xl border border-white/10 bg-night-900/50">
-            <div className="hidden grid-cols-[1.5fr_0.8fr_0.6fr_0.6fr_0.8fr_auto] gap-4 border-b border-white/10 px-6 py-4 text-[10px] font-bold uppercase tracking-[0.25em] text-white/50 md:grid">
-              <div>Tour</div>
-              <div>Type</div>
-              <div>Duration</div>
-              <div>Level</div>
-              <div>From</div>
-              <div></div>
-            </div>
-            {TOURS.map((t) => (
-              <div
-                key={t.slug}
-                className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 border-b border-white/5 px-5 py-4 last:border-0 md:grid-cols-[1.5fr_0.8fr_0.6fr_0.6fr_0.8fr_auto] md:items-center md:px-6"
-              >
-                <div className="min-w-0">
-                  <div className="font-display text-base tracking-wide text-white sm:text-lg">
-                    {t.title}
-                  </div>
-                  <div className="mt-0.5 text-xs text-white/55 md:hidden">
-                    {t.vehicle}
-                    {t.addon ? ` + ${t.addon}` : ""} · {t.duration} · {t.difficulty}
-                  </div>
-                </div>
-                <div className="hidden text-sm text-white/75 md:block">
-                  {t.vehicle}
-                  {t.addon && (
-                    <span className="text-white/50"> + {t.addon}</span>
-                  )}
-                </div>
-                <div className="hidden text-sm text-white/75 md:block">
-                  {t.duration}
-                </div>
-                <div className="hidden text-sm text-white/75 md:block">
-                  {t.difficulty}
-                </div>
-                <div className="row-start-2 col-span-2 flex items-center gap-3 md:row-auto md:col-auto md:block">
-                  <span className="font-display text-lg text-lava-400">
-                    ${t.price}
-                  </span>
-                  <span className="text-[10px] uppercase tracking-widest text-white/45">
-                    {t.pricingMode === "flat-vehicle"
-                      ? "/ UTV"
-                      : t.pricingMode === "flat-plus-per-person"
-                        ? "+/person"
-                        : "/ person"}
-                  </span>
-                </div>
-                <div className="col-start-2 row-start-1 flex shrink-0 items-center justify-end md:col-auto md:row-auto">
-                  <Link
-                    href={`/tours/${t.slug}/book`}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-lava-500 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white transition hover:bg-lava-400 sm:px-4 sm:py-2"
-                  >
-                    <Flame className="h-3 w-3" /> Book
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Schedule & seasonal routes */}
       <section className="relative bg-night-950 py-24 md:py-32">
