@@ -57,14 +57,20 @@ export function Footer() {
             </p>
 
             <div className="mt-6 space-y-2 text-sm text-white/70">
-              <div className="flex items-center gap-3">
+              <a
+                href={`tel:${CONTACT.phoneE164}`}
+                className="flex items-center gap-3 transition hover:text-white"
+              >
                 <Phone className="h-4 w-4 shrink-0 text-lava-400" />
                 {CONTACT.phone}
-              </div>
-              <div className="flex items-center gap-3">
+              </a>
+              <a
+                href={`mailto:${CONTACT.email}`}
+                className="flex items-center gap-3 transition hover:text-white"
+              >
                 <Mail className="h-4 w-4 shrink-0 text-lava-400" />
                 <span className="break-all">{CONTACT.email}</span>
-              </div>
+              </a>
               <div className="flex items-center gap-3">
                 <MapPin className="h-4 w-4 shrink-0 text-lava-400" />
                 {CONTACT.location}
@@ -106,12 +112,12 @@ export function Footer() {
           <div>
             <h4 className="font-display text-lg tracking-widest text-white">Rides</h4>
             <ul className="mt-4 space-y-2 text-sm text-white/60">
-              <li><Link href="/tours/atv" className="hover:text-white">ATV Adventure</Link></li>
-              <li><Link href="/tours/utv" className="hover:text-white">UTV Side by Side</Link></li>
-              <li><Link href="/tours/atv-cabalgata" className="hover:text-white">ATV + Cabalgata</Link></li>
-              <li><Link href="/tours/atv-canopy" className="hover:text-white">ATV + Canopy</Link></li>
-              <li><Link href="/tours/utv-cabalgata" className="hover:text-white">UTV + Cabalgata</Link></li>
-              <li><Link href="/tours/utv-canopy" className="hover:text-white">UTV + Canopy</Link></li>
+              <li><Link href="/tours/atv-tour-guanacaste" className="hover:text-white">ATV Adventure</Link></li>
+              <li><Link href="/tours/utv-tour-guanacaste" className="hover:text-white">UTV Side by Side</Link></li>
+              <li><Link href="/tours/atv-horseback-tour-guanacaste" className="hover:text-white">ATV + Cabalgata</Link></li>
+              <li><Link href="/tours/atv-canopy-zipline-tour-guanacaste" className="hover:text-white">ATV + Canopy</Link></li>
+              <li><Link href="/tours/utv-horseback-tour-guanacaste" className="hover:text-white">UTV + Cabalgata</Link></li>
+              <li><Link href="/tours/utv-canopy-zipline-tour-guanacaste" className="hover:text-white">UTV + Canopy</Link></li>
             </ul>
           </div>
         </div>

@@ -25,10 +25,18 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
   const tour = getTour(slug);
-  if (!tour) return { title: "Tour not found — JYS Adventure Tour" };
+  if (!tour) return { title: "Tour not found" };
   return {
-    title: `${tour.title} — JYS Adventure Tour`,
-    description: tour.tagline,
+    title: tour.title,
+    description: tour.metaDescription,
+    keywords: tour.keywords,
+    alternates: { canonical: `/tours/${tour.slug}` },
+    openGraph: {
+      title: `${tour.title} — JYS Adventure Tour`,
+      description: tour.metaDescription,
+      images: [{ url: tour.image }],
+      type: "article",
+    },
   };
 }
 
@@ -224,22 +232,147 @@ export default async function TourDetailPage({
                     you&apos;re staying.
                   </p>
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    {tour.canopyOperators.map((op) => (
-                      <div
-                        key={op.slug}
-                        className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"
-                      >
-                        <div className="font-display text-lg tracking-wide text-white">
-                          {op.name}
+                    {tour.canopyOperators.map((op) => {
+                      const isUtv = tour.vehicle === "UTV";
+                      return (
+                        <div
+                          key={op.slug}
+                          className="flex flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+                        >
+                          <div className="font-display text-lg tracking-wide text-white">
+                            {op.name}
+                          </div>
+                          <div className="mt-1 text-[11px] uppercase tracking-widest text-lava-400">
+                            {op.recommendedZone}
+                          </div>
+                          <p className="mt-3 text-sm text-white/65">
+                            {op.description}
+                          </p>
+
+                          {/* Operator-specific pricing */}
+                          {!isUtv && op.variantPrices && (
+                            <div className="mt-4 space-y-1.5 rounded-xl border border-lava-500/30 bg-lava-500/5 p-3 text-xs text-white/75">
+                              <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-lava-400">
+                                With {op.name}
+                              </div>
+                              {op.variantPrices.single !== undefined && (
+                                <div className="flex items-baseline justify-between gap-2">
+                                  <span>ATV Single</span>
+                                  <span className="font-display text-base text-white">
+                                    ${op.variantPrices.single}
+                                    <span className="ml-1 text-[10px] text-white/50">
+                                      / person
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+                              {op.variantPrices.double !== undefined && (
+                                <div className="flex items-baseline justify-between gap-2">
+                                  <span>ATV Double</span>
+                                  <span className="font-display text-base text-white">
+                                    ${op.variantPrices.double}
+                                    <span className="ml-1 text-[10px] text-white/50">
+                                      / quad
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {isUtv && op.utvTierPrices && (
+                            <div className="mt-4 space-y-1.5 rounded-xl border border-lava-500/30 bg-lava-500/5 p-3 text-xs text-white/75">
+                              <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-lava-400">
+                                With {op.name}
+                                {op.utvMaxSeats && (
+                                  <span className="ml-2 text-white/50">
+                                    · max {op.utvMaxSeats}/UTV
+                                  </span>
+                                )}
+                              </div>
+                              {op.utvTierPrices.map((tier) => (
+                                <div
+                                  key={tier.riders}
+                                  className="flex items-baseline justify-between gap-2"
+                                >
+                                  <span>UTV with {tier.riders} riders</span>
+                                  <span className="font-display text-base text-white">
+                                    ${tier.price}
+                                    <span className="ml-1 text-[10px] text-white/50">
+                                      / UTV
+                                    </span>
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Schedule override */}
+                          {op.departures && (
+                            <div className="mt-4 text-xs text-white/65">
+                              <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">
+                                Departures
+                              </div>
+                              <div className="mt-1 flex flex-wrap gap-1.5">
+                                {op.departures.map((t) => (
+                                  <span
+                                    key={t}
+                                    className="rounded-full border border-white/15 bg-white/5 px-2.5 py-0.5 font-display text-xs tracking-wide text-white"
+                                  >
+                                    {t}
+                                  </span>
+                                ))}
+                              </div>
+                              {op.scheduleNote && (
+                                <p className="mt-2 text-[11px] text-white/55">
+                                  {op.scheduleNote}
+                                </p>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Pickup zones */}
+                          {op.freePickupZones && (
+                            <div className="mt-4 text-xs text-white/65">
+                              <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">
+                                Free pickup
+                              </div>
+                              <div className="mt-1 flex flex-wrap gap-1">
+                                {op.freePickupZones.map((z) => (
+                                  <span
+                                    key={z}
+                                    className="rounded-full border border-jungle-500/40 bg-jungle-500/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-jungle-500"
+                                  >
+                                    {z}
+                                  </span>
+                                ))}
+                              </div>
+                              {op.paidPickupZones && op.extraPickupSurcharge && (
+                                <>
+                                  <div className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">
+                                    +${op.extraPickupSurcharge} from
+                                  </div>
+                                  <div className="mt-1 flex flex-wrap gap-1">
+                                    {op.paidPickupZones.map((z) => (
+                                      <span
+                                        key={z}
+                                        className="rounded-full border border-white/15 bg-white/5 px-2 py-0.5 text-[10px] uppercase tracking-wide text-white/70"
+                                      >
+                                        {z}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+                              {op.pickupNote && (
+                                <p className="mt-2 text-[11px] text-white/55">
+                                  {op.pickupNote}
+                                </p>
+                              )}
+                            </div>
+                          )}
                         </div>
-                        <div className="mt-1 text-[11px] uppercase tracking-widest text-lava-400">
-                          {op.recommendedZone}
-                        </div>
-                        <p className="mt-3 text-sm text-white/65">
-                          {op.description}
-                        </p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}

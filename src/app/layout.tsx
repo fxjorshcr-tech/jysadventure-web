@@ -13,16 +13,32 @@ const lexend = Lexend({
 });
 
 export const metadata: Metadata = {
-  title: "JYS Adventure Tour — ATV & UTV Tours in Guanacaste, Costa Rica",
+  title: {
+    default: "JYS Adventure Tour — ATV & UTV Tours in Guanacaste, Costa Rica",
+    template: "%s — JYS Adventure Tour",
+  },
   description:
     "Unleash the wild side of Guanacaste with JYS Adventure Tour. Off-road ATV and UTV tours through jungle trails, volcanoes, rivers and Pacific beaches in Costa Rica.",
   keywords: [
     "ATV tour Costa Rica",
+    "ATV tour Guanacaste",
     "UTV tour Guanacaste",
+    "UTV side by side Costa Rica",
     "off-road Costa Rica",
+    "ATV canopy zipline Guanacaste",
+    "ATV horseback Guanacaste",
     "JYS Adventure",
-    "Rincón de la Vieja tours",
   ],
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
+  openGraph: {
+    title: "JYS Adventure Tour — ATV & UTV Tours in Guanacaste, Costa Rica",
+    description:
+      "Off-road ATV and UTV tours through jungle trails, volcanoes, rivers and Pacific beaches in Guanacaste, Costa Rica.",
+    type: "website",
+    locale: "en_US",
+  },
 };
 
 export const viewport: Viewport = {
