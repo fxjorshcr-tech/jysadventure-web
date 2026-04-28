@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { IMAGES } from "@/lib/images";
-import { BookingForm } from "@/components/BookingForm";
+import { ContactForm } from "@/components/ContactForm";
 import { CONTACT, SCHEDULE, SOCIAL_LINKS } from "@/lib/info";
 import { Mail, Phone, MapPin, Clock, Instagram, Facebook, Star } from "lucide-react";
 
@@ -151,18 +151,18 @@ export default function ContactPage() {
               <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-4 sm:p-6 md:p-10">
                 <div>
                   <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
-                    Quick booking
+                    Send us a message
                   </span>
                   <h2 className="mt-5 font-display text-[clamp(1.75rem,7vw,2.75rem)] leading-tight tracking-wide text-white [overflow-wrap:anywhere] md:text-5xl md:leading-none">
-                    Send us the <span className="text-gradient-fire">details</span>
+                    Got a <span className="text-gradient-fire">question?</span>
                   </h2>
                   <p className="mt-3 max-w-md text-white/60">
-                    We&apos;ll build the perfect ride for you. No deposit required
-                    to get a quote.
+                    Ask us anything — availability, group sizes, special
+                    requests. We usually reply within the hour.
                   </p>
                 </div>
                 <div className="mt-8">
-                  <BookingForm />
+                  <ContactForm />
                 </div>
               </div>
             </div>
