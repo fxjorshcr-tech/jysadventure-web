@@ -1,4 +1,5 @@
 import { IMAGES } from "./images";
+import { TRANSPORT_ZONES } from "./info";
 
 export type TourCategory = "base" | "combo";
 
@@ -53,7 +54,7 @@ export const CANOPY_OPERATORS: CanopyOperator[] = [
     scheduleNote:
       "Three daily slots. Hotel pickup arranged ahead of your departure time.",
     pickupNote:
-      "Hotel pickup uses our standard transport zones — RIU is complimentary; El Coco, Playa Hermosa and Playa Panamá from $60; Andaz, Planet Hollywood, Four Seasons and Hotel Ritz from $130–$150. See the pickup picker for the exact rate per zone.",
+      "Listed rates cover 1–5 riders; extra riders add a small per-person fee. We confirm exact pickup time when we reply to your booking.",
   },
   {
     slug: "skyline",
@@ -421,4 +422,50 @@ export function computeUtvTierTotal(
     total += tier.price;
   }
   return total;
+}
+
+export type PickupTier = {
+  label: string;
+  price: number;
+  zones: string[];
+};
+
+/**
+ * Normalise an operator's pickup zones into uniform tiers so the UI can
+ * render them the same way for every operator. Falls back to the global
+ * TRANSPORT_ZONES list (grouped by basePrice) when the operator doesn't
+ * override pickup.
+ */
+export function getOperatorPickupTiers(operator: CanopyOperator): PickupTier[] {
+  if (operator.freePickupZones || operator.paidPickupZones) {
+    const tiers: PickupTier[] = [];
+    if (operator.freePickupZones?.length) {
+      tiers.push({
+        label: "Free",
+        price: 0,
+        zones: operator.freePickupZones,
+      });
+    }
+    if (operator.paidPickupZones?.length && operator.extraPickupSurcharge) {
+      tiers.push({
+        label: `+$${operator.extraPickupSurcharge}`,
+        price: operator.extraPickupSurcharge,
+        zones: operator.paidPickupZones,
+      });
+    }
+    return tiers;
+  }
+  const grouped = new Map<number, string[]>();
+  for (const z of TRANSPORT_ZONES) {
+    const list = grouped.get(z.basePrice) ?? [];
+    list.push(z.name);
+    grouped.set(z.basePrice, list);
+  }
+  return [...grouped.entries()]
+    .sort(([a], [b]) => a - b)
+    .map(([price, zones]) => ({
+      label: price === 0 ? "Free" : `$${price}`,
+      price,
+      zones,
+    }));
 }

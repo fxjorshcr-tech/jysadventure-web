@@ -28,10 +28,9 @@ import {
 import { DatePicker } from "./DatePicker";
 
 const BANDANA = ADD_ONS.find((a) => a.slug === "bandana")!;
-const OTHER_DEPARTURE = "Other — we'll confirm";
 
 function allowedDepartures(operator?: CanopyOperator) {
-  return [...(operator?.departures ?? SCHEDULE.departures), OTHER_DEPARTURE];
+  return operator?.departures ?? SCHEDULE.departures;
 }
 
 type ResolvedPickup = {
@@ -620,10 +619,7 @@ export function BookingForm({
             </div>
           ) : (
             <div className="flex flex-wrap gap-2">
-              {[
-                ...(selectedOperator?.departures ?? SCHEDULE.departures),
-                "Other — we'll confirm",
-              ].map((t) => {
+              {(selectedOperator?.departures ?? SCHEDULE.departures).map((t) => {
                 const selected = watch("departure") === t;
                 return (
                   <button
