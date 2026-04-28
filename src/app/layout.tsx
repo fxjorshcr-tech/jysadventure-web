@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Lexend } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SocialRail } from "@/components/SocialRail";
-import { SITE_URL } from "@/lib/info";
+import { SITE_URL, GA_ID } from "@/lib/info";
 
 const lexend = Lexend({
   subsets: ["latin"],
@@ -73,6 +74,7 @@ export default function RootLayout({
         <SocialRail />
         <Footer />
       </body>
+      {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
     </html>
   );
 }
