@@ -383,36 +383,23 @@ export function BookingForm({
   const errorCls = "mt-1 text-xs text-lava-400";
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="relative rounded-3xl border border-white/10 bg-white/[0.02] p-4 backdrop-blur sm:p-6 md:p-8"
-    >
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="sm:col-span-2">
-          <label className={label}>Full name</label>
-          <input {...register("name")} placeholder="Alex Morgan" className={field} />
-          {errors.name && <p className={errorCls}>{errors.name.message}</p>}
+    <form onSubmit={handleSubmit(onSubmit)} className="relative space-y-6">
+      {/* Section 1: Your ride */}
+      <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-4 backdrop-blur sm:p-6 md:p-8">
+        <div className="mb-6 flex items-start gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-lava-500/20 font-display text-lg text-lava-400 ring-1 ring-lava-500/40">
+            1
+          </span>
+          <div>
+            <h3 className="font-display text-xl tracking-wide text-white">
+              Your ride
+            </h3>
+            <p className="text-xs text-white/55">
+              Pick the date, group size and pickup. The total updates as you go.
+            </p>
+          </div>
         </div>
-
-        <div>
-          <label className={label}>Email</label>
-          <input
-            {...register("email")}
-            placeholder="you@email.com"
-            className={field}
-          />
-          {errors.email && <p className={errorCls}>{errors.email.message}</p>}
-        </div>
-
-        <div>
-          <label className={label}>Phone / WhatsApp</label>
-          <input
-            {...register("phone")}
-            placeholder="+506 8519-2804"
-            className={field}
-          />
-        </div>
-
+        <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <label className={label}>Date</label>
           <Controller
@@ -968,46 +955,91 @@ export function BookingForm({
           </div>
         )}
 
-        <div className="sm:col-span-2">
-          <label className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/75">
-            <input
-              type="checkbox"
-              {...register("license")}
-              className="mt-1 h-4 w-4 accent-lava-500"
-            />
-            <span>
-              I confirm the driver has a valid driver&apos;s license. Required
-              for all ATV and UTV rides.
-            </span>
-          </label>
-        </div>
-
-        <div className="sm:col-span-2">
-          <label className={label}>Message (optional)</label>
-          <textarea
-            rows={3}
-            {...register("message")}
-            placeholder="Ages of passengers, pickup location, special requests…"
-            className={field}
-          />
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="btn-primary mt-6 w-full disabled:opacity-70"
-      >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" /> Reviewing
-          </>
-        ) : (
-          <>
-            <Send className="h-4 w-4" /> Review my booking
-          </>
-        )}
-      </button>
+      {/* Section 2: Your details */}
+      <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-4 backdrop-blur sm:p-6 md:p-8">
+        <div className="mb-6 flex items-start gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-lava-500/20 font-display text-lg text-lava-400 ring-1 ring-lava-500/40">
+            2
+          </span>
+          <div>
+            <h3 className="font-display text-xl tracking-wide text-white">
+              Your details
+            </h3>
+            <p className="text-xs text-white/55">
+              We&apos;ll reply within the hour to confirm your slot.
+            </p>
+          </div>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <label className={label}>Full name</label>
+            <input {...register("name")} placeholder="Alex Morgan" className={field} />
+            {errors.name && <p className={errorCls}>{errors.name.message}</p>}
+          </div>
+
+          <div>
+            <label className={label}>Email</label>
+            <input
+              {...register("email")}
+              placeholder="you@email.com"
+              className={field}
+            />
+            {errors.email && <p className={errorCls}>{errors.email.message}</p>}
+          </div>
+
+          <div>
+            <label className={label}>Phone / WhatsApp</label>
+            <input
+              {...register("phone")}
+              placeholder="+506 8519-2804"
+              className={field}
+            />
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/75">
+              <input
+                type="checkbox"
+                {...register("license")}
+                className="mt-1 h-4 w-4 accent-lava-500"
+              />
+              <span>
+                I confirm the driver has a valid driver&apos;s license. Required
+                for all ATV and UTV rides.
+              </span>
+            </label>
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className={label}>Message (optional)</label>
+            <textarea
+              rows={3}
+              {...register("message")}
+              placeholder="Ages of passengers, pickup location, special requests…"
+              className={field}
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="btn-primary mt-6 w-full disabled:opacity-70"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" /> Reviewing
+            </>
+          ) : (
+            <>
+              <Send className="h-4 w-4" /> Book this tour
+            </>
+          )}
+        </button>
+      </div>
     </form>
   );
 }
