@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -171,9 +172,11 @@ type FormData = z.infer<typeof schema>;
 export function BookingForm({
   preselectedSlug,
   preselectedOperator,
+  lockOperator = false,
 }: {
   preselectedSlug?: string;
   preselectedOperator?: string;
+  lockOperator?: boolean;
 } = {}) {
   const lockedTour = preselectedSlug ? getTour(preselectedSlug) : undefined;
   const validPreselectedOperator =
@@ -181,6 +184,12 @@ export function BookingForm({
     lockedTour?.canopyOperators?.some((o) => o.slug === preselectedOperator)
       ? preselectedOperator
       : "";
+  const lockedOperator =
+    lockOperator && validPreselectedOperator
+      ? lockedTour?.canopyOperators?.find(
+          (o) => o.slug === validPreselectedOperator,
+        )
+      : undefined;
 
   const {
     register,
@@ -558,8 +567,35 @@ export function BookingForm({
           </div>
         )}
 
-        {/* Canopy operator picker */}
-        {currentTour?.canopyOperators && (
+        {/* Canopy operator — locked to a single op when arriving via the
+           'Book this one' CTA on the tour detail page; full picker otherwise. */}
+        {currentTour?.canopyOperators && lockedOperator && (
+          <div className="sm:col-span-2">
+            <label className={label}>Canopy operator</label>
+            <div className="flex items-start justify-between gap-3 rounded-2xl border border-lava-400/60 bg-lava-500/10 p-4">
+              <div className="min-w-0">
+                <div className="font-display text-base tracking-wide text-white">
+                  {lockedOperator.name}
+                </div>
+                <div className="mt-0.5 text-[10px] uppercase tracking-widest text-lava-400">
+                  {lockedOperator.recommendedZone}
+                </div>
+                <p className="mt-2 text-xs text-white/65">
+                  {lockedOperator.description}
+                </p>
+              </div>
+              {lockedTour && (
+                <Link
+                  href={`/tours/${lockedTour.slug}`}
+                  className="shrink-0 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white/80 transition hover:border-lava-400 hover:text-white"
+                >
+                  Change
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
+        {currentTour?.canopyOperators && !lockedOperator && (
           <div className="sm:col-span-2">
             <label className={label}>Canopy operator</label>
             <div className="grid gap-3 sm:grid-cols-2">

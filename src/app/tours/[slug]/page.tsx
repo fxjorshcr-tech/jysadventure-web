@@ -122,8 +122,9 @@ export default async function TourDetailPage({
                 <p className="mt-4 text-white/70">{tour.description}</p>
               </div>
 
-              {/* Variants (ATV only) */}
-              {tour.variants && (
+              {/* Variants (ATV only) — hidden for canopy combos because each
+                 operator card below shows its own variant pricing */}
+              {tour.variants && !tour.canopyOperators && (
                 <div className="mt-10">
                   <h3 className="font-display text-xl tracking-wide text-white">
                     Pick your setup
@@ -165,8 +166,11 @@ export default async function TourDetailPage({
                 </div>
               )}
 
-              {/* UTV pricing */}
-              {!tour.variants && tour.pricingMode !== "per-variant" && (
+              {/* UTV pricing — hidden for canopy combos because each operator
+                 card below shows its own UTV pricing tiers */}
+              {!tour.variants &&
+                tour.pricingMode !== "per-variant" &&
+                !tour.canopyOperators && (
                 <div className="mt-10">
                   <h3 className="font-display text-xl tracking-wide text-white">
                     Pricing
@@ -248,60 +252,90 @@ export default async function TourDetailPage({
                             {op.description}
                           </p>
 
-                          {/* Operator-specific pricing */}
-                          {!isUtv && op.variantPrices && (
+                          {/* Operator-specific pricing — falls back to the
+                             tour's base prices when the operator doesn't
+                             override, so both cards always show pricing */}
+                          {!isUtv && tour.variants && (
                             <div className="mt-4 space-y-1.5 rounded-xl border border-lava-500/30 bg-lava-500/5 p-3 text-xs text-white/75">
                               <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-lava-400">
                                 With {op.name}
                               </div>
-                              {op.variantPrices.single !== undefined && (
-                                <div className="flex items-baseline justify-between gap-2">
-                                  <span>ATV Single</span>
-                                  <span className="font-display text-base text-white">
-                                    ${op.variantPrices.single}
-                                    <span className="ml-1 text-[10px] text-white/50">
-                                      / person
-                                    </span>
+                              <div className="flex items-baseline justify-between gap-2">
+                                <span>ATV Single</span>
+                                <span className="font-display text-base text-white">
+                                  ${op.variantPrices?.single ?? tour.variants[0].price}
+                                  <span className="ml-1 text-[10px] text-white/50">
+                                    / person
                                   </span>
-                                </div>
-                              )}
-                              {op.variantPrices.double !== undefined && (
-                                <div className="flex items-baseline justify-between gap-2">
-                                  <span>ATV Double</span>
-                                  <span className="font-display text-base text-white">
-                                    ${op.variantPrices.double}
-                                    <span className="ml-1 text-[10px] text-white/50">
-                                      / quad
-                                    </span>
+                                </span>
+                              </div>
+                              <div className="flex items-baseline justify-between gap-2">
+                                <span>ATV Double</span>
+                                <span className="font-display text-base text-white">
+                                  ${op.variantPrices?.double ?? tour.variants[1].price}
+                                  <span className="ml-1 text-[10px] text-white/50">
+                                    / quad
                                   </span>
-                                </div>
-                              )}
+                                </span>
+                              </div>
                             </div>
                           )}
-                          {isUtv && op.utvTierPrices && (
+                          {isUtv && (
                             <div className="mt-4 space-y-1.5 rounded-xl border border-lava-500/30 bg-lava-500/5 p-3 text-xs text-white/75">
                               <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-lava-400">
                                 With {op.name}
-                                {op.utvMaxSeats && (
+                                {op.utvMaxSeats ? (
                                   <span className="ml-2 text-white/50">
                                     · max {op.utvMaxSeats}/UTV
                                   </span>
+                                ) : (
+                                  tour.maxSeats && (
+                                    <span className="ml-2 text-white/50">
+                                      · up to {tour.maxSeats}/UTV
+                                    </span>
+                                  )
                                 )}
                               </div>
-                              {op.utvTierPrices.map((tier) => (
-                                <div
-                                  key={tier.riders}
-                                  className="flex items-baseline justify-between gap-2"
-                                >
-                                  <span>UTV with {tier.riders} riders</span>
-                                  <span className="font-display text-base text-white">
-                                    ${tier.price}
-                                    <span className="ml-1 text-[10px] text-white/50">
-                                      / UTV
-                                    </span>
-                                  </span>
-                                </div>
-                              ))}
+                              {op.utvTierPrices
+                                ? op.utvTierPrices.map((tier) => (
+                                    <div
+                                      key={tier.riders}
+                                      className="flex items-baseline justify-between gap-2"
+                                    >
+                                      <span>UTV with {tier.riders} riders</span>
+                                      <span className="font-display text-base text-white">
+                                        ${tier.price}
+                                        <span className="ml-1 text-[10px] text-white/50">
+                                          / UTV
+                                        </span>
+                                      </span>
+                                    </div>
+                                  ))
+                                : (
+                                  <>
+                                    <div className="flex items-baseline justify-between gap-2">
+                                      <span>UTV vehicle</span>
+                                      <span className="font-display text-base text-white">
+                                        ${tour.price}
+                                        <span className="ml-1 text-[10px] text-white/50">
+                                          / UTV
+                                        </span>
+                                      </span>
+                                    </div>
+                                    {tour.pricingMode === "flat-plus-per-person" &&
+                                      tour.perPersonAddon && (
+                                        <div className="flex items-baseline justify-between gap-2">
+                                          <span>+ {tour.addon} per rider</span>
+                                          <span className="font-display text-base text-white">
+                                            ${tour.perPersonAddon}
+                                            <span className="ml-1 text-[10px] text-white/50">
+                                              / person
+                                            </span>
+                                          </span>
+                                        </div>
+                                      )}
+                                  </>
+                                )}
                             </div>
                           )}
 
@@ -375,13 +409,17 @@ export default async function TourDetailPage({
                             );
                           })()}
 
-                          {/* Per-operator booking CTA */}
-                          <Link
-                            href={`/tours/${tour.slug}/book?op=${op.slug}`}
-                            className="btn-primary mt-5 w-full justify-center"
-                          >
-                            <Flame className="h-4 w-4" /> Book this one
-                          </Link>
+                          {/* Per-operator booking CTA — pushed to bottom so
+                             both cards have aligned buttons regardless of
+                             content height */}
+                          <div className="mt-auto pt-6">
+                            <Link
+                              href={`/tours/${tour.slug}/book?op=${op.slug}`}
+                              className="btn-primary w-full justify-center"
+                            >
+                              <Flame className="h-4 w-4" /> Book this one
+                            </Link>
+                          </div>
                         </div>
                       );
                     })}

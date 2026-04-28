@@ -12,13 +12,25 @@ export function generateStaticParams() {
   return TOURS.map((t) => ({ slug: t.slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<Params> }) {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: Promise<Params>;
+  searchParams: Promise<SearchParams>;
+}) {
   const { slug } = await params;
+  const { op } = await searchParams;
   const tour = getTour(slug);
   if (!tour) return { title: "Book — JYS Adventure Tour" };
+  const operator = tour.canopyOperators?.find((o) => o.slug === op);
+  const title = operator
+    ? `Book ${tour.title} with ${operator.name} — JYS Adventure Tour`
+    : `Book ${tour.title} — JYS Adventure Tour`;
   return {
-    title: `Book ${tour.title} — JYS Adventure Tour`,
+    title,
     description: `Reserve your ${tour.title} ride. ${tour.tagline}`,
+    robots: { index: false, follow: true },
   };
 }
 
@@ -34,12 +46,14 @@ export default async function BookTourPage({
   const tour = getTour(slug);
   if (!tour) notFound();
 
-  // Resolve preselected canopy operator: explicit op param wins; otherwise
-  // default to Skyline for canopy combos so the more expensive option is
-  // surfaced upfront instead of an empty pricing state.
+  // Resolve preselected canopy operator: explicit op param locks the form
+  // to that single operator (no picker shown). When the user lands without
+  // ?op (e.g. direct nav), default to Skyline but keep the picker so they
+  // can still switch to Congo.
+  const explicitOp = tour.canopyOperators?.find((o) => o.slug === op);
   const preselectedOperator =
-    tour.canopyOperators?.find((o) => o.slug === op)?.slug ??
-    (tour.canopyOperators ? "skyline" : undefined);
+    explicitOp?.slug ?? (tour.canopyOperators ? "skyline" : undefined);
+  const lockOperator = Boolean(explicitOp);
 
   return (
     <>
@@ -68,6 +82,11 @@ export default async function BookTourPage({
           <h1 className="mt-5 max-w-3xl font-display text-[clamp(2rem,8vw,3.75rem)] leading-[0.95] tracking-wide text-white md:text-6xl">
             Book your <span className="text-gradient-fire">{tour.title}</span>
           </h1>
+          {explicitOp && (
+            <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-jungle-500/40 bg-jungle-500/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.25em] text-jungle-500">
+              With {explicitOp.name}
+            </div>
+          )}
           <p className="mt-4 max-w-2xl text-white/70 md:text-lg">
             Fill in the details and we&apos;ll review your booking on the next
             screen before you confirm. We reply within the hour.
@@ -80,6 +99,7 @@ export default async function BookTourPage({
           <BookingForm
             preselectedSlug={tour.slug}
             preselectedOperator={preselectedOperator}
+            lockOperator={lockOperator}
           />
         </div>
       </section>
