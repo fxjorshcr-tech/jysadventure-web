@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SocialRail } from "@/components/SocialRail";
+import { SITE_URL } from "@/lib/info";
 
 const lexend = Lexend({
   subsets: ["latin"],
@@ -13,6 +14,7 @@ const lexend = Lexend({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "JYS Adventure Tour — ATV & UTV Tours in Guanacaste, Costa Rica",
     template: "%s — JYS Adventure Tour",
@@ -32,13 +34,25 @@ export const metadata: Metadata = {
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
   },
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "JYS Adventure Tour — ATV & UTV Tours in Guanacaste, Costa Rica",
     description:
       "Off-road ATV and UTV tours through jungle trails, volcanoes, rivers and Pacific beaches in Guanacaste, Costa Rica.",
     type: "website",
     locale: "en_US",
+    siteName: "JYS Adventure Tour",
+    url: SITE_URL,
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "JYS Adventure Tour — ATV & UTV Tours in Guanacaste, Costa Rica",
+    description:
+      "Off-road ATV and UTV tours through Guanacaste, Costa Rica.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {

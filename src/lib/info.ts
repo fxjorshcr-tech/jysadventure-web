@@ -1,3 +1,6 @@
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://jysadventuretour.com";
+
 export const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/jysadventuretour/",
   facebook: "https://www.facebook.com/profile.php?id=61570254192510",
