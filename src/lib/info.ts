@@ -6,8 +6,9 @@ export const SOCIAL_LINKS = {
 };
 
 export const CONTACT = {
-  phone: "+506 0000 0000",
-  email: "reservations@jysadventuretours.com",
+  phone: "+506 8519-2804",
+  phoneE164: "+50685192804",
+  email: "reservation@jysadventuretour.com",
   location: "Sardinal, Guanacaste · Costa Rica",
 };
 
@@ -39,13 +40,6 @@ export const TRANSPORT_ZONES: TransportZone[] = [
   { slug: "planet-hollywood", name: "Planet Hollywood", basePrice: 130, extraPerPerson: 15 },
   { slug: "four-seasons", name: "Four Seasons", basePrice: 150, extraPerPerson: 15 },
   { slug: "ritz", name: "Hotel Ritz", basePrice: 150, extraPerPerson: 15 },
-  {
-    slug: "cartagena",
-    name: "Cartagena",
-    basePrice: 150,
-    extraPerPerson: 15,
-    note: "Rate to be confirmed — contact us for details.",
-  },
 ];
 
 export const TRANSPORT_INFO = {

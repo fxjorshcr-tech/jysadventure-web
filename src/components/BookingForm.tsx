@@ -12,7 +12,7 @@ import {
   Plus,
   ChevronDown,
 } from "lucide-react";
-import { TOURS, getTour } from "@/lib/tours";
+import { TOURS, getTour, computeUtvTierTotal, distributeRiders } from "@/lib/tours";
 import { ADD_ONS } from "@/lib/info";
 import { DatePicker } from "./DatePicker";
 
@@ -37,6 +37,9 @@ const schema = z
   .superRefine((d, ctx) => {
     const tour = getTour(d.tour);
     if (!tour) return;
+    const operator = tour.canopyOperators?.find(
+      (op) => op.slug === d.canopyOperator,
+    );
     if (tour.pricingMode === "per-variant") {
       if ((d.singles ?? 0) + (d.doubles ?? 0) <= 0) {
         ctx.addIssue({
@@ -48,7 +51,7 @@ const schema = z
     } else {
       const utvs = d.utvs ?? 0;
       const riders = d.riders ?? 0;
-      const maxSeats = tour.maxSeats ?? 5;
+      const maxSeats = operator?.utvMaxSeats ?? tour.maxSeats ?? 5;
       if (utvs <= 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -69,6 +72,16 @@ const schema = z
           message: `Max ${maxSeats} riders per UTV (${utvs * maxSeats} total)`,
           path: ["riders"],
         });
+      }
+      if (operator?.utvTierPrices && utvs > 0 && riders > 0) {
+        const minTier = Math.min(...operator.utvTierPrices.map((t) => t.riders));
+        if (riders < utvs * minTier) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `${operator.name} requires at least ${minTier} riders per UTV.`,
+            path: ["riders"],
+          });
+        }
       }
     }
     if (tour.canopyOperators && !d.canopyOperator) {
@@ -120,6 +133,11 @@ export function BookingForm({
   const riders = watch("riders") ?? 0;
   const bandanas = watch("bandanas") ?? 0;
   const canopyOperator = watch("canopyOperator") ?? "";
+  const selectedOperator = currentTour?.canopyOperators?.find(
+    (op) => op.slug === canopyOperator,
+  );
+  const effectiveMaxSeats =
+    selectedOperator?.utvMaxSeats ?? currentTour?.maxSeats ?? 5;
 
   // Reset operator when tour changes
   useEffect(() => {
@@ -128,30 +146,41 @@ export function BookingForm({
     }
   }, [currentTour, canopyOperator, setValue]);
 
-  // Clamp riders when utvs decreases
+  // Clamp riders when utvs / operator change
   useEffect(() => {
-    const maxSeats = currentTour?.maxSeats ?? 5;
     if (currentTour && currentTour.pricingMode !== "per-variant") {
-      const cap = utvs * maxSeats;
+      const cap = utvs * effectiveMaxSeats;
       if (riders > cap) {
         setValue("riders", cap, { shouldValidate: true });
       }
     }
-  }, [utvs, currentTour, riders, setValue]);
+  }, [utvs, currentTour, riders, effectiveMaxSeats, setValue]);
 
   const totalRiders = hasVariants ? singles + doubles * 2 : riders;
 
   let tourSubtotal = 0;
   if (currentTour) {
     if (hasVariants && currentTour.variants) {
-      tourSubtotal =
-        singles * currentTour.variants[0].price +
-        doubles * currentTour.variants[1].price;
+      const singlePrice =
+        selectedOperator?.variantPrices?.single ?? currentTour.variants[0].price;
+      const doublePrice =
+        selectedOperator?.variantPrices?.double ?? currentTour.variants[1].price;
+      tourSubtotal = singles * singlePrice + doubles * doublePrice;
     } else if (currentTour.pricingMode === "flat-vehicle") {
       tourSubtotal = utvs * currentTour.price;
     } else if (currentTour.pricingMode === "flat-plus-per-person") {
-      tourSubtotal =
-        utvs * currentTour.price + riders * (currentTour.perPersonAddon ?? 0);
+      if (selectedOperator?.utvTierPrices && utvs > 0 && riders > 0) {
+        const tiered = computeUtvTierTotal(
+          riders,
+          utvs,
+          selectedOperator.utvTierPrices,
+        );
+        tourSubtotal =
+          tiered ?? utvs * currentTour.price + riders * (currentTour.perPersonAddon ?? 0);
+      } else {
+        tourSubtotal =
+          utvs * currentTour.price + riders * (currentTour.perPersonAddon ?? 0);
+      }
     }
   }
   const bandanaSubtotal = bandanas * BANDANA.price;
@@ -204,7 +233,7 @@ export function BookingForm({
           <label className={label}>Phone / WhatsApp</label>
           <input
             {...register("phone")}
-            placeholder="+506 0000 0000"
+            placeholder="+506 8519-2804"
             className={field}
           />
         </div>
@@ -255,18 +284,29 @@ export function BookingForm({
               <QuantityRow
                 title={currentTour.variants![0].label}
                 subtitle="1 rider per quad"
-                price={currentTour.variants![0].price}
+                price={
+                  selectedOperator?.variantPrices?.single ??
+                  currentTour.variants![0].price
+                }
                 value={singles}
                 onChange={(v) => setValue("singles", v, { shouldValidate: true })}
               />
               <QuantityRow
                 title={currentTour.variants![1].label}
                 subtitle={`2 riders per quad · passenger ${currentTour.minPassengerAge}+ yrs`}
-                price={currentTour.variants![1].price}
+                price={
+                  selectedOperator?.variantPrices?.double ??
+                  currentTour.variants![1].price
+                }
                 value={doubles}
                 onChange={(v) => setValue("doubles", v, { shouldValidate: true })}
               />
             </div>
+            {selectedOperator?.variantPrices && (
+              <p className="mt-2 text-xs text-white/55">
+                Pricing shown with {selectedOperator.name}.
+              </p>
+            )}
             {errors.riders && (
               <p className={errorCls}>{errors.riders.message}</p>
             )}
@@ -280,9 +320,15 @@ export function BookingForm({
               <div className="space-y-3">
                 <QuantityRow
                   title="UTV vehicles"
-                  subtitle={`Each UTV seats up to ${currentTour.maxSeats ?? 5}. Book multiple UTVs for larger groups.`}
-                  price={currentTour.price}
-                  priceLabel="per UTV"
+                  subtitle={`Each UTV seats up to ${effectiveMaxSeats}. Book multiple UTVs for larger groups.`}
+                  price={
+                    selectedOperator?.utvTierPrices
+                      ? selectedOperator.utvTierPrices[0].price
+                      : currentTour.price
+                  }
+                  priceLabel={
+                    selectedOperator?.utvTierPrices ? "from / UTV" : "per UTV"
+                  }
                   max={10}
                   value={utvs}
                   onChange={(v) => setValue("utvs", v, { shouldValidate: true })}
@@ -290,24 +336,39 @@ export function BookingForm({
                 <QuantityRow
                   title="Total riders"
                   subtitle={
-                    currentTour.pricingMode === "flat-plus-per-person"
-                      ? `Priced per person. Passenger ${currentTour.minPassengerAge}+ yrs.`
-                      : `Headcount across all UTVs. Passenger ${currentTour.minPassengerAge}+ yrs.`
+                    selectedOperator?.utvTierPrices
+                      ? `Priced per UTV by rider count (${selectedOperator.utvTierPrices.map((t) => `x${t.riders} $${t.price}`).join(" · ")}). Passenger ${currentTour.minPassengerAge}+ yrs.`
+                      : currentTour.pricingMode === "flat-plus-per-person"
+                        ? `Priced per person. Passenger ${currentTour.minPassengerAge}+ yrs.`
+                        : `Headcount across all UTVs. Passenger ${currentTour.minPassengerAge}+ yrs.`
                   }
                   price={
-                    currentTour.pricingMode === "flat-plus-per-person"
-                      ? currentTour.perPersonAddon ?? 0
-                      : 0
+                    selectedOperator?.utvTierPrices
+                      ? 0
+                      : currentTour.pricingMode === "flat-plus-per-person"
+                        ? currentTour.perPersonAddon ?? 0
+                        : 0
                   }
                   priceLabel={
-                    currentTour.pricingMode === "flat-plus-per-person"
-                      ? "per person"
-                      : "included"
+                    selectedOperator?.utvTierPrices
+                      ? "see UTV tiers"
+                      : currentTour.pricingMode === "flat-plus-per-person"
+                        ? "per person"
+                        : "included"
                   }
-                  max={Math.max(1, utvs) * (currentTour.maxSeats ?? 5)}
+                  max={Math.max(1, utvs) * effectiveMaxSeats}
                   value={riders}
                   onChange={(v) => setValue("riders", v, { shouldValidate: true })}
                 />
+                {selectedOperator?.utvTierPrices && utvs > 0 && riders > 0 && (
+                  <p className="text-xs text-white/55">
+                    Riders distributed across UTVs:{" "}
+                    {distributeRiders(riders, utvs)
+                      .map((n) => `${n} rider${n === 1 ? "" : "s"}`)
+                      .join(" + ")}
+                    .
+                  </p>
+                )}
                 {currentTour.seatingNote && (
                   <p className="text-xs text-white/55">{currentTour.seatingNote}</p>
                 )}
@@ -367,6 +428,26 @@ export function BookingForm({
             {errors.canopyOperator && (
               <p className={errorCls}>{errors.canopyOperator.message}</p>
             )}
+            {selectedOperator &&
+              (selectedOperator.departures || selectedOperator.freePickupZones) && (
+                <div className="mt-3 rounded-2xl border border-lava-500/30 bg-lava-500/5 p-3 text-xs text-white/75">
+                  {selectedOperator.departures && (
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-lava-400">
+                        Departures ·{" "}
+                      </span>
+                      <span className="font-display tracking-wide text-white">
+                        {selectedOperator.departures.join(" · ")}
+                      </span>
+                    </div>
+                  )}
+                  {selectedOperator.pickupNote && (
+                    <p className="mt-2 text-[11px] text-white/65">
+                      {selectedOperator.pickupNote}
+                    </p>
+                  )}
+                </div>
+              )}
           </div>
         )}
 

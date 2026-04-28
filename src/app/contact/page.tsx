@@ -62,11 +62,13 @@ export default function ContactPage() {
                       icon: Phone,
                       label: "Phone / WhatsApp",
                       value: CONTACT.phone,
+                      href: `tel:${CONTACT.phoneE164}`,
                     },
                     {
                       icon: Mail,
                       label: "Reservations",
                       value: CONTACT.email,
+                      href: `mailto:${CONTACT.email}`,
                     },
                     {
                       icon: MapPin,
@@ -78,22 +80,26 @@ export default function ContactPage() {
                       label: "Departures",
                       value: `Daily · ${SCHEDULE.departures.join(" · ")}`,
                     },
-                  ].map((c, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-lava-400/50 sm:gap-4"
-                    >
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-lava-500/20 text-lava-400 ring-1 ring-lava-500/40">
-                        <c.icon className="h-4 w-4" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/50">
-                          {c.label}
+                  ].map((c, i) => {
+                    const Wrapper: React.ElementType = c.href ? "a" : "div";
+                    return (
+                      <Wrapper
+                        key={i}
+                        {...(c.href ? { href: c.href } : {})}
+                        className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-lava-400/50 sm:gap-4"
+                      >
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-lava-500/20 text-lava-400 ring-1 ring-lava-500/40">
+                          <c.icon className="h-4 w-4" />
                         </div>
-                        <div className="mt-1 break-all text-white">{c.value}</div>
-                      </div>
-                    </div>
-                  ))}
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/50">
+                            {c.label}
+                          </div>
+                          <div className="mt-1 break-all text-white">{c.value}</div>
+                        </div>
+                      </Wrapper>
+                    );
+                  })}
                 </div>
 
                 <div className="mt-6 text-[10px] font-bold uppercase tracking-[0.25em] text-white/50">
