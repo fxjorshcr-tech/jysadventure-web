@@ -1,22 +1,70 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
   Send,
   Loader2,
-  CheckCircle2,
   Minus,
   Plus,
   ChevronDown,
 } from "lucide-react";
-import { TOURS, getTour, computeUtvTierTotal, distributeRiders } from "@/lib/tours";
-import { ADD_ONS } from "@/lib/info";
+import {
+  TOURS,
+  getTour,
+  computeUtvTierTotal,
+  distributeRiders,
+  type CanopyOperator,
+} from "@/lib/tours";
+import {
+  ADD_ONS,
+  SCHEDULE,
+  TRANSPORT_ZONES,
+  TRANSPORT_INFO,
+} from "@/lib/info";
 import { DatePicker } from "./DatePicker";
 
 const BANDANA = ADD_ONS.find((a) => a.slug === "bandana")!;
+const DEPARTURE_OPTIONS = [...SCHEDULE.departures, "Other — we'll confirm"];
+
+type ResolvedPickup = {
+  zoneName: string | null;
+  cost: number;
+};
+
+function slugifyZone(name: string) {
+  return `op-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
+}
+
+function computeTransport(
+  zoneSlug: string,
+  riders: number,
+  operator?: CanopyOperator,
+): ResolvedPickup {
+  if (!zoneSlug) return { zoneName: null, cost: 0 };
+  if (operator?.freePickupZones || operator?.paidPickupZones) {
+    const free = operator.freePickupZones?.find(
+      (z) => slugifyZone(z) === zoneSlug,
+    );
+    if (free) return { zoneName: free, cost: 0 };
+    const paid = operator.paidPickupZones?.find(
+      (z) => slugifyZone(z) === zoneSlug,
+    );
+    if (paid) {
+      return { zoneName: paid, cost: operator.extraPickupSurcharge ?? 0 };
+    }
+    return { zoneName: null, cost: 0 };
+  }
+  const zone = TRANSPORT_ZONES.find((z) => z.slug === zoneSlug);
+  if (!zone) return { zoneName: null, cost: 0 };
+  const included = TRANSPORT_INFO.includedPassengers;
+  const extras = Math.max(0, riders - included);
+  const cost = zone.basePrice + extras * zone.extraPerPerson;
+  return { zoneName: zone.name, cost };
+}
 
 const schema = z
   .object({
@@ -24,6 +72,7 @@ const schema = z
     email: z.string().email("Invalid email address"),
     phone: z.string().optional(),
     date: z.string().min(1, "Pick a date"),
+    departure: z.string().min(1, "Pick a departure time"),
     tour: z.string().min(1, "Choose a tour"),
     singles: z.coerce.number().min(0).max(20),
     doubles: z.coerce.number().min(0).max(20),
@@ -31,6 +80,8 @@ const schema = z
     riders: z.coerce.number().min(0).max(50),
     canopyOperator: z.string().optional(),
     bandanas: z.coerce.number().min(0).max(30),
+    pickupZone: z.string().optional(),
+    pickupOther: z.string().optional(),
     license: z.boolean().optional(),
     message: z.string().optional(),
   })
@@ -59,10 +110,10 @@ const schema = z
           path: ["utvs"],
         });
       }
-      if (riders <= 0) {
+      if (riders < utvs) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Add at least 1 rider",
+          message: "At least 1 rider per UTV",
           path: ["riders"],
         });
       }
@@ -91,6 +142,13 @@ const schema = z
         path: ["canopyOperator"],
       });
     }
+    if (d.pickupZone === "other" && !d.pickupOther?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Tell us your pickup hotel/location",
+        path: ["pickupOther"],
+      });
+    }
   });
 
 type FormData = z.infer<typeof schema>;
@@ -100,7 +158,6 @@ export function BookingForm({
 }: {
   preselectedSlug?: string;
 } = {}) {
-  const [sent, setSent] = useState(false);
   const lockedTour = preselectedSlug ? getTour(preselectedSlug) : undefined;
 
   const {
@@ -110,7 +167,6 @@ export function BookingForm({
     watch,
     setValue,
     formState: { errors, isSubmitting },
-    reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -119,8 +175,11 @@ export function BookingForm({
       utvs: lockedTour && lockedTour.pricingMode !== "per-variant" ? 1 : 0,
       riders: lockedTour && lockedTour.pricingMode !== "per-variant" ? 2 : 0,
       tour: preselectedSlug ?? "",
+      departure: "",
       canopyOperator: "",
       bandanas: 0,
+      pickupZone: "",
+      pickupOther: "",
     },
   });
 
@@ -138,6 +197,7 @@ export function BookingForm({
   );
   const effectiveMaxSeats =
     selectedOperator?.utvMaxSeats ?? currentTour?.maxSeats ?? 5;
+  const pickupZone = watch("pickupZone") ?? "";
 
   // Reset operator when tour changes
   useEffect(() => {
@@ -146,12 +206,31 @@ export function BookingForm({
     }
   }, [currentTour, canopyOperator, setValue]);
 
-  // Clamp riders when utvs / operator change
+  // Reset pickup when the operator zone overrides change
+  useEffect(() => {
+    if (!pickupZone || pickupZone === "other") return;
+    if (selectedOperator?.freePickupZones || selectedOperator?.paidPickupZones) {
+      const valid =
+        selectedOperator.freePickupZones?.some(
+          (n) => slugifyZone(n) === pickupZone,
+        ) ||
+        selectedOperator.paidPickupZones?.some(
+          (n) => slugifyZone(n) === pickupZone,
+        );
+      if (!valid) setValue("pickupZone", "");
+    } else if (!TRANSPORT_ZONES.some((z) => z.slug === pickupZone)) {
+      setValue("pickupZone", "");
+    }
+  }, [selectedOperator, pickupZone, setValue]);
+
+  // Keep riders within [utvs, utvs * effectiveMaxSeats]
   useEffect(() => {
     if (currentTour && currentTour.pricingMode !== "per-variant") {
       const cap = utvs * effectiveMaxSeats;
       if (riders > cap) {
         setValue("riders", cap, { shouldValidate: true });
+      } else if (riders < utvs) {
+        setValue("riders", utvs, { shouldValidate: true });
       }
     }
   }, [utvs, currentTour, riders, effectiveMaxSeats, setValue]);
@@ -184,21 +263,73 @@ export function BookingForm({
     }
   }
   const bandanaSubtotal = bandanas * BANDANA.price;
-  const totalPrice = tourSubtotal + bandanaSubtotal;
+  const transport = computeTransport(pickupZone, totalRiders, selectedOperator);
+  const transportSubtotal = transport.cost;
+  const totalPrice = tourSubtotal + bandanaSubtotal + transportSubtotal;
 
-  const onSubmit = async (_data: FormData) => {
-    await new Promise((r) => setTimeout(r, 900));
-    setSent(true);
-    reset({
-      singles: 0,
-      doubles: 0,
-      utvs: lockedTour && lockedTour.pricingMode !== "per-variant" ? 1 : 0,
-      riders: lockedTour && lockedTour.pricingMode !== "per-variant" ? 2 : 0,
-      tour: preselectedSlug ?? "",
-      canopyOperator: "",
-      bandanas: 0,
-    });
-    setTimeout(() => setSent(false), 4500);
+  const router = useRouter();
+
+  const onSubmit = async (data: FormData) => {
+    await new Promise((r) => setTimeout(r, 400));
+
+    const tour = getTour(data.tour);
+    const operator = tour?.canopyOperators?.find(
+      (o) => o.slug === data.canopyOperator
+    );
+    const summary = {
+      contact: {
+        name: data.name,
+        email: data.email,
+        phone: data.phone ?? "",
+      },
+      tour: {
+        slug: tour?.slug ?? "",
+        title: tour?.title ?? "",
+      },
+      schedule: {
+        date: data.date,
+        departure: data.departure,
+      },
+      vehicles: hasVariants
+        ? {
+            mode: "atv" as const,
+            singles: data.singles,
+            doubles: data.doubles,
+            totalRiders,
+          }
+        : {
+            mode: "utv" as const,
+            utvs: data.utvs,
+            riders: data.riders,
+            totalRiders,
+          },
+      canopyOperator: operator
+        ? { slug: operator.slug, name: operator.name }
+        : null,
+      addons: {
+        bandanas: data.bandanas,
+      },
+      pickup: {
+        zoneSlug: data.pickupZone ?? "",
+        zoneName: transport.zoneName ?? (data.pickupZone === "other" ? "Other" : ""),
+        otherDetail: data.pickupOther ?? "",
+        cost: transportSubtotal,
+        confirmedRate: data.pickupZone !== "other",
+      },
+      message: data.message ?? "",
+      pricing: {
+        tourSubtotal,
+        bandanaSubtotal,
+        transportSubtotal,
+        total: totalPrice,
+      },
+    };
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("jys-booking", JSON.stringify(summary));
+    }
+
+    router.push("/book/confirmation");
   };
 
   const field =
@@ -248,6 +379,34 @@ export function BookingForm({
             )}
           />
           {errors.date && <p className={errorCls}>{errors.date.message}</p>}
+        </div>
+
+        <div className="sm:col-span-2">
+          <label className={label}>Departure time</label>
+          <div className="flex flex-wrap gap-2">
+            {DEPARTURE_OPTIONS.map((t) => {
+              const selected = watch("departure") === t;
+              return (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() =>
+                    setValue("departure", t, { shouldValidate: true })
+                  }
+                  className={`rounded-full border px-4 py-2 text-sm transition ${
+                    selected
+                      ? "border-lava-400 bg-lava-500/15 text-white"
+                      : "border-white/15 bg-white/[0.03] text-white/75 hover:border-white/30"
+                  }`}
+                >
+                  {t}
+                </button>
+              );
+            })}
+          </div>
+          {errors.departure && (
+            <p className={errorCls}>{errors.departure.message}</p>
+          )}
         </div>
 
         {/* Tour: hidden when already on a tour page, dropdown otherwise */}
@@ -464,48 +623,257 @@ export function BookingForm({
           />
         </div>
 
+        {/* Pickup / transport */}
+        <div className="sm:col-span-2">
+          <label className={label}>Need hotel pickup?</label>
+          <div className="relative">
+            <select
+              {...register("pickupZone")}
+              className={`${field} appearance-none pr-11`}
+            >
+              <option value="" className="bg-night-900">
+                No thanks — I&apos;ll meet at base camp
+              </option>
+              {selectedOperator?.freePickupZones ||
+              selectedOperator?.paidPickupZones ? (
+                <>
+                  {selectedOperator.freePickupZones?.map((name) => (
+                    <option
+                      key={name}
+                      value={slugifyZone(name)}
+                      className="bg-night-900"
+                    >
+                      {name} — free ({selectedOperator.name})
+                    </option>
+                  ))}
+                  {selectedOperator.paidPickupZones?.map((name) => (
+                    <option
+                      key={name}
+                      value={slugifyZone(name)}
+                      className="bg-night-900"
+                    >
+                      {name} — +${selectedOperator.extraPickupSurcharge ?? 0}{" "}
+                      ({selectedOperator.name})
+                    </option>
+                  ))}
+                </>
+              ) : (
+                TRANSPORT_ZONES.map((z) => (
+                  <option key={z.slug} value={z.slug} className="bg-night-900">
+                    {z.name}
+                    {z.basePrice === 0
+                      ? " — free"
+                      : ` — from $${z.basePrice}`}
+                  </option>
+                ))
+              )}
+              <option value="other" className="bg-night-900">
+                Other location / hotel (we&apos;ll confirm rate)
+              </option>
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-lava-400" />
+          </div>
+          {pickupZone === "other" && (
+            <div className="mt-3">
+              <input
+                {...register("pickupOther")}
+                placeholder="Hotel name or location"
+                className={field}
+              />
+              {errors.pickupOther && (
+                <p className={errorCls}>{errors.pickupOther.message}</p>
+              )}
+            </div>
+          )}
+          {pickupZone &&
+            pickupZone !== "" &&
+            pickupZone !== "other" &&
+            !selectedOperator?.freePickupZones && (
+              <p className="mt-3 text-xs text-white/60">
+                Listed rate covers 1–{TRANSPORT_INFO.includedPassengers} riders;
+                extra riders add to the base. The transport cost is added to
+                your total below — our team will confirm everything when we
+                reply to your booking.
+              </p>
+            )}
+          {pickupZone &&
+            pickupZone !== "" &&
+            pickupZone !== "other" &&
+            selectedOperator?.freePickupZones && (
+              <p className="mt-3 text-xs text-white/60">
+                {selectedOperator.pickupNote ??
+                  `Pickup with ${selectedOperator.name}.`}
+              </p>
+            )}
+          {pickupZone === "other" && (
+            <p className="mt-3 text-xs text-white/60">
+              We don&apos;t have a fixed rate for this location — our team will
+              reach out to confirm the transport cost before charging anything.
+            </p>
+          )}
+        </div>
+
         {/* Live total */}
         {currentTour && (
           <div className="sm:col-span-2">
-            <div className="flex items-end justify-between gap-3 rounded-2xl border border-lava-500/40 bg-lava-500/10 px-4 py-4 sm:gap-4 sm:px-5">
-              <div className="min-w-0 flex-1">
-                <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
-                  Total
+            <div className="rounded-2xl border border-lava-500/40 bg-lava-500/10 px-4 py-4 sm:px-5">
+              <div className="flex items-end justify-between gap-3 sm:gap-4">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/60">
+                    Total
+                  </div>
+                  <div className="mt-0.5 text-sm text-white/75">
+                    {!hasVariants && utvs > 0 && (
+                      <span>
+                        {utvs} UTV{utvs > 1 ? "s" : ""} ·{" "}
+                      </span>
+                    )}
+                    {totalRiders} {totalRiders === 1 ? "rider" : "riders"}
+                    {hasVariants && (singles > 0 || doubles > 0) && (
+                      <span className="text-white/55">
+                        {" "}
+                        ({singles > 0 && `${singles} Single`}
+                        {singles > 0 && doubles > 0 && " + "}
+                        {doubles > 0 && `${doubles} Double`})
+                      </span>
+                    )}
+                    {bandanas > 0 && (
+                      <span className="text-white/55">
+                        {" "}
+                        · {bandanas} bandana{bandanas > 1 ? "s" : ""}
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-1 text-[10px] uppercase tracking-widest text-white/45">
+                    Tax included
+                    {transport.zoneName
+                      ? transport.cost > 0
+                        ? " · transport included"
+                        : " · free transport"
+                      : pickupZone === "other"
+                        ? " · transport TBC"
+                        : " · base camp pickup"}
+                  </div>
                 </div>
-                <div className="mt-0.5 text-sm text-white/75">
-                  {!hasVariants && utvs > 0 && (
-                    <span>
-                      {utvs} UTV{utvs > 1 ? "s" : ""} ·{" "}
-                    </span>
+                <div className="shrink-0 text-right">
+                  <div className="font-display text-2xl text-lava-400 sm:text-3xl">
+                    ${totalPrice}
+                  </div>
+                  <div className="text-[10px] uppercase tracking-widest text-white/50">
+                    estimated
+                  </div>
+                </div>
+              </div>
+
+              {/* Breakdown */}
+              {totalPrice > 0 && (
+                <ul className="mt-3 space-y-1 border-t border-white/10 pt-3 text-xs text-white/60">
+                  {hasVariants && currentTour.variants && (() => {
+                    const singlePrice =
+                      selectedOperator?.variantPrices?.single ??
+                      currentTour.variants[0].price;
+                    const doublePrice =
+                      selectedOperator?.variantPrices?.double ??
+                      currentTour.variants[1].price;
+                    return (
+                      <>
+                        {singles > 0 && (
+                          <li className="flex justify-between gap-3">
+                            <span>
+                              {singles} × {currentTour.variants[0].label}
+                              {selectedOperator?.variantPrices?.single !== undefined &&
+                                ` (${selectedOperator.name})`}
+                            </span>
+                            <span>${singles * singlePrice}</span>
+                          </li>
+                        )}
+                        {doubles > 0 && (
+                          <li className="flex justify-between gap-3">
+                            <span>
+                              {doubles} × {currentTour.variants[1].label}
+                              {selectedOperator?.variantPrices?.double !== undefined &&
+                                ` (${selectedOperator.name})`}
+                            </span>
+                            <span>${doubles * doublePrice}</span>
+                          </li>
+                        )}
+                      </>
+                    );
+                  })()}
+                  {!hasVariants &&
+                    selectedOperator?.utvTierPrices &&
+                    utvs > 0 &&
+                    riders > 0 &&
+                    distributeRiders(riders, utvs).map((utvRiders, idx) => {
+                      const tier = selectedOperator.utvTierPrices!.find(
+                        (t) => t.riders === utvRiders,
+                      );
+                      return (
+                        <li
+                          key={idx}
+                          className="flex justify-between gap-3"
+                        >
+                          <span>
+                            UTV {idx + 1} · {utvRiders} riders ({selectedOperator.name})
+                          </span>
+                          <span>{tier ? `$${tier.price}` : "—"}</span>
+                        </li>
+                      );
+                    })}
+                  {!hasVariants && !selectedOperator?.utvTierPrices && utvs > 0 && (
+                    <li className="flex justify-between gap-3">
+                      <span>
+                        {utvs} × UTV (${currentTour.price})
+                      </span>
+                      <span>${utvs * currentTour.price}</span>
+                    </li>
                   )}
-                  {totalRiders} {totalRiders === 1 ? "rider" : "riders"}
-                  {hasVariants && (singles > 0 || doubles > 0) && (
-                    <span className="text-white/55">
-                      {" "}
-                      ({singles > 0 && `${singles} Single`}
-                      {singles > 0 && doubles > 0 && " + "}
-                      {doubles > 0 && `${doubles} Double`})
-                    </span>
-                  )}
+                  {!hasVariants &&
+                    !selectedOperator?.utvTierPrices &&
+                    currentTour.pricingMode === "flat-plus-per-person" &&
+                    riders > 0 &&
+                    (currentTour.perPersonAddon ?? 0) > 0 && (
+                      <li className="flex justify-between gap-3">
+                        <span>
+                          {riders} × {currentTour.addon} (${currentTour.perPersonAddon}
+                          /person)
+                        </span>
+                        <span>
+                          ${riders * (currentTour.perPersonAddon ?? 0)}
+                        </span>
+                      </li>
+                    )}
                   {bandanas > 0 && (
-                    <span className="text-white/55">
-                      {" "}
-                      · {bandanas} bandana{bandanas > 1 ? "s" : ""}
-                    </span>
+                    <li className="flex justify-between gap-3">
+                      <span>
+                        {bandanas} × Bandana (${BANDANA.price})
+                      </span>
+                      <span>${bandanaSubtotal}</span>
+                    </li>
                   )}
-                </div>
-                <div className="mt-1 text-[10px] uppercase tracking-widest text-white/45">
-                  Tax included
-                </div>
-              </div>
-              <div className="shrink-0 text-right">
-                <div className="font-display text-2xl text-lava-400 sm:text-3xl">
-                  ${totalPrice}
-                </div>
-                <div className="text-[10px] uppercase tracking-widest text-white/50">
-                  estimated
-                </div>
-              </div>
+                  {transport.zoneName && (
+                    <li className="flex justify-between gap-3">
+                      <span>
+                        Transport — {transport.zoneName}
+                        {!selectedOperator?.freePickupZones &&
+                          totalRiders > TRANSPORT_INFO.includedPassengers &&
+                          ` (incl. ${totalRiders - TRANSPORT_INFO.includedPassengers} extra)`}
+                      </span>
+                      <span>
+                        {transportSubtotal === 0
+                          ? "Free"
+                          : `$${transportSubtotal}`}
+                      </span>
+                    </li>
+                  )}
+                  {pickupZone === "other" && (
+                    <li className="flex justify-between gap-3 text-white/45">
+                      <span>Transport — to be confirmed</span>
+                      <span>—</span>
+                    </li>
+                  )}
+                </ul>
+              )}
             </div>
           </div>
         )}
@@ -537,20 +905,16 @@ export function BookingForm({
 
       <button
         type="submit"
-        disabled={isSubmitting || sent}
+        disabled={isSubmitting}
         className="btn-primary mt-6 w-full disabled:opacity-70"
       >
         {isSubmitting ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" /> Sending
-          </>
-        ) : sent ? (
-          <>
-            <CheckCircle2 className="h-4 w-4" /> Sent! We&apos;ll be in touch
+            <Loader2 className="h-4 w-4 animate-spin" /> Reviewing
           </>
         ) : (
           <>
-            <Send className="h-4 w-4" /> Launch my adventure
+            <Send className="h-4 w-4" /> Review my booking
           </>
         )}
       </button>

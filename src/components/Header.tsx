@@ -94,7 +94,7 @@ export function Header() {
               </a>
             ))}
           </div>
-          <Link href="/contact" className="btn-primary">
+          <Link href="/tours" className="btn-primary">
             <Flame className="h-4 w-4" /> Book Now
           </Link>
         </div>
@@ -130,7 +130,7 @@ export function Header() {
               </Link>
             ))}
             <Link
-              href="/contact"
+              href="/tours"
               onClick={() => setOpen(false)}
               className="btn-primary mt-5 w-full"
             >
