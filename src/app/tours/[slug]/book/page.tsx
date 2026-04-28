@@ -6,6 +6,7 @@ import { BookingForm } from "@/components/BookingForm";
 import { ArrowLeft } from "lucide-react";
 
 type Params = { slug: string };
+type SearchParams = { op?: string };
 
 export function generateStaticParams() {
   return TOURS.map((t) => ({ slug: t.slug }));
@@ -23,12 +24,22 @@ export async function generateMetadata({ params }: { params: Promise<Params> }) 
 
 export default async function BookTourPage({
   params,
+  searchParams,
 }: {
   params: Promise<Params>;
+  searchParams: Promise<SearchParams>;
 }) {
   const { slug } = await params;
+  const { op } = await searchParams;
   const tour = getTour(slug);
   if (!tour) notFound();
+
+  // Resolve preselected canopy operator: explicit op param wins; otherwise
+  // default to Skyline for canopy combos so the more expensive option is
+  // surfaced upfront instead of an empty pricing state.
+  const preselectedOperator =
+    tour.canopyOperators?.find((o) => o.slug === op)?.slug ??
+    (tour.canopyOperators ? "skyline" : undefined);
 
   return (
     <>
@@ -66,7 +77,10 @@ export default async function BookTourPage({
 
       <section className="relative bg-night-950 py-16 md:py-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-5 lg:px-8">
-          <BookingForm preselectedSlug={tour.slug} />
+          <BookingForm
+            preselectedSlug={tour.slug}
+            preselectedOperator={preselectedOperator}
+          />
         </div>
       </section>
     </>

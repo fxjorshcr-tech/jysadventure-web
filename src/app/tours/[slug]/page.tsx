@@ -374,6 +374,14 @@ export default async function TourDetailPage({
                               </div>
                             );
                           })()}
+
+                          {/* Per-operator booking CTA */}
+                          <Link
+                            href={`/tours/${tour.slug}/book?op=${op.slug}`}
+                            className="btn-primary mt-5 w-full justify-center"
+                          >
+                            <Flame className="h-4 w-4" /> Book this one
+                          </Link>
                         </div>
                       );
                     })}
@@ -447,22 +455,24 @@ export default async function TourDetailPage({
               </div>
             </div>
 
-            {/* Booking CTA */}
-            <div className="mt-10 overflow-hidden rounded-3xl border border-lava-500/40 bg-gradient-to-br from-lava-500/15 via-night-900 to-night-950 p-6 text-center sm:p-10">
-              <h2 className="font-display text-3xl tracking-wide text-white sm:text-4xl">
-                Ready to <span className="text-gradient-fire">ride</span>?
-              </h2>
-              <p className="mx-auto mt-3 max-w-md text-sm text-white/70">
-                Pick your date, group size and pickup — we&apos;ll confirm
-                availability within the hour.
-              </p>
-              <Link
-                href={`/tours/${tour.slug}/book`}
-                className="btn-primary mt-7 inline-flex"
-              >
-                <Flame className="h-4 w-4" /> Let&apos;s book
-              </Link>
-            </div>
+            {/* Booking CTA — only for tours without per-operator pickers */}
+            {!tour.canopyOperators && (
+              <div className="mt-10 overflow-hidden rounded-3xl border border-lava-500/40 bg-gradient-to-br from-lava-500/15 via-night-900 to-night-950 p-6 text-center sm:p-10">
+                <h2 className="font-display text-3xl tracking-wide text-white sm:text-4xl">
+                  Ready to <span className="text-gradient-fire">ride</span>?
+                </h2>
+                <p className="mx-auto mt-3 max-w-md text-sm text-white/70">
+                  Pick your date, group size and pickup — we&apos;ll confirm
+                  availability within the hour.
+                </p>
+                <Link
+                  href={`/tours/${tour.slug}/book`}
+                  className="btn-primary mt-7 inline-flex"
+                >
+                  <Flame className="h-4 w-4" /> Let&apos;s book
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>

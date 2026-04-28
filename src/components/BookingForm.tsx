@@ -170,10 +170,17 @@ type FormData = z.infer<typeof schema>;
 
 export function BookingForm({
   preselectedSlug,
+  preselectedOperator,
 }: {
   preselectedSlug?: string;
+  preselectedOperator?: string;
 } = {}) {
   const lockedTour = preselectedSlug ? getTour(preselectedSlug) : undefined;
+  const validPreselectedOperator =
+    preselectedOperator &&
+    lockedTour?.canopyOperators?.some((o) => o.slug === preselectedOperator)
+      ? preselectedOperator
+      : "";
 
   const {
     register,
@@ -191,7 +198,7 @@ export function BookingForm({
       riders: lockedTour && lockedTour.pricingMode !== "per-variant" ? 2 : 0,
       tour: preselectedSlug ?? "",
       departure: "",
-      canopyOperator: "",
+      canopyOperator: validPreselectedOperator,
       bandanas: 0,
       pickupZone: "",
       pickupOther: "",
@@ -558,6 +565,8 @@ export function BookingForm({
             <div className="grid gap-3 sm:grid-cols-2">
               {currentTour.canopyOperators.map((op) => {
                 const selected = canopyOperator === op.slug;
+                const isPreselected =
+                  validPreselectedOperator === op.slug && selected;
                 return (
                   <button
                     key={op.slug}
@@ -565,12 +574,17 @@ export function BookingForm({
                     onClick={() =>
                       setValue("canopyOperator", op.slug, { shouldValidate: true })
                     }
-                    className={`rounded-2xl border p-4 text-left transition ${
+                    className={`relative rounded-2xl border p-4 text-left transition ${
                       selected
                         ? "border-lava-400 bg-lava-500/10"
                         : "border-white/15 bg-white/[0.03] hover:border-white/30"
                     }`}
                   >
+                    {isPreselected && (
+                      <span className="absolute right-3 top-3 rounded-full border border-lava-400/60 bg-lava-500/15 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-lava-300">
+                        Pre-selected
+                      </span>
+                    )}
                     <div className="font-display text-base tracking-wide text-white">
                       {op.name}
                     </div>
