@@ -836,9 +836,6 @@ export function BookingForm({
                   <div className="font-display text-2xl text-lava-400 sm:text-3xl">
                     ${totalPrice}
                   </div>
-                  <div className="text-[10px] uppercase tracking-widest text-white/50">
-                    estimated
-                  </div>
                 </div>
               </div>
 
