@@ -330,21 +330,30 @@ export default async function TourDetailPage({
                           )}
 
                           {/* Pickup zones */}
-                          {op.freePickupZones && (
+                          {(op.freePickupZones ||
+                            op.paidPickupZones ||
+                            op.pickupNote) && (
                             <div className="mt-4 text-xs text-white/65">
                               <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">
-                                Free pickup
+                                Hotel pickup
                               </div>
-                              <div className="mt-1 flex flex-wrap gap-1">
-                                {op.freePickupZones.map((z) => (
-                                  <span
-                                    key={z}
-                                    className="rounded-full border border-jungle-500/40 bg-jungle-500/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-jungle-500"
-                                  >
-                                    {z}
-                                  </span>
-                                ))}
-                              </div>
+                              {op.freePickupZones && (
+                                <>
+                                  <div className="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-jungle-500/80">
+                                    Free
+                                  </div>
+                                  <div className="mt-1 flex flex-wrap gap-1">
+                                    {op.freePickupZones.map((z) => (
+                                      <span
+                                        key={z}
+                                        className="rounded-full border border-jungle-500/40 bg-jungle-500/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-jungle-500"
+                                      >
+                                        {z}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
                               {op.paidPickupZones && op.extraPickupSurcharge && (
                                 <>
                                   <div className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-white/55">

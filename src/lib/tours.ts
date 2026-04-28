@@ -49,6 +49,11 @@ export const CANOPY_OPERATORS: CanopyOperator[] = [
     recommendedZone: "Playa Hermosa / El Coco",
     description:
       "Closest canopy to our base — ideal for guests staying in Playa Hermosa or El Coco.",
+    departures: ["8:00 AM", "11:00 AM", "2:00 PM"],
+    scheduleNote:
+      "Three daily slots. Hotel pickup arranged ahead of your departure time.",
+    pickupNote:
+      "Hotel pickup uses our standard transport zones — RIU is complimentary; El Coco, Playa Hermosa and Playa Panamá from $60; Andaz, Planet Hollywood, Four Seasons and Hotel Ritz from $130–$150. See the pickup picker for the exact rate per zone.",
   },
   {
     slug: "skyline",
