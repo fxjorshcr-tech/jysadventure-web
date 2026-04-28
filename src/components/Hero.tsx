@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, Star } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import { IMAGES } from "@/lib/images";
 import { GoogleBadge } from "./GoogleBadge";
 
@@ -76,9 +76,6 @@ export function Hero() {
             <Link href="/tours" className="btn-primary group w-full sm:w-auto">
               Explore Tours{" "}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-            <Link href="/contact" className="btn-ghost group w-full sm:w-auto">
-              <Play className="h-4 w-4 fill-white" /> Book Your Ride
             </Link>
           </motion.div>
 

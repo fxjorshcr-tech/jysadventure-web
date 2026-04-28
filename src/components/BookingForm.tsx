@@ -28,7 +28,10 @@ import {
 import { DatePicker } from "./DatePicker";
 
 const BANDANA = ADD_ONS.find((a) => a.slug === "bandana")!;
-const DEPARTURE_OPTIONS = [...SCHEDULE.departures, "Other — we'll confirm"];
+
+function allowedDepartures(operator?: CanopyOperator) {
+  return operator?.departures ?? SCHEDULE.departures;
+}
 
 type ResolvedPickup = {
   zoneName: string | null;
@@ -142,6 +145,18 @@ const schema = z
         path: ["canopyOperator"],
       });
     }
+    if (
+      d.departure &&
+      !allowedDepartures(operator).includes(d.departure)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: operator
+          ? `${operator.name} doesn't run at this time. Pick another slot.`
+          : "Pick a valid departure time.",
+        path: ["departure"],
+      });
+    }
     if (d.pickupZone === "other" && !d.pickupOther?.trim()) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -222,6 +237,19 @@ export function BookingForm({
       setValue("pickupZone", "");
     }
   }, [selectedOperator, pickupZone, setValue]);
+
+  // Reset departure when it's no longer valid for the selected operator
+  const departure = watch("departure");
+  useEffect(() => {
+    if (!departure) return;
+    if (currentTour?.canopyOperators && !selectedOperator) {
+      setValue("departure", "");
+      return;
+    }
+    if (!allowedDepartures(selectedOperator).includes(departure)) {
+      setValue("departure", "");
+    }
+  }, [selectedOperator, currentTour, departure, setValue]);
 
   // Keep riders within [utvs, utvs * effectiveMaxSeats]
   useEffect(() => {
@@ -379,34 +407,6 @@ export function BookingForm({
             )}
           />
           {errors.date && <p className={errorCls}>{errors.date.message}</p>}
-        </div>
-
-        <div className="sm:col-span-2">
-          <label className={label}>Departure time</label>
-          <div className="flex flex-wrap gap-2">
-            {DEPARTURE_OPTIONS.map((t) => {
-              const selected = watch("departure") === t;
-              return (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() =>
-                    setValue("departure", t, { shouldValidate: true })
-                  }
-                  className={`rounded-full border px-4 py-2 text-sm transition ${
-                    selected
-                      ? "border-lava-400 bg-lava-500/15 text-white"
-                      : "border-white/15 bg-white/[0.03] text-white/75 hover:border-white/30"
-                  }`}
-                >
-                  {t}
-                </button>
-              );
-            })}
-          </div>
-          {errors.departure && (
-            <p className={errorCls}>{errors.departure.message}</p>
-          )}
         </div>
 
         {/* Tour: hidden when already on a tour page, dropdown otherwise */}
@@ -609,6 +609,46 @@ export function BookingForm({
               )}
           </div>
         )}
+
+        {/* Departure time — filtered by canopy operator when applicable */}
+        <div className="sm:col-span-2">
+          <label className={label}>Departure time</label>
+          {currentTour?.canopyOperators && !selectedOperator ? (
+            <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.02] px-4 py-3 text-xs text-white/55">
+              Pick your canopy operator above to see available departure times.
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {(selectedOperator?.departures ?? SCHEDULE.departures).map((t) => {
+                const selected = watch("departure") === t;
+                return (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() =>
+                      setValue("departure", t, { shouldValidate: true })
+                    }
+                    className={`rounded-full border px-4 py-2 text-sm transition ${
+                      selected
+                        ? "border-lava-400 bg-lava-500/15 text-white"
+                        : "border-white/15 bg-white/[0.03] text-white/75 hover:border-white/30"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          {selectedOperator?.scheduleNote && (
+            <p className="mt-2 text-[11px] text-white/55">
+              {selectedOperator.scheduleNote}
+            </p>
+          )}
+          {errors.departure && (
+            <p className={errorCls}>{errors.departure.message}</p>
+          )}
+        </div>
 
         {/* Bandana add-on */}
         <div className="sm:col-span-2">

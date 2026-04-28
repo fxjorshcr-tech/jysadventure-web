@@ -2,6 +2,7 @@ export const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/jysadventuretour/",
   facebook: "https://www.facebook.com/profile.php?id=61570254192510",
   tripadvisor: "https://www.tripadvisor.com/Profile/JYSAdventuretours",
+  google: "https://share.google/7LIO8qkavRpwe1nXn",
   whatsapp: "#",
 };
 

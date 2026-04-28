@@ -1,9 +1,14 @@
 import { Star } from "lucide-react";
+import { SOCIAL_LINKS } from "@/lib/info";
 
 export function GoogleBadge({ className = "" }: { className?: string }) {
   return (
-    <div
-      className={`inline-flex items-center gap-3 rounded-2xl border border-white/15 bg-black/40 px-4 py-3 backdrop-blur-md shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)] ${className}`}
+    <a
+      href={SOCIAL_LINKS.google}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Read our Google Reviews"
+      className={`inline-flex items-center gap-3 rounded-2xl border border-white/15 bg-black/40 px-4 py-3 backdrop-blur-md shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)] transition hover:border-lava-400/60 hover:bg-black/60 ${className}`}
     >
       {/* Google "G" logo */}
       <svg
@@ -39,6 +44,6 @@ export function GoogleBadge({ className = "" }: { className?: string }) {
           5.0 on Google Reviews
         </div>
       </div>
-    </div>
+    </a>
   );
 }
