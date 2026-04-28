@@ -314,8 +314,6 @@ export function BookingForm({
   const router = useRouter();
 
   const onSubmit = async (data: FormData) => {
-    await new Promise((r) => setTimeout(r, 400));
-
     const tour = getTour(data.tour);
     const operator = tour?.canopyOperators?.find(
       (o) => o.slug === data.canopyOperator
@@ -368,6 +366,24 @@ export function BookingForm({
         total: totalPrice,
       },
     };
+
+    try {
+      const res = await fetch("/api/booking", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(summary),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error ?? "Booking request failed");
+      }
+    } catch (err) {
+      console.error("Booking submit failed", err);
+      alert(
+        "We couldn't send your booking right now. Please try again in a moment, or email us directly.",
+      );
+      return;
+    }
 
     if (typeof window !== "undefined") {
       sessionStorage.setItem("jys-booking", JSON.stringify(summary));

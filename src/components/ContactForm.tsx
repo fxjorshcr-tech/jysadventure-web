@@ -18,6 +18,7 @@ type FormData = z.infer<typeof schema>;
 
 export function ContactForm() {
   const [sent, setSent] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     register,
@@ -28,8 +29,31 @@ export function ContactForm() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async (_data: FormData) => {
-    await new Promise((r) => setTimeout(r, 900));
+  const onSubmit = async (data: FormData) => {
+    setSubmitError(null);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          phone: data.phone ?? "",
+          subject: data.subject ?? "",
+          message: data.message,
+        }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error ?? "Contact request failed");
+      }
+    } catch (err) {
+      console.error("Contact submit failed", err);
+      setSubmitError(
+        "We couldn't send your message right now. Please try again or email us directly.",
+      );
+      return;
+    }
     setSent(true);
     reset();
     setTimeout(() => setSent(false), 4500);
@@ -106,6 +130,12 @@ export function ContactForm() {
         </a>{" "}
         and reserve directly from any tour.
       </p>
+
+      {submitError && (
+        <p className="mt-4 rounded-2xl border border-lava-500/40 bg-lava-500/10 p-3 text-sm text-lava-300">
+          {submitError}
+        </p>
+      )}
 
       <button
         type="submit"
