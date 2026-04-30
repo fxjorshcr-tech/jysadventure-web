@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import {
+  contactCustomerEmailHtml,
+  contactCustomerEmailSubject,
+  contactCustomerEmailText,
   contactEmailHtml,
   contactEmailSubject,
   contactEmailText,
@@ -68,6 +71,22 @@ export async function POST(req: Request) {
         { status: 502 },
       );
     }
+
+    const customerResult = await resend.emails.send({
+      from: FROM,
+      to: [payload.email],
+      replyTo: CONTACT.email,
+      subject: contactCustomerEmailSubject(payload),
+      html: contactCustomerEmailHtml(payload),
+      text: contactCustomerEmailText(payload),
+    });
+    if (customerResult.error) {
+      console.error(
+        "[api/contact] Customer confirmation send failed",
+        customerResult.error,
+      );
+    }
+
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[api/contact] Unhandled error", err);

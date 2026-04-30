@@ -193,6 +193,99 @@ export function bookingEmailSubject(b: BookingPayload) {
   return `New booking · ${b.tour.title} · ${b.contact.name} · ${formatDate(b.schedule.date)}`;
 }
 
+export function bookingCustomerEmailHtml(b: BookingPayload) {
+  const title = "We got your booking!";
+
+  const tourRows =
+    row("Tour", escape(b.tour.title)) +
+    row("Date", escape(formatDate(b.schedule.date))) +
+    row("Departure", escape(b.schedule.departure || "—")) +
+    row("Vehicles", vehiclesSummary(b.vehicles)) +
+    (b.canopyOperator
+      ? row("Canopy operator", escape(b.canopyOperator.name))
+      : "") +
+    row("Pickup", pickupSummary(b.pickup)) +
+    (b.addons.bandanas > 0
+      ? row(
+          "Add-ons",
+          `${b.addons.bandanas} × Bandana ($${b.addons.bandanas * 10})`,
+        )
+      : "");
+
+  const pricingHtml = `
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:18px 20px;">
+      <tr>
+        <td style="font-size:12px;color:#9a3412;padding-bottom:6px;">Tour subtotal</td>
+        <td style="font-size:12px;color:#9a3412;text-align:right;padding-bottom:6px;">$${b.pricing.tourSubtotal}</td>
+      </tr>
+      ${b.pricing.bandanaSubtotal > 0 ? `<tr><td style="font-size:12px;color:#9a3412;padding-bottom:6px;">Add-ons</td><td style="font-size:12px;color:#9a3412;text-align:right;padding-bottom:6px;">$${b.pricing.bandanaSubtotal}</td></tr>` : ""}
+      ${b.pricing.transportSubtotal > 0 ? `<tr><td style="font-size:12px;color:#9a3412;padding-bottom:6px;">Transport</td><td style="font-size:12px;color:#9a3412;text-align:right;padding-bottom:6px;">$${b.pricing.transportSubtotal}</td></tr>` : ""}
+      <tr>
+        <td style="border-top:1px solid #fed7aa;padding-top:10px;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#1a1a1a;">Total</td>
+        <td style="border-top:1px solid #fed7aa;padding-top:10px;font-size:24px;font-weight:800;color:#c2410c;text-align:right;">$${b.pricing.total}</td>
+      </tr>
+    </table>`;
+
+  const content = `
+    <p style="margin:0 0 18px 0;font-size:15px;line-height:1.6;color:#222;">
+      Hi <strong>${escape(b.contact.name)}</strong>, thanks for booking with JYS Adventure Tour! We've received your reservation request and our team will reach out within the hour to confirm the details.
+    </p>
+    <p style="margin:0 0 24px 0;font-size:14px;line-height:1.6;color:#444;">
+      Here's a summary of what you booked. If anything looks off, just reply to this email and we'll fix it.
+    </p>
+    ${section("Your ride", tourRows)}
+    ${pricingHtml}
+    <p style="margin:24px 0 0 0;font-size:13px;line-height:1.6;color:#666;">
+      Questions? Reply to this email or call us at <a href="tel:${escape(CONTACT.phone.replace(/\s/g, ""))}" style="color:#c2410c;text-decoration:none;">${escape(CONTACT.phone)}</a>. ¡Pura vida!
+    </p>
+  `;
+
+  return wrapEmail(title, content);
+}
+
+export function bookingCustomerEmailSubject(b: BookingPayload) {
+  return `Your JYS Adventure booking — ${b.tour.title} on ${formatDate(b.schedule.date)}`;
+}
+
+export function bookingCustomerEmailText(b: BookingPayload) {
+  const lines: string[] = [];
+  lines.push(`Hi ${b.contact.name},`);
+  lines.push("");
+  lines.push(
+    "Thanks for booking with JYS Adventure Tour! We've received your reservation request and our team will reach out within the hour to confirm.",
+  );
+  lines.push("");
+  lines.push("Booking summary:");
+  lines.push(`  Tour:      ${b.tour.title}`);
+  lines.push(`  Date:      ${formatDate(b.schedule.date)}`);
+  lines.push(`  Departure: ${b.schedule.departure || "—"}`);
+  if (b.vehicles.mode === "atv") {
+    if (b.vehicles.singles)
+      lines.push(`  Vehicles:  ${b.vehicles.singles} × ATV Single`);
+    if (b.vehicles.doubles)
+      lines.push(`             ${b.vehicles.doubles} × ATV Double`);
+  } else {
+    lines.push(
+      `  Vehicles:  ${b.vehicles.utvs} UTV(s) — ${b.vehicles.riders} riders`,
+    );
+  }
+  if (b.canopyOperator) lines.push(`  Canopy:    ${b.canopyOperator.name}`);
+  lines.push(
+    `  Pickup:    ${b.pickup.zoneSlug ? b.pickup.zoneName || b.pickup.otherDetail : "Base camp"}${b.pickup.cost ? ` ($${b.pickup.cost})` : ""}`,
+  );
+  if (b.addons.bandanas)
+    lines.push(`  Add-ons:   ${b.addons.bandanas} × Bandana`);
+  lines.push("");
+  lines.push(`  TOTAL: $${b.pricing.total}`);
+  lines.push("");
+  lines.push(
+    `Questions? Reply to this email or call ${CONTACT.phone}. ¡Pura vida!`,
+  );
+  lines.push("");
+  lines.push("— JYS Adventure Tour");
+  return lines.join("\n");
+}
+
 export function bookingEmailText(b: BookingPayload) {
   const lines: string[] = [];
   lines.push(`New booking — ${b.tour.title}`);
@@ -274,6 +367,48 @@ export function contactEmailSubject(c: ContactPayload) {
   return c.subject
     ? `Contact · ${c.subject} · ${c.name}`
     : `Contact · ${c.name}`;
+}
+
+export function contactCustomerEmailHtml(c: ContactPayload) {
+  const title = "We got your message!";
+
+  const messageHtml = `<div style="margin-bottom:8px;padding:18px 20px;background-color:#f8f7f4;border-left:3px solid #c2410c;border-radius:8px;font-size:15px;color:#222;line-height:1.6;white-space:pre-wrap;">${escape(c.message)}</div>`;
+
+  const content = `
+    <p style="margin:0 0 18px 0;font-size:15px;line-height:1.6;color:#222;">
+      Hi <strong>${escape(c.name)}</strong>, thanks for reaching out to JYS Adventure Tour! We received your message and will reply shortly.
+    </p>
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#c2410c;margin-bottom:10px;">Your message</div>
+    ${messageHtml}
+    <p style="margin:24px 0 0 0;font-size:13px;line-height:1.6;color:#666;">
+      Need a faster reply? Call us at <a href="tel:${escape(CONTACT.phone.replace(/\s/g, ""))}" style="color:#c2410c;text-decoration:none;">${escape(CONTACT.phone)}</a>. ¡Pura vida!
+    </p>
+  `;
+
+  return wrapEmail(title, content);
+}
+
+export function contactCustomerEmailSubject(c: ContactPayload) {
+  return c.subject
+    ? `We got your message — ${c.subject}`
+    : "We got your message — JYS Adventure Tour";
+}
+
+export function contactCustomerEmailText(c: ContactPayload) {
+  const lines: string[] = [];
+  lines.push(`Hi ${c.name},`);
+  lines.push("");
+  lines.push(
+    "Thanks for reaching out to JYS Adventure Tour! We received your message and will reply shortly.",
+  );
+  lines.push("");
+  lines.push("Your message:");
+  lines.push(c.message);
+  lines.push("");
+  lines.push(`Need a faster reply? Call ${CONTACT.phone}. ¡Pura vida!`);
+  lines.push("");
+  lines.push("— JYS Adventure Tour");
+  return lines.join("\n");
 }
 
 export function contactEmailText(c: ContactPayload) {
