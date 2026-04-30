@@ -10,7 +10,7 @@ import { CONTACT } from "@/lib/info";
 
 export const runtime = "nodejs";
 
-const FROM = "JYS Adventure <onboarding@resend.dev>";
+const FROM = "JYS Adventure Tour <reservations@jysadventuretour.com>";
 const TO = [CONTACT.email];
 
 const schema = z.object({
