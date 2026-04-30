@@ -95,7 +95,7 @@ export function ContactForm() {
           <label className={label}>Phone / WhatsApp</label>
           <input
             {...register("phone")}
-            placeholder="+506 8519-2804"
+            placeholder="+506 8575-7272"
             className={field}
           />
         </div>

@@ -4,7 +4,6 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { SocialRail } from "@/components/SocialRail";
 import { SITE_URL, GA_ID } from "@/lib/info";
 
 const lexend = Lexend({
@@ -71,7 +70,6 @@ export default function RootLayout({
       <body className="min-h-[100dvh] w-full overflow-x-hidden bg-night-950 font-sans text-white antialiased">
         <Header />
         <main className="relative w-full overflow-x-hidden">{children}</main>
-        <SocialRail />
         <Footer />
       </body>
       {GA_ID && <GoogleAnalytics gaId={GA_ID} />}

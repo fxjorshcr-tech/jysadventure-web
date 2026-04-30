@@ -13,9 +13,9 @@ export const SOCIAL_LINKS = {
 };
 
 export const CONTACT = {
-  phone: "+506 8519-2804",
-  phoneE164: "+50685192804",
-  email: "reservation@jysadventuretour.com",
+  phone: "+506 8575-7272",
+  phoneE164: "+50685757272",
+  email: "reservations@jysadventuretour.com",
   location: "Sardinal, Guanacaste · Costa Rica",
 };
 
