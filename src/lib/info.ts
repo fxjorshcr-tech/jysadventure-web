@@ -15,7 +15,7 @@ export const SOCIAL_LINKS = {
 export const CONTACT = {
   phone: "+506 8575-7272",
   phoneE164: "+50685757272",
-  email: "reservation@jysadventuretour.com",
+  email: "reservations@jysadventuretour.com",
   location: "Sardinal, Guanacaste · Costa Rica",
 };
 

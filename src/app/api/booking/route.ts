@@ -6,11 +6,12 @@ import {
   bookingEmailSubject,
   bookingEmailText,
 } from "@/lib/emails";
+import { CONTACT } from "@/lib/info";
 
 export const runtime = "nodejs";
 
 const FROM = "JYS Adventure <onboarding@resend.dev>";
-const TO = ["jysadventuretour@gmail.com"];
+const TO = [CONTACT.email];
 
 const schema = z.object({
   contact: z.object({
