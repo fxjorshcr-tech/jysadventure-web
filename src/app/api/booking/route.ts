@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import {
+  bookingCustomerEmailHtml,
+  bookingCustomerEmailSubject,
+  bookingCustomerEmailText,
   bookingEmailHtml,
   bookingEmailSubject,
   bookingEmailText,
@@ -10,7 +13,7 @@ import { CONTACT } from "@/lib/info";
 
 export const runtime = "nodejs";
 
-const FROM = "JYS Adventure <onboarding@resend.dev>";
+const FROM = "JYS Adventure Tour <reservations@jysadventuretour.com>";
 const TO = [CONTACT.email];
 
 const schema = z.object({
@@ -108,6 +111,22 @@ export async function POST(req: Request) {
         { status: 502 },
       );
     }
+
+    const customerResult = await resend.emails.send({
+      from: FROM,
+      to: [payload.contact.email],
+      replyTo: CONTACT.email,
+      subject: bookingCustomerEmailSubject(payload),
+      html: bookingCustomerEmailHtml(payload),
+      text: bookingCustomerEmailText(payload),
+    });
+    if (customerResult.error) {
+      console.error(
+        "[api/booking] Customer confirmation send failed",
+        customerResult.error,
+      );
+    }
+
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[api/booking] Unhandled error", err);
