@@ -79,25 +79,6 @@ export default function ToursPage() {
             subtitle="Three core off-road experiences in Guanacaste. Ride them on their own or pair with Cabalgata or Canopy for a full half-day."
           />
 
-          {/* Quick compare strip */}
-          <div className="mt-10 grid gap-3 sm:grid-cols-3">
-            <QuickCompare
-              label="ATV Single"
-              price="$105"
-              detail="1 rider · 18+ driver"
-            />
-            <QuickCompare
-              label="ATV Double"
-              price="$120"
-              detail="2 riders · passenger 5+"
-            />
-            <QuickCompare
-              label="UTV"
-              price="$339"
-              detail="Up to 5 riders · kids 2+"
-            />
-          </div>
-
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {BASE_TOURS.map((t, i) => (
               <FeaturedTourCard key={t.slug} tour={t} index={i} />
@@ -385,32 +366,6 @@ function RequirementCard({
         {title}
       </h3>
       <p className="mt-2 text-sm text-white/65">{text}</p>
-    </div>
-  );
-}
-
-function QuickCompare({
-  label,
-  price,
-  detail,
-}: {
-  label: string;
-  price: string;
-  detail: string;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4">
-      <div className="min-w-0">
-        <div className="font-display text-base tracking-wide text-white sm:text-lg">
-          {label}
-        </div>
-        <div className="mt-0.5 text-[11px] uppercase tracking-widest text-white/55">
-          {detail}
-        </div>
-      </div>
-      <div className="shrink-0 font-display text-xl text-lava-400 sm:text-2xl">
-        {price}
-      </div>
     </div>
   );
 }
