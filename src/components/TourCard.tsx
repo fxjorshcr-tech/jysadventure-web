@@ -12,25 +12,50 @@ import {
   Trees,
   Sparkles,
 } from "lucide-react";
-import type { Tour } from "@/lib/tours";
+import type { LocalizedTour } from "@/lib/tours";
+import type { Dictionary } from "@/i18n/dictionaries";
 
-const difficultyColor: Record<Tour["difficulty"], string> = {
+const difficultyColor: Record<LocalizedTour["difficulty"], string> = {
   Easy: "bg-jungle-500/20 text-jungle-500 border-jungle-500/40",
   Moderate: "bg-yellow-500/20 text-yellow-300 border-yellow-400/40",
   Extreme: "bg-lava-500/20 text-lava-400 border-lava-500/50",
 };
 
-function PriceDisplay({ tour }: { tour: Tour }) {
+function difficultyLabel(d: LocalizedTour["difficulty"], dict: Dictionary): string {
+  // Show difficulty in current language
+  const map: Record<string, Record<LocalizedTour["difficulty"], string>> = {
+    en: { Easy: "Easy", Moderate: "Moderate", Extreme: "Extreme" },
+    es: { Easy: "Fácil", Moderate: "Moderado", Extreme: "Extremo" },
+  };
+  const lang = dict.nav.home === "Inicio" ? "es" : "en";
+  return map[lang][d];
+}
+
+function PriceDisplay({
+  tour,
+  dict,
+}: {
+  tour: LocalizedTour;
+  dict: Dictionary;
+}) {
+  const lang = dict.nav.home === "Inicio" ? "es" : "en";
   const unit =
     tour.pricingMode === "flat-vehicle"
-      ? "/ UTV"
+      ? lang === "es"
+        ? "/ UTV"
+        : "/ UTV"
       : tour.pricingMode === "flat-plus-per-person"
-        ? "+ per person"
-        : "/ person";
+        ? lang === "es"
+          ? "+ por persona"
+          : "+ per person"
+        : lang === "es"
+          ? "/ persona"
+          : "/ person";
+  const fromLabel = lang === "es" ? "Desde" : "From";
   return (
     <div>
       <div className="text-[10px] uppercase tracking-[0.25em] text-white/50">
-        From
+        {fromLabel}
       </div>
       <div className="font-display text-2xl text-lava-400 sm:text-3xl">
         ${tour.price}
@@ -40,7 +65,15 @@ function PriceDisplay({ tour }: { tour: Tour }) {
   );
 }
 
-export function TourCard({ tour, index = 0 }: { tour: Tour; index?: number }) {
+export function TourCard({
+  tour,
+  index = 0,
+  dict,
+}: {
+  tour: LocalizedTour;
+  index?: number;
+  dict: Dictionary;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -64,7 +97,7 @@ export function TourCard({ tour, index = 0 }: { tour: Tour; index?: number }) {
             <span
               className={`rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm ${difficultyColor[tour.difficulty]}`}
             >
-              {tour.difficulty}
+              {difficultyLabel(tour.difficulty, dict)}
             </span>
             <span className="rounded-full border border-white/20 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-sm">
               {tour.vehicle}
@@ -89,7 +122,7 @@ export function TourCard({ tour, index = 0 }: { tour: Tour; index?: number }) {
             <p className="mt-2 line-clamp-2 text-sm text-white/70">{tour.tagline}</p>
 
             <div className="mt-5 flex items-end justify-between gap-3">
-              <PriceDisplay tour={tour} />
+              <PriceDisplay tour={tour} dict={dict} />
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white transition group-hover:border-lava-400 group-hover:bg-lava-500">
                 <ArrowUpRight className="h-5 w-5" />
               </div>
@@ -101,17 +134,26 @@ export function TourCard({ tour, index = 0 }: { tour: Tour; index?: number }) {
   );
 }
 
-/**
- * Larger, richer card used in the Base tours grid on /tours.
- * Full-bleed image with description and two CTAs (Details + Book).
- */
 export function FeaturedTourCard({
   tour,
   index = 0,
+  dict,
 }: {
-  tour: Tour;
+  tour: LocalizedTour;
   index?: number;
+  dict: Dictionary;
 }) {
+  const lang = dict.nav.home === "Inicio" ? "es" : "en";
+  const passengerLabel = (n: number | null) =>
+    n === null
+      ? lang === "es"
+        ? "Solo"
+        : "Solo"
+      : lang === "es"
+        ? `${n}+ pasajero`
+        : `${n}+ passenger`;
+  const seeDetails = lang === "es" ? "Ver detalles" : "See details";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -120,10 +162,7 @@ export function FeaturedTourCard({
       transition={{ duration: 0.6, delay: index * 0.08 }}
       className="group relative overflow-hidden rounded-3xl border border-white/10 bg-night-900 transition hover:border-lava-400/50"
     >
-      <Link
-        href={`/tours/${tour.slug}`}
-        className="flex h-full flex-col"
-      >
+      <Link href={`/tours/${tour.slug}`} className="flex h-full flex-col">
         <div className="relative aspect-[4/3] w-full overflow-hidden">
           <Image
             src={tour.image}
@@ -138,7 +177,7 @@ export function FeaturedTourCard({
             <span
               className={`rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm ${difficultyColor[tour.difficulty]}`}
             >
-              {tour.difficulty}
+              {difficultyLabel(tour.difficulty, dict)}
             </span>
             <span className="rounded-full border border-white/20 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-sm">
               {tour.vehicle}
@@ -156,15 +195,8 @@ export function FeaturedTourCard({
         <div className="flex flex-1 flex-col gap-5 p-5 sm:p-6">
           <div className="grid grid-cols-3 gap-2">
             <Stat icon={Clock} label={tour.duration} />
-            <Stat icon={Gauge} label={tour.difficulty} />
-            <Stat
-              icon={Users}
-              label={
-                tour.minPassengerAge !== null
-                  ? `${tour.minPassengerAge}+ passenger`
-                  : "Solo"
-              }
-            />
+            <Stat icon={Gauge} label={difficultyLabel(tour.difficulty, dict)} />
+            <Stat icon={Users} label={passengerLabel(tour.minPassengerAge)} />
           </div>
 
           <ul className="space-y-1.5 text-sm text-white/75">
@@ -177,9 +209,9 @@ export function FeaturedTourCard({
           </ul>
 
           <div className="mt-auto flex items-end justify-between gap-3 border-t border-white/10 pt-5">
-            <PriceDisplay tour={tour} />
+            <PriceDisplay tour={tour} dict={dict} />
             <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white transition group-hover:border-lava-400 group-hover:bg-lava-500/20">
-              See details <ArrowUpRight className="h-3.5 w-3.5" />
+              {seeDetails} <ArrowUpRight className="h-3.5 w-3.5" />
             </span>
           </div>
         </div>
@@ -188,18 +220,23 @@ export function FeaturedTourCard({
   );
 }
 
-/**
- * Combo card: shows the combo ingredients as two icons + plus sign.
- */
 export function ComboTourCard({
   tour,
   index = 0,
+  dict,
 }: {
-  tour: Tour;
+  tour: LocalizedTour;
   index?: number;
+  dict: Dictionary;
 }) {
+  const lang = dict.nav.home === "Inicio" ? "es" : "en";
+  const seeDetails = lang === "es" ? "Ver detalles" : "See details";
   const addonIcon =
-    tour.addon === "Cabalgata" ? Mountain : tour.addon === "Canopy" ? Trees : Sparkles;
+    tour.addon === "Cabalgata"
+      ? Mountain
+      : tour.addon === "Canopy"
+        ? Trees
+        : Sparkles;
   const AddonIcon = addonIcon;
 
   return (
@@ -254,14 +291,15 @@ export function ComboTourCard({
               <Clock className="h-3 w-3 text-lava-400" /> {tour.duration}
             </span>
             <span className="flex items-center gap-1">
-              <Gauge className="h-3 w-3 text-lava-400" /> {tour.difficulty}
+              <Gauge className="h-3 w-3 text-lava-400" />{" "}
+              {difficultyLabel(tour.difficulty, dict)}
             </span>
           </div>
 
           <div className="mt-auto flex items-end justify-between gap-3 border-t border-white/10 pt-5">
-            <PriceDisplay tour={tour} />
+            <PriceDisplay tour={tour} dict={dict} />
             <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-widest text-white transition group-hover:border-lava-400 group-hover:bg-lava-500/20">
-              See details <ArrowUpRight className="h-3.5 w-3.5" />
+              {seeDetails} <ArrowUpRight className="h-3.5 w-3.5" />
             </span>
           </div>
         </div>

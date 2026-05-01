@@ -7,15 +7,10 @@ export function GoogleBadge({ className = "" }: { className?: string }) {
       href={SOCIAL_LINKS.google}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Read our Google Reviews"
+      aria-label="Google Reviews"
       className={`inline-flex items-center gap-3 rounded-2xl border border-white/15 bg-black/40 px-4 py-3 backdrop-blur-md shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)] transition hover:border-lava-400/60 hover:bg-black/60 ${className}`}
     >
-      {/* Google "G" logo */}
-      <svg
-        viewBox="0 0 48 48"
-        className="h-9 w-9 shrink-0"
-        aria-label="Google"
-      >
+      <svg viewBox="0 0 48 48" className="h-9 w-9 shrink-0" aria-label="Google">
         <path
           fill="#FFC107"
           d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C33.8 6.2 29.2 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"
@@ -41,7 +36,7 @@ export function GoogleBadge({ className = "" }: { className?: string }) {
           ))}
         </div>
         <div className="mt-0.5 text-sm font-semibold text-white">
-          5.0 on Google Reviews
+          5.0 · Google Reviews
         </div>
       </div>
     </a>

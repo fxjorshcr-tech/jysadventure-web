@@ -1,16 +1,17 @@
 import { SITE_URL, CONTACT } from "@/lib/info";
-import { TOURS } from "@/lib/tours";
-import { BLOG_POSTS } from "@/lib/blog";
+import { TOURS, localizeTour } from "@/lib/tours";
+import { BLOG_POSTS, localizePost } from "@/lib/blog";
 
 export const dynamic = "force-static";
 
 export async function GET() {
   const lines: string[] = [];
+  const locale = "en" as const;
 
   lines.push("# JYS Adventure Tour");
   lines.push("");
   lines.push(
-    "> Off-road ATV and UTV tours through Guanacaste, Costa Rica. Family-run operator based in Sardinal, riding jungle trails, river crossings, finca farmland and volcanic ridges. Single rider, two-up and family side-by-side rides, plus combo half-day tours with horseback (cabalgata) or zipline canopy.",
+    "> Off-road ATV and UTV tours through Guanacaste, Costa Rica. Family-run operator based in Sardinal, riding jungle trails, river crossings and finca farmland. Single rider, two-up and family side-by-side rides, plus combo half-day tours with horseback (cabalgata) or zipline canopy.",
   );
   lines.push("");
   lines.push(`Site: ${SITE_URL}`);
@@ -20,7 +21,8 @@ export async function GET() {
   lines.push("");
 
   lines.push("## Tours");
-  for (const t of TOURS) {
+  for (const baseTour of TOURS) {
+    const t = localizeTour(baseTour, locale);
     lines.push(`- [${t.title}](${SITE_URL}/tours/${t.slug}): ${t.metaDescription}`);
   }
   lines.push("");
@@ -35,7 +37,8 @@ export async function GET() {
   lines.push("");
 
   lines.push("## Blog");
-  for (const p of BLOG_POSTS) {
+  for (const basePost of BLOG_POSTS) {
+    const p = localizePost(basePost, locale);
     lines.push(`- [${p.title}](${SITE_URL}/blog/${p.slug}): ${p.metaDescription}`);
   }
   lines.push("");

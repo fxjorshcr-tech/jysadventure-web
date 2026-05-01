@@ -7,6 +7,9 @@ import { Menu, X, Flame, Instagram, Facebook, Star } from "lucide-react";
 import { IMAGES } from "@/lib/images";
 import { SOCIAL_LINKS } from "@/lib/info";
 import { cn } from "@/lib/utils";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { LocaleSwitcher } from "./LocaleSwitcher";
 
 const HEADER_SOCIALS = [
   { Icon: Instagram, href: SOCIAL_LINKS.instagram, label: "Instagram" },
@@ -14,18 +17,24 @@ const HEADER_SOCIALS = [
   { Icon: Star, href: SOCIAL_LINKS.tripadvisor, label: "TripAdvisor" },
 ];
 
-const NAV = [
-  { href: "/", label: "Home" },
-  { href: "/tours", label: "Tours" },
-  { href: "/about", label: "About" },
-  { href: "/blog", label: "Blog" },
-  { href: "/faqs", label: "FAQs" },
-  { href: "/contact", label: "Contact" },
-];
-
-export function Header() {
+export function Header({
+  locale,
+  dict,
+}: {
+  locale: Locale;
+  dict: Dictionary;
+}) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const NAV = [
+    { href: "/", label: dict.nav.home },
+    { href: "/tours", label: dict.nav.tours },
+    { href: "/about", label: dict.nav.about },
+    { href: "/blog", label: dict.nav.blog },
+    { href: "/faqs", label: dict.nav.faqs },
+    { href: "/contact", label: dict.nav.contact },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -37,9 +46,6 @@ export function Header() {
   return (
     <header
       className={cn(
-        // Always keep the same border + bg alpha so the header never shifts
-        // layout when the scroll state changes (was causing a visible jump
-        // right after ~10–16px of scroll on iPhone).
         "fixed inset-x-0 top-0 z-50 w-full border-b backdrop-blur-xl transition-[background-color,box-shadow] duration-300",
         scrolled
           ? "border-white/10 bg-night-950/85 shadow-[0_8px_30px_-10px_rgba(0,0,0,0.6)]"
@@ -80,6 +86,7 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
+          <LocaleSwitcher locale={locale} />
           <div className="flex items-center gap-1.5 border-r border-white/15 pr-3">
             {HEADER_SOCIALS.map(({ Icon, href, label }) => (
               <a
@@ -95,7 +102,7 @@ export function Header() {
             ))}
           </div>
           <Link href="/tours" className="btn-primary">
-            <Flame className="h-4 w-4" /> Book Now
+            <Flame className="h-4 w-4" /> {dict.nav.bookNow}
           </Link>
         </div>
 
@@ -103,7 +110,7 @@ export function Header() {
           type="button"
           className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white lg:hidden"
           onClick={() => setOpen((v) => !v)}
-          aria-label="Menu"
+          aria-label={dict.nav.menu}
           aria-expanded={open}
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -134,8 +141,9 @@ export function Header() {
               onClick={() => setOpen(false)}
               className="btn-primary mt-5 w-full"
             >
-              <Flame className="h-4 w-4" /> Book Now
+              <Flame className="h-4 w-4" /> {dict.nav.bookNow}
             </Link>
+            <LocaleSwitcher locale={locale} variant="mobile" />
             <div className="mt-6 flex items-center justify-center gap-3">
               {HEADER_SOCIALS.map(({ Icon, href, label }) => (
                 <a

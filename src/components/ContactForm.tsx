@@ -5,18 +5,27 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Send, Loader2, CheckCircle2 } from "lucide-react";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
 
 const schema = z.object({
-  name: z.string().min(2, "Your name is required"),
-  email: z.string().email("Invalid email address"),
+  name: z.string().min(2),
+  email: z.string().email(),
   phone: z.string().optional(),
   subject: z.string().optional(),
-  message: z.string().min(5, "Tell us a bit more"),
+  message: z.string().min(5),
 });
 
 type FormData = z.infer<typeof schema>;
 
-export function ContactForm() {
+export function ContactForm({
+  locale,
+  dict,
+}: {
+  locale: Locale;
+  dict: Dictionary;
+}) {
+  const cf = dict.contactForm;
   const [sent, setSent] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -41,6 +50,7 @@ export function ContactForm() {
           phone: data.phone ?? "",
           subject: data.subject ?? "",
           message: data.message,
+          locale,
         }),
       });
       if (!res.ok) {
@@ -49,9 +59,7 @@ export function ContactForm() {
       }
     } catch (err) {
       console.error("Contact submit failed", err);
-      setSubmitError(
-        "We couldn't send your message right now. Please try again or email us directly.",
-      );
+      setSubmitError(cf.error);
       return;
     }
     setSent(true);
@@ -72,64 +80,54 @@ export function ContactForm() {
     >
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
-          <label className={label}>Full name</label>
+          <label className={label}>{cf.name}</label>
           <input
             {...register("name")}
-            placeholder="Alex Morgan"
+            placeholder={cf.namePh}
             className={field}
           />
-          {errors.name && <p className={errorCls}>{errors.name.message}</p>}
+          {errors.name && <p className={errorCls}>{cf.required}</p>}
         </div>
 
         <div>
-          <label className={label}>Email</label>
+          <label className={label}>{cf.email}</label>
           <input
             {...register("email")}
-            placeholder="you@email.com"
+            placeholder={cf.emailPh}
             className={field}
           />
-          {errors.email && <p className={errorCls}>{errors.email.message}</p>}
+          {errors.email && <p className={errorCls}>{cf.invalidEmail}</p>}
         </div>
 
         <div>
-          <label className={label}>Phone / WhatsApp</label>
+          <label className={label}>{cf.phone}</label>
           <input
             {...register("phone")}
-            placeholder="+506 8575-7272"
+            placeholder={cf.phonePh}
             className={field}
           />
         </div>
 
         <div className="sm:col-span-2">
-          <label className={label}>Subject (optional)</label>
+          <label className={label}>{cf.subject}</label>
           <input
             {...register("subject")}
-            placeholder="Question about the UTV tour, availability, etc."
+            placeholder={cf.subjectPh}
             className={field}
           />
         </div>
 
         <div className="sm:col-span-2">
-          <label className={label}>Message</label>
+          <label className={label}>{cf.message}</label>
           <textarea
             rows={5}
             {...register("message")}
-            placeholder="How can we help?"
+            placeholder={cf.messagePh}
             className={field}
           />
-          {errors.message && (
-            <p className={errorCls}>{errors.message.message}</p>
-          )}
+          {errors.message && <p className={errorCls}>{cf.required}</p>}
         </div>
       </div>
-
-      <p className="mt-4 text-xs text-white/55">
-        Ready to book instead? Head to the{" "}
-        <a href="/tours" className="text-lava-400 hover:underline">
-          Tours page
-        </a>{" "}
-        and reserve directly from any tour.
-      </p>
 
       {submitError && (
         <p className="mt-4 rounded-2xl border border-lava-500/40 bg-lava-500/10 p-3 text-sm text-lava-300">
@@ -144,15 +142,15 @@ export function ContactForm() {
       >
         {isSubmitting ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" /> Sending
+            <Loader2 className="h-4 w-4 animate-spin" /> {cf.submitting}
           </>
         ) : sent ? (
           <>
-            <CheckCircle2 className="h-4 w-4" /> Sent! We&apos;ll reply soon
+            <CheckCircle2 className="h-4 w-4" /> {cf.success}
           </>
         ) : (
           <>
-            <Send className="h-4 w-4" /> Send message
+            <Send className="h-4 w-4" /> {cf.submit}
           </>
         )}
       </button>

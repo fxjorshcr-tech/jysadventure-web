@@ -3,14 +3,47 @@ import { IMAGES } from "@/lib/images";
 import { ContactForm } from "@/components/ContactForm";
 import { CONTACT, SCHEDULE, SOCIAL_LINKS } from "@/lib/info";
 import { Mail, Phone, MapPin, Clock, Instagram, Facebook, Star } from "lucide-react";
+import { getLocale } from "@/i18n/request";
+import { getDictionary } from "@/i18n/dictionaries";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Contact — JYS Adventure Tour",
-  description:
-    "Get in touch with JYS Adventure Tour to book your next ATV / UTV adventure in Guanacaste, Costa Rica.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const dict = getDictionary(await getLocale());
+  return {
+    title: dict.contact.metaTitle,
+    description: dict.contact.metaDescription,
+  };
+}
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+
+  const infoItems = [
+    {
+      icon: Phone,
+      label: dict.contact.info.phone,
+      value: CONTACT.phone,
+      href: `tel:${CONTACT.phoneE164}`,
+    },
+    {
+      icon: Mail,
+      label: dict.contact.info.email,
+      value: CONTACT.email,
+      href: `mailto:${CONTACT.email}`,
+    },
+    {
+      icon: MapPin,
+      label: dict.contact.info.location,
+      value: CONTACT.location,
+    },
+    {
+      icon: Clock,
+      label: dict.contact.info.departures,
+      value: `${dict.contact.info.daily} · ${SCHEDULE.departures.join(" · ")}`,
+    },
+  ];
+
   return (
     <>
       {/* Hero */}
@@ -28,16 +61,15 @@ export default function ContactPage() {
 
         <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-5 lg:px-8">
           <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
-            Let&apos;s talk
+            {dict.contact.badge}
           </span>
           <h1 className="mt-6 max-w-5xl font-display text-[clamp(2.75rem,12vw,6rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:text-8xl sm:leading-[0.85] sm:tracking-wider md:text-[9rem]">
-            BOOK YOUR
+            {dict.contact.titleA}
             <br />
-            <span className="text-gradient-fire">RIDE</span>
+            <span className="text-gradient-fire">{dict.contact.titleB}</span>
           </h1>
           <p className="mt-6 max-w-xl text-white/70 md:text-lg">
-            Tell us about your crew and when you want to ride. We&apos;ll take
-            care of the rest — usually within the hour.
+            {dict.contact.subtitle}
           </p>
         </div>
       </section>
@@ -45,42 +77,18 @@ export default function ContactPage() {
       <section className="relative bg-night-950 py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
-            {/* Info card */}
             <div className="space-y-6">
               <div className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-5 sm:p-8">
                 <h2 className="font-display text-[clamp(1.75rem,7vw,2.75rem)] leading-tight tracking-wide text-white [overflow-wrap:anywhere] md:text-5xl">
-                  Get in <span className="text-gradient-fire">touch</span>
+                  {dict.contact.cardTitle}{" "}
+                  <span className="text-gradient-fire">
+                    {dict.contact.cardTitleHighlight}
+                  </span>
                 </h2>
-                <p className="mt-3 text-white/60">
-                  Prefer the old-school way? Call, email or drop by our base camp
-                  in Guanacaste.
-                </p>
+                <p className="mt-3 text-white/60">{dict.contact.cardSubtitle}</p>
 
                 <div className="mt-8 space-y-5">
-                  {[
-                    {
-                      icon: Phone,
-                      label: "Phone / WhatsApp",
-                      value: CONTACT.phone,
-                      href: `tel:${CONTACT.phoneE164}`,
-                    },
-                    {
-                      icon: Mail,
-                      label: "Reservations",
-                      value: CONTACT.email,
-                      href: `mailto:${CONTACT.email}`,
-                    },
-                    {
-                      icon: MapPin,
-                      label: "Location",
-                      value: CONTACT.location,
-                    },
-                    {
-                      icon: Clock,
-                      label: "Departures",
-                      value: `Daily · ${SCHEDULE.departures.join(" · ")}`,
-                    },
-                  ].map((c, i) => {
+                  {infoItems.map((c, i) => {
                     const Wrapper: React.ElementType = c.href ? "a" : "div";
                     return (
                       <Wrapper
@@ -103,7 +111,7 @@ export default function ContactPage() {
                 </div>
 
                 <div className="mt-6 text-[10px] font-bold uppercase tracking-[0.25em] text-white/50">
-                  Flexible — contact us for other start times
+                  {dict.contact.flexibleNote}
                 </div>
 
                 <div className="mt-8 flex gap-3">
@@ -137,32 +145,33 @@ export default function ContactPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-night-950/80 via-transparent to-transparent" />
                 <div className="absolute bottom-5 left-5 right-5">
                   <div className="font-display text-3xl tracking-wide text-white">
-                    Guanacaste Base Camp
+                    {dict.contact.baseCamp}
                   </div>
                   <div className="text-xs uppercase tracking-widest text-white/60">
-                    Costa Rica · Pacific Coast
+                    {dict.contact.pacificCoast}
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Form */}
             <div>
               <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-4 sm:p-6 md:p-10">
                 <div>
                   <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
-                    Send us a message
+                    {dict.contact.formBadge}
                   </span>
                   <h2 className="mt-5 font-display text-[clamp(1.75rem,7vw,2.75rem)] leading-tight tracking-wide text-white [overflow-wrap:anywhere] md:text-5xl md:leading-none">
-                    Got a <span className="text-gradient-fire">question?</span>
+                    {dict.contact.formTitle}{" "}
+                    <span className="text-gradient-fire">
+                      {dict.contact.formTitleHighlight}
+                    </span>
                   </h2>
                   <p className="mt-3 max-w-md text-white/60">
-                    Ask us anything — availability, group sizes, special
-                    requests. We usually reply within the hour.
+                    {dict.contact.formSubtitle}
                   </p>
                 </div>
                 <div className="mt-8">
-                  <ContactForm />
+                  <ContactForm locale={locale} dict={dict} />
                 </div>
               </div>
             </div>
