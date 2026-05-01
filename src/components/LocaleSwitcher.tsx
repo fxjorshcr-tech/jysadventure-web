@@ -17,11 +17,16 @@ export function LocaleSwitcher({
   variant?: "header" | "mobile";
 }) {
   const router = useRouter();
-  const [busy, setBusy] = useState<Locale | null>(null);
+  const [busy, setBusy] = useState(false);
 
-  const change = async (next: Locale) => {
-    if (next === locale || busy) return;
-    setBusy(next);
+  // Click toggles to the other locale.
+  const next: Locale = LOCALES.find((l) => l !== locale) ?? "en";
+  const current = FLAGS[locale];
+  const target = FLAGS[next];
+
+  const change = async () => {
+    if (busy) return;
+    setBusy(true);
     try {
       await fetch("/api/locale", {
         method: "POST",
@@ -30,67 +35,41 @@ export function LocaleSwitcher({
       });
       router.refresh();
     } finally {
-      setBusy(null);
+      setBusy(false);
     }
   };
 
   if (variant === "mobile") {
     return (
-      <div className="mt-6 flex items-center justify-center gap-2" translate="no">
-        {LOCALES.map((l) => {
-          const active = l === locale;
-          return (
-            <button
-              key={l}
-              type="button"
-              onClick={() => change(l)}
-              aria-label={FLAGS[l].label}
-              aria-pressed={active}
-              className={`flex h-10 items-center gap-2 rounded-full border px-3 text-xs font-bold uppercase tracking-widest transition ${
-                active
-                  ? "border-lava-400 bg-lava-500/20 text-white"
-                  : "border-white/15 bg-white/5 text-white/70 hover:border-lava-400 hover:text-white"
-              }`}
-            >
-              <span aria-hidden className="text-base leading-none">
-                {FLAGS[l].emoji}
-              </span>
-              <span>{FLAGS[l].code}</span>
-            </button>
-          );
-        })}
-      </div>
+      <button
+        type="button"
+        onClick={change}
+        aria-label={`${target.label}`}
+        title={`${target.label}`}
+        translate="no"
+        className="mt-6 mx-auto flex h-10 items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 text-xs font-bold uppercase tracking-widest text-white/80 transition hover:border-lava-400 hover:text-white"
+      >
+        <span aria-hidden className="text-lg leading-none">
+          {current.emoji}
+        </span>
+        <span>{current.code}</span>
+      </button>
     );
   }
 
   return (
-    <div
-      className="flex items-center gap-1 border-r border-white/15 pr-3"
+    <button
+      type="button"
+      onClick={change}
+      aria-label={`${target.label}`}
+      title={`${target.label}`}
       translate="no"
+      className="flex h-9 items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2.5 text-[11px] font-bold uppercase tracking-widest text-white/80 transition hover:border-lava-400 hover:text-white"
     >
-      {LOCALES.map((l) => {
-        const active = l === locale;
-        return (
-          <button
-            key={l}
-            type="button"
-            onClick={() => change(l)}
-            aria-label={FLAGS[l].label}
-            aria-pressed={active}
-            title={FLAGS[l].label}
-            className={`flex h-9 items-center gap-1.5 rounded-full border px-2.5 text-[11px] font-bold uppercase tracking-widest transition ${
-              active
-                ? "border-lava-400 bg-lava-500/20 text-white"
-                : "border-white/10 bg-white/5 text-white/70 hover:border-lava-400 hover:text-white"
-            }`}
-          >
-            <span aria-hidden className="text-sm leading-none">
-              {FLAGS[l].emoji}
-            </span>
-            <span>{FLAGS[l].code}</span>
-          </button>
-        );
-      })}
-    </div>
+      <span aria-hidden className="text-base leading-none">
+        {current.emoji}
+      </span>
+      <span>{current.code}</span>
+    </button>
   );
 }

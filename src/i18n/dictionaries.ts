@@ -70,7 +70,7 @@ const en = {
       title: "Built for those who",
       titleHighlight: "don't settle",
       subtitle:
-        "We live and breathe Guanacaste's backcountry. Our guides are Costa Ricans in love with this land, our machines are beasts, and every trail has been hand-picked to deliver the kind of story you'll tell at every dinner party for years.",
+        "We know Guanacaste's backcountry inside out. Our guides are Costa Ricans in love with this land, our machines are beasts, and every trail has been hand-picked to deliver the kind of story you'll tell at every dinner party for years.",
       adrenaline: "Adrenaline guaranteed",
       cards: {
         safety: {
@@ -110,19 +110,19 @@ const en = {
   about: {
     metaTitle: "About — JYS Adventure Tour",
     metaDescription:
-      "Get to know JYS Adventure Tour. Costa Ricans in love with the Guanacaste plains, riding our home with you.",
+      "Get to know JYS Adventure Tour. Costa Ricans in love with the Guanacaste plains, sharing the ride with every traveler.",
     badge: "Our story",
     titleA: "IN LOVE WITH",
     titleB: "GUANACASTE",
     intro:
-      "JYS Adventure Tour is a team of Costa Ricans in love with the Guanacaste plains, sharing our home with every rider that comes along.",
-    estLabel: "Guanacaste roots",
+      "JYS Adventure Tour is a team of Costa Ricans in love with the Guanacaste plains, who love showing them off to every rider that joins us.",
+    estLabel: "Guanacaste at heart",
     story: {
       kicker: "Who we are",
       title: "A family of riders,",
       titleHighlight: "not tourists",
-      p1: "JYS Adventure started years ago as a quad bike rental operation. With the love we have for this land, we decided to build something bigger right here in Guanacaste — a tour to show visitors the real pampa: the trails, the rivers, the people, and the pura vida that only those who live here truly know.",
-      p2: "Today we ride brand-new vehicles, with bilingual guides and a route designed to share what we love most about our home.",
+      p1: "JYS Adventure started years ago as a quad bike rental operation. With the love we have for this land, we decided to build something bigger right here in Guanacaste — a tour to show visitors the pampa we fell for: the trails, the rivers, the people, and the pura vida that pulled us in.",
+      p2: "Today we ride brand-new vehicles, with bilingual guides and a route designed to share what we love most about Guanacaste.",
       p3: "Our mission is simple: give every rider the kind of day they can't stop talking about.",
     },
     values: {
@@ -139,8 +139,8 @@ const en = {
           text: "We ride light. Local ecosystems are our #1 teammate.",
         },
         crew: {
-          title: "Local crew",
-          text: "Costa Ricans in love with the Guanacaste plains. We share our home with you.",
+          title: "Costa Rican crew",
+          text: "Costa Ricans in love with the Guanacaste plains — happy to show them off to every rider.",
         },
         pura: {
           title: "Pura vida soul",
@@ -502,7 +502,7 @@ const es: typeof en = {
       title: "Hecho para los que",
       titleHighlight: "no se conforman",
       subtitle:
-        "Vivimos y respiramos los caminos de Guanacaste. Nuestros guías son costarricenses enamorados de esta tierra, las máquinas son bestiales y cada ruta está elegida a mano para darte la historia que vas a contar en cada cena durante años.",
+        "Conocemos los caminos de Guanacaste como la palma de la mano. Nuestros guías son costarricenses enamorados de esta tierra, las máquinas son bestiales y cada ruta está elegida a mano para darte la historia que vas a contar en cada cena durante años.",
       adrenaline: "Adrenalina garantizada",
       cards: {
         safety: {
@@ -542,19 +542,19 @@ const es: typeof en = {
   about: {
     metaTitle: "Nosotros — JYS Adventure Tour",
     metaDescription:
-      "Conoce a JYS Adventure Tour. Costarricenses enamorados de la pampa Guanacasteca, compartiendo nuestra casa con cada rider.",
+      "Conoce a JYS Adventure Tour. Costarricenses enamorados de la pampa Guanacasteca, compartiendo el recorrido con cada visitante.",
     badge: "Nuestra historia",
     titleA: "ENAMORADOS DE",
     titleB: "GUANACASTE",
     intro:
-      "JYS Adventure Tour es un equipo de costarricenses enamorados de la pampa Guanacasteca, que comparte su casa con cada persona que se nos une.",
-    estLabel: "Raíces guanacastecas",
+      "JYS Adventure Tour es un equipo de costarricenses enamorados de la pampa Guanacasteca, que disfruta mostrársela a cada persona que se nos une.",
+    estLabel: "Guanacaste en el corazón",
     story: {
       kicker: "Quiénes somos",
       title: "Una familia de riders,",
       titleHighlight: "no de turistas",
-      p1: "JYS Adventure empezó hace años como un negocio de alquiler de cuadraciclos. Por el amor que le tenemos a esta tierra, decidimos armar algo más grande aquí en Guanacaste — un tour para mostrarle al visitante la pampa de verdad: los caminos, los ríos, la gente y la pura vida que solo conoce quien vive aquí.",
-      p2: "Hoy rodamos con vehículos nuevos, guías bilingües y una ruta diseñada para compartir lo que más queremos de nuestra casa.",
+      p1: "JYS Adventure empezó hace años como un negocio de alquiler de cuadraciclos. Por el amor que le tenemos a esta tierra, decidimos armar algo más grande aquí en Guanacaste — un tour para mostrarle al visitante la pampa que nos enamoró: los caminos, los ríos, la gente y la pura vida que nos atrapó.",
+      p2: "Hoy rodamos con vehículos nuevos, guías bilingües y una ruta diseñada para compartir lo que más nos gusta de Guanacaste.",
       p3: "Nuestra misión es simple: que cada persona se vaya con un día del que no pueda dejar de hablar.",
     },
     values: {
@@ -571,8 +571,8 @@ const es: typeof en = {
           text: "Rodamos con cuidado. El ecosistema local es nuestro compañero #1.",
         },
         crew: {
-          title: "Equipo local",
-          text: "Costarricenses enamorados de la pampa Guanacasteca. Compartimos nuestra casa con ustedes.",
+          title: "Equipo costarricense",
+          text: "Costarricenses enamorados de la pampa Guanacasteca — felices de mostrársela a cada rider.",
         },
         pura: {
           title: "Alma pura vida",
