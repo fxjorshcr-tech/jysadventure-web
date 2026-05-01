@@ -2,7 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Calendar, Clock } from "lucide-react";
-import { BLOG_POSTS, getPost } from "@/lib/blog";
+import { BLOG_POSTS, getPost, localizePost } from "@/lib/blog";
+import { getLocale } from "@/i18n/request";
+import { getDictionary } from "@/i18n/dictionaries";
 
 type Params = { slug: string };
 
@@ -14,14 +16,16 @@ export async function generateMetadata({ params }: { params: Promise<Params> }) 
   const { slug } = await params;
   const post = getPost(slug);
   if (!post) return { title: "Post not found" };
+  const locale = await getLocale();
+  const localized = localizePost(post, locale);
   return {
-    title: post.title,
-    description: post.metaDescription,
-    keywords: post.keywords,
+    title: localized.title,
+    description: localized.metaDescription,
+    keywords: localized.keywords,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
-      title: `${post.title} — JYS Adventure Tour`,
-      description: post.metaDescription,
+      title: `${localized.title} — JYS Adventure Tour`,
+      description: localized.metaDescription,
       images: [{ url: post.image }],
       type: "article",
     },
@@ -34,10 +38,14 @@ export default async function BlogPostPage({
   params: Promise<Params>;
 }) {
   const { slug } = await params;
-  const post = getPost(slug);
-  if (!post) notFound();
-
-  const others = BLOG_POSTS.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const basePost = getPost(slug);
+  if (!basePost) notFound();
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const post = localizePost(basePost, locale);
+  const others = BLOG_POSTS.filter((p) => p.slug !== post.slug)
+    .slice(0, 3)
+    .map((p) => localizePost(p, locale));
 
   return (
     <>
@@ -59,7 +67,7 @@ export default async function BlogPostPage({
             href="/blog"
             className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-white/70 transition hover:text-lava-400"
           >
-            <ArrowLeft className="h-3 w-3" /> All posts
+            <ArrowLeft className="h-3 w-3" /> {dict.common.backToBlog}
           </Link>
           <span className="mt-5 inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
             {post.tag}
@@ -72,7 +80,7 @@ export default async function BlogPostPage({
               <Calendar className="h-3 w-3" /> {post.date}
             </span>
             <span className="flex items-center gap-1.5">
-              <Clock className="h-3 w-3" /> {post.readTime} read
+              <Clock className="h-3 w-3" /> {post.readTime} {dict.common.minRead}
             </span>
           </div>
         </div>
@@ -106,10 +114,10 @@ export default async function BlogPostPage({
 
           <div className="mt-12 flex flex-col gap-3 sm:flex-row">
             <Link href="/tours" className="btn-primary w-full sm:w-auto">
-              Explore tours <ArrowRight className="h-4 w-4" />
+              {dict.blog.exploreTours} <ArrowRight className="h-4 w-4" />
             </Link>
             <Link href="/contact" className="btn-ghost w-full sm:w-auto">
-              Contact us <ArrowRight className="h-4 w-4" />
+              {dict.common.contactUs} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -120,7 +128,8 @@ export default async function BlogPostPage({
         <section className="relative bg-night-900 py-20 md:py-28">
           <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
             <h2 className="font-display text-3xl tracking-wide text-white md:text-4xl">
-              More <span className="text-gradient-fire">reads</span>
+              {dict.common.morePosts}{" "}
+              <span className="text-gradient-fire">{dict.common.reads}</span>
             </h2>
             <div className="mt-10 grid gap-6 md:grid-cols-3">
               {others.map((p) => (

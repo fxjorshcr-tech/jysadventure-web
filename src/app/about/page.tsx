@@ -5,14 +5,28 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { Gallery } from "@/components/Gallery";
 import { Marquee } from "@/components/Marquee";
 import { Mountain, Leaf, Users, Heart, ArrowRight } from "lucide-react";
+import { getLocale } from "@/i18n/request";
+import { getDictionary } from "@/i18n/dictionaries";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "About — JYS Adventure Tour",
-  description:
-    "Get to know the crew behind JYS Adventure Tour. Born in Guanacaste, built for riders.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const dict = getDictionary(await getLocale());
+  return {
+    title: dict.about.metaTitle,
+    description: dict.about.metaDescription,
+  };
+}
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const values = [
+    { icon: Mountain, ...dict.about.values.cards.adventure },
+    { icon: Leaf, ...dict.about.values.cards.respect },
+    { icon: Users, ...dict.about.values.cards.crew },
+    { icon: Heart, ...dict.about.values.cards.pura },
+  ];
+
   return (
     <>
       {/* Hero */}
@@ -29,22 +43,20 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-hero-radial" />
         <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-5 lg:px-8">
           <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
-            Our story
+            {dict.about.badge}
           </span>
           <h1 className="mt-6 max-w-5xl font-display text-[clamp(2.75rem,12vw,6rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:text-8xl sm:leading-[0.85] sm:tracking-wider md:text-[9rem]">
-            BORN IN THE
+            {dict.about.titleA}
             <br />
-            <span className="text-gradient-fire">JUNGLE</span>
+            <span className="text-gradient-fire">{dict.about.titleB}</span>
           </h1>
           <p className="mt-6 max-w-2xl text-white/70 md:text-lg">
-            JYS Adventure Tour is more than a company — it&apos;s a family of
-            Guanacaste locals obsessed with showing the world what Costa Rica
-            feels like from behind the handlebars.
+            {dict.about.intro}
           </p>
         </div>
       </section>
 
-      <Marquee />
+      <Marquee dict={dict} />
 
       {/* Story */}
       <section className="relative bg-night-950 py-24 md:py-32">
@@ -61,41 +73,31 @@ export default function AboutPage() {
                 />
               </div>
               <div className="absolute -right-6 -top-6 hidden rounded-3xl border border-lava-500/50 bg-lava-500/20 p-6 backdrop-blur lg:block">
-                <div className="font-display text-5xl text-white">EST. 2016</div>
+                <div className="font-display text-5xl text-white">
+                  {locale === "es" ? "PURA VIDA" : "PURA VIDA"}
+                </div>
                 <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-100">
-                  Guanacaste roots
+                  {dict.about.estLabel}
                 </div>
               </div>
             </div>
 
             <div>
               <SectionHeader
-                kicker="Who we are"
+                kicker={dict.about.story.kicker}
                 title={
                   <>
-                    A family of riders, <br />
-                    <span className="text-gradient-fire">not tourists</span>
+                    {dict.about.story.title} <br />
+                    <span className="text-gradient-fire">
+                      {dict.about.story.titleHighlight}
+                    </span>
                   </>
                 }
               />
               <div className="mt-8 space-y-5 text-white/70">
-                <p>
-                  It all started with a beat-up ATV, a dirt trail behind the
-                  family finca, and one wild idea: what if we could show
-                  visitors the <em>real</em> Guanacaste — the one only locals
-                  know?
-                </p>
-                <p>
-                  Years later, JYS Adventure has grown into one of Costa
-                  Rica&apos;s most loved off-road experiences, with a crew of
-                  trained bilingual guides, a fleet of brand-new vehicles, and a
-                  collection of secret trails that stretch from the volcanic
-                  ridges of Rincón de la Vieja all the way to the Pacific coast.
-                </p>
-                <p>
-                  Our mission is simple: give every rider the kind of day they
-                  can&apos;t stop talking about.
-                </p>
+                <p>{dict.about.story.p1}</p>
+                <p>{dict.about.story.p2}</p>
+                <p>{dict.about.story.p3}</p>
               </div>
             </div>
           </div>
@@ -108,36 +110,18 @@ export default function AboutPage() {
         <div className="relative mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <SectionHeader
             align="center"
-            kicker="Our values"
+            kicker={dict.about.values.kicker}
             title={
               <>
-                What we <span className="text-gradient-fire">stand for</span>
+                {dict.about.values.title}{" "}
+                <span className="text-gradient-fire">
+                  {dict.about.values.titleHighlight}
+                </span>
               </>
             }
           />
           <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                icon: Mountain,
-                title: "Adventure first",
-                text: "Every trail is scouted to deliver raw, unforgettable moments.",
-              },
-              {
-                icon: Leaf,
-                title: "Respect nature",
-                text: "We ride light. Local ecosystems are our #1 teammate.",
-              },
-              {
-                icon: Users,
-                title: "Local crew",
-                text: "Born and raised in Guanacaste. We share our home with you.",
-              },
-              {
-                icon: Heart,
-                title: "Pura vida soul",
-                text: "We treat every rider like an old friend from day one.",
-              },
-            ].map((v, i) => (
+            {values.map((v, i) => (
               <div
                 key={i}
                 className="rounded-3xl border border-white/10 bg-white/[0.03] p-8 backdrop-blur transition hover:border-lava-400/50"
@@ -155,38 +139,18 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Numbers */}
-      <section className="relative bg-night-950 py-24 md:py-32">
-        <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
-          <div className="grid grid-cols-2 gap-6 rounded-3xl border border-white/10 bg-gradient-to-br from-night-900 to-night-950 p-6 sm:gap-8 sm:p-10 md:grid-cols-4 md:p-14">
-            {[
-              { k: "8+", v: "Years of rides" },
-              { k: "12k+", v: "Happy riders" },
-              { k: "25+", v: "Signature trails" },
-              { k: "4.9★", v: "Average review" },
-            ].map((s, i) => (
-              <div key={i} className="border-b border-white/10 pb-6 md:border-b-0 md:border-r md:pb-0 md:pr-6 md:last:border-r-0">
-                <div className="font-display text-4xl tracking-wide text-white sm:text-5xl md:text-6xl">
-                  {s.k}
-                </div>
-                <div className="mt-2 text-[10px] font-bold uppercase tracking-[0.3em] text-white/50">
-                  {s.v}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Gallery */}
       <section className="relative bg-night-900 py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <SectionHeader
             align="center"
-            kicker="Behind the wheel"
+            kicker={dict.about.gallerySection.kicker}
             title={
               <>
-                Moments from <span className="text-gradient-fire">the trail</span>
+                {dict.about.gallerySection.title}{" "}
+                <span className="text-gradient-fire">
+                  {dict.about.gallerySection.titleHighlight}
+                </span>
               </>
             }
           />
@@ -196,7 +160,7 @@ export default function AboutPage() {
 
           <div className="mt-16 text-center">
             <Link href="/tours" className="btn-primary">
-              See our tours <ArrowRight className="h-4 w-4" />
+              {dict.common.seeOurTours} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>

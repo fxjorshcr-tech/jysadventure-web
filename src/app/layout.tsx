@@ -5,6 +5,8 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SITE_URL, GA_ID } from "@/lib/info";
+import { getLocale } from "@/i18n/request";
+import { getDictionary } from "@/i18n/dictionaries";
 
 const lexend = Lexend({
   subsets: ["latin"],
@@ -20,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s — JYS Adventure Tour",
   },
   description:
-    "Unleash the wild side of Guanacaste with JYS Adventure Tour. Off-road ATV and UTV tours through jungle trails, volcanoes, rivers and Pacific beaches in Costa Rica.",
+    "ATV and UTV off-road adventures through the trails, rivers and Pacific beaches of Guanacaste, Costa Rica with JYS Adventure Tour.",
   keywords: [
     "ATV tour Costa Rica",
     "ATV tour Guanacaste",
@@ -40,7 +42,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "JYS Adventure Tour — ATV & UTV Tours in Guanacaste, Costa Rica",
     description:
-      "Off-road ATV and UTV tours through jungle trails, volcanoes, rivers and Pacific beaches in Guanacaste, Costa Rica.",
+      "Off-road ATV and UTV tours through the trails, rivers and Pacific beaches of Guanacaste, Costa Rica.",
     type: "website",
     locale: "en_US",
     siteName: "JYS Adventure Tour",
@@ -53,6 +55,9 @@ export const metadata: Metadata = {
       "Off-road ATV and UTV tours through Guanacaste, Costa Rica.",
   },
   robots: { index: true, follow: true },
+  other: {
+    google: "notranslate",
+  },
 };
 
 export const viewport: Viewport = {
@@ -62,15 +67,25 @@ export const viewport: Viewport = {
   themeColor: "#0a0f0a",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
   return (
-    <html lang="en" className={lexend.variable}>
+    <html
+      lang={locale}
+      translate="no"
+      className={`${lexend.variable} notranslate`}
+    >
+      <head>
+        <meta name="google" content="notranslate" />
+        <meta httpEquiv="Content-Language" content={locale} />
+      </head>
       <body className="min-h-[100dvh] w-full overflow-x-hidden bg-night-950 font-sans text-white antialiased">
-        <Header />
+        <Header locale={locale} dict={dict} />
         <main className="relative w-full overflow-x-hidden">{children}</main>
-        <Footer />
+        <Footer locale={locale} dict={dict} />
       </body>
       {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
     </html>

@@ -22,6 +22,7 @@ const schema = z.object({
   phone: z.string(),
   subject: z.string(),
   message: z.string().min(1),
+  locale: z.enum(["en", "es"]).optional(),
 });
 
 export async function POST(req: Request) {

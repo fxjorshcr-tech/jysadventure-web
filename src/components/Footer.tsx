@@ -3,8 +3,25 @@ import Image from "next/image";
 import { Instagram, Facebook, Mail, Phone, MapPin, Star } from "lucide-react";
 import { IMAGES } from "@/lib/images";
 import { CONTACT, SOCIAL_LINKS } from "@/lib/info";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
 
-export function Footer() {
+export function Footer({
+  locale: _locale,
+  dict,
+}: {
+  locale: Locale;
+  dict: Dictionary;
+}) {
+  const navLinks = [
+    { href: "/", label: dict.nav.home },
+    { href: "/tours", label: dict.nav.tours },
+    { href: "/about", label: dict.nav.about },
+    { href: "/blog", label: dict.nav.blog },
+    { href: "/faqs", label: dict.nav.faqs },
+    { href: "/contact", label: dict.nav.contact },
+  ];
+
   return (
     <footer className="relative overflow-hidden border-t border-white/10 bg-night-950">
       <div
@@ -14,7 +31,6 @@ export function Footer() {
       <div className="absolute inset-0 bg-grid-dark bg-[size:48px_48px] opacity-20" />
 
       <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-5 sm:py-20 lg:px-8">
-        {/* Bottom grid */}
         <div className="grid gap-10 pt-4 md:grid-cols-4">
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-3">
@@ -29,8 +45,7 @@ export function Footer() {
               </div>
             </Link>
             <p className="mt-5 max-w-sm text-sm text-white/60">
-              Born from a pure love for the wild trails of Guanacaste. We turn
-              Costa Rica&apos;s backcountry into the ride of your life.
+              {dict.footer.blurb}
             </p>
 
             <div className="mt-6 space-y-2 text-sm text-white/70">
@@ -75,19 +90,24 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-display text-lg tracking-widest text-white">Explore</h4>
+            <h4 className="font-display text-lg tracking-widest text-white">
+              {dict.footer.explore}
+            </h4>
             <ul className="mt-4 space-y-2 text-sm text-white/60">
-              <li><Link href="/" className="hover:text-white">Home</Link></li>
-              <li><Link href="/tours" className="hover:text-white">Tours</Link></li>
-              <li><Link href="/about" className="hover:text-white">About</Link></li>
-              <li><Link href="/blog" className="hover:text-white">Blog</Link></li>
-              <li><Link href="/faqs" className="hover:text-white">FAQs</Link></li>
-              <li><Link href="/contact" className="hover:text-white">Contact</Link></li>
+              {navLinks.map((n) => (
+                <li key={n.href}>
+                  <Link href={n.href} className="hover:text-white">
+                    {n.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="font-display text-lg tracking-widest text-white">Rides</h4>
+            <h4 className="font-display text-lg tracking-widest text-white">
+              {dict.footer.rides}
+            </h4>
             <ul className="mt-4 space-y-2 text-sm text-white/60">
               <li><Link href="/tours/atv-tour-guanacaste" className="hover:text-white">ATV Adventure</Link></li>
               <li><Link href="/tours/utv-tour-guanacaste" className="hover:text-white">UTV Side by Side</Link></li>
@@ -100,8 +120,8 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/50 md:flex-row">
-          <p>© {new Date().getFullYear()} JYS Adventure Tour. All rights reserved.</p>
-          <p className="font-display tracking-widest">PURA VIDA · ATV · UTV · COSTA RICA</p>
+          <p>© {new Date().getFullYear()} JYS Adventure Tour. {dict.footer.rights}</p>
+          <p className="font-display tracking-widest">{dict.footer.tagline}</p>
         </div>
       </div>
     </footer>

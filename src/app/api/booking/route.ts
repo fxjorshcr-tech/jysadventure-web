@@ -25,6 +25,7 @@ const schema = z.object({
   tour: z.object({
     slug: z.string(),
     title: z.string(),
+    titleLocalized: z.string().optional(),
   }),
   schedule: z.object({
     date: z.string(),
@@ -62,6 +63,7 @@ const schema = z.object({
     transportSubtotal: z.number(),
     total: z.number(),
   }),
+  locale: z.enum(["en", "es"]).optional(),
 });
 
 export async function POST(req: Request) {

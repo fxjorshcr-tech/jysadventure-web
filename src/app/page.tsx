@@ -6,7 +6,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { TourCard } from "@/components/TourCard";
 import { Gallery } from "@/components/Gallery";
 import { TestimonialsCarousel } from "@/components/TestimonialsCarousel";
-import { TOURS } from "@/lib/tours";
+import { localizeTours } from "@/lib/tours";
 import { IMAGES } from "@/lib/images";
 import {
   ShieldCheck,
@@ -15,36 +15,50 @@ import {
   Zap,
   ArrowRight,
 } from "lucide-react";
+import { getLocale } from "@/i18n/request";
+import { getDictionary } from "@/i18n/dictionaries";
 
-export default function HomePage() {
-  const featured = TOURS.slice(0, 3);
+export default async function HomePage() {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const tours = localizeTours(locale);
+  const featured = tours.slice(0, 3);
+  const cards = [
+    { icon: ShieldCheck, ...dict.home.why.cards.safety },
+    { icon: Compass, ...dict.home.why.cards.hidden },
+    { icon: HeartHandshake, ...dict.home.why.cards.small },
+    { icon: Zap, ...dict.home.why.cards.full },
+  ];
 
   return (
     <>
-      <Hero />
-      <Marquee />
+      <Hero dict={dict} />
+      <Marquee dict={dict} />
 
       {/* Featured tours */}
       <section className="relative bg-night-950 py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
             <SectionHeader
-              kicker="Signature Rides"
+              kicker={dict.home.signature.kicker}
               title={
                 <>
-                  Pick your <span className="text-gradient-fire">poison</span>
+                  {dict.home.signature.title}{" "}
+                  <span className="text-gradient-fire">
+                    {dict.home.signature.titleHighlight}
+                  </span>
                 </>
               }
-              subtitle="From family cruisers to extreme volcano ascents, every JYS ride is built to wake up your inner adventurer."
+              subtitle={dict.home.signature.subtitle}
             />
             <Link href="/tours" className="btn-ghost whitespace-nowrap">
-              All Tours <ArrowRight className="h-4 w-4" />
+              {dict.common.allTours} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {featured.map((t, i) => (
-              <TourCard key={t.slug} tour={t} index={i} />
+              <TourCard key={t.slug} tour={t} index={i} dict={dict} />
             ))}
           </div>
         </div>
@@ -70,45 +84,27 @@ export default function HomePage() {
               <div className="absolute -bottom-8 -right-6 hidden rounded-3xl border border-lava-500/50 bg-lava-500/20 p-6 backdrop-blur md:block">
                 <div className="font-display text-6xl text-white">100%</div>
                 <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-100">
-                  Adrenaline guaranteed
+                  {dict.home.why.adrenaline}
                 </div>
               </div>
             </div>
 
             <div>
               <SectionHeader
-                kicker="Why ride with us"
+                kicker={dict.home.why.kicker}
                 title={
                   <>
-                    Built for those who <span className="text-gradient-fire">don&apos;t settle</span>
+                    {dict.home.why.title}{" "}
+                    <span className="text-gradient-fire">
+                      {dict.home.why.titleHighlight}
+                    </span>
                   </>
                 }
-                subtitle="We live and breathe Guanacaste's backcountry. Our guides are locals, our machines are beasts, and every trail has been hand-picked to deliver the kind of story you&apos;ll tell at every dinner party for years."
+                subtitle={dict.home.why.subtitle}
               />
 
               <div className="mt-10 grid gap-5 sm:grid-cols-2">
-                {[
-                  {
-                    icon: ShieldCheck,
-                    title: "Safety first",
-                    text: "Modern ATVs, premium helmets and bilingual pro guides.",
-                  },
-                  {
-                    icon: Compass,
-                    title: "Hidden trails",
-                    text: "Locations you won't find on any map or Instagram feed.",
-                  },
-                  {
-                    icon: HeartHandshake,
-                    title: "Small groups",
-                    text: "Max 10 riders per guide for a truly personal ride.",
-                  },
-                  {
-                    icon: Zap,
-                    title: "Full adrenaline",
-                    text: "Designed for thrill. From mild to extreme, you pick.",
-                  },
-                ].map((f, i) => (
+                {cards.map((f, i) => (
                   <div
                     key={i}
                     className="group rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur transition hover:border-lava-400/50 hover:bg-white/[0.05]"
@@ -133,14 +129,16 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <SectionHeader
             align="center"
-            kicker="From the trails"
+            kicker={dict.home.gallery.kicker}
             title={
               <>
-                Real riders.{" "}
-                <span className="text-gradient-fire">Real adventure.</span>
+                {dict.home.gallery.title}{" "}
+                <span className="text-gradient-fire">
+                  {dict.home.gallery.titleHighlight}
+                </span>
               </>
             }
-            subtitle="Candid shots from our latest tours across Guanacaste."
+            subtitle={dict.home.gallery.subtitle}
           />
           <div className="mt-16">
             <Gallery />
@@ -154,19 +152,21 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <SectionHeader
             align="center"
-            kicker="The hype"
+            kicker={dict.home.testimonials.kicker}
             title={
               <>
-                What riders <span className="text-gradient-fire">say</span>
+                {dict.home.testimonials.title}{" "}
+                <span className="text-gradient-fire">
+                  {dict.home.testimonials.titleHighlight}
+                </span>
               </>
             }
           />
           <div className="mt-16">
-            <TestimonialsCarousel />
+            <TestimonialsCarousel locale={locale} dict={dict} />
           </div>
         </div>
       </section>
-
     </>
   );
 }

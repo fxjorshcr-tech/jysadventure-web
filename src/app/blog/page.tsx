@@ -3,17 +3,24 @@ import Link from "next/link";
 import { IMAGES } from "@/lib/images";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
-import { BLOG_POSTS } from "@/lib/blog";
+import { localizePosts } from "@/lib/blog";
+import { getLocale } from "@/i18n/request";
+import { getDictionary } from "@/i18n/dictionaries";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Blog — JYS Adventure Tour",
-  description:
-    "Short reads on ATV trails, family UTV tours and Guanacaste travel tips from the JYS Adventure crew.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const dict = getDictionary(await getLocale());
+  return {
+    title: dict.blog.metaTitle,
+    description: dict.blog.metaDescription,
+  };
+}
 
-const POSTS = BLOG_POSTS;
+export default async function BlogPage() {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const posts = localizePosts(locale);
 
-export default function BlogPage() {
   return (
     <>
       {/* Hero */}
@@ -31,16 +38,15 @@ export default function BlogPage() {
 
         <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-5 lg:px-8">
           <span className="inline-flex items-center gap-2 rounded-full border border-lava-500/40 bg-lava-500/10 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-lava-400">
-            The journal
+            {dict.blog.badge}
           </span>
           <h1 className="mt-6 max-w-5xl font-display text-[clamp(2.75rem,12vw,6rem)] leading-[0.9] tracking-wide text-white [overflow-wrap:anywhere] sm:text-8xl sm:leading-[0.85] sm:tracking-wider md:text-[9rem]">
-            STORIES FROM
+            {dict.blog.titleA}
             <br />
-            <span className="text-gradient-fire">THE TRAIL</span>
+            <span className="text-gradient-fire">{dict.blog.titleB}</span>
           </h1>
           <p className="mt-6 max-w-2xl text-white/70 md:text-lg">
-            Travel guides, riding tips and Guanacaste secrets straight from our
-            crew. New posts dropping soon.
+            {dict.blog.subtitle}
           </p>
         </div>
       </section>
@@ -49,17 +55,20 @@ export default function BlogPage() {
       <section className="relative bg-night-950 py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-8">
           <SectionHeader
-            kicker="Latest posts"
+            kicker={dict.blog.listKicker}
             title={
               <>
-                Fresh <span className="text-gradient-fire">reads</span>
+                {dict.blog.listTitle}{" "}
+                <span className="text-gradient-fire">
+                  {dict.blog.listTitleHighlight}
+                </span>
               </>
             }
-            subtitle="Short reads on Guanacaste trails, gear and travel tips."
+            subtitle={dict.blog.listSubtitle}
           />
 
           <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {POSTS.map((p) => (
+            {posts.map((p) => (
               <Link
                 key={p.slug}
                 href={`/blog/${p.slug}`}
@@ -94,13 +103,12 @@ export default function BlogPage() {
                     {p.excerpt}
                   </p>
                   <span className="mt-5 inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-widest text-lava-400">
-                    Read more <ArrowRight className="h-3 w-3" />
+                    {dict.common.readMore} <ArrowRight className="h-3 w-3" />
                   </span>
                 </div>
               </Link>
             ))}
           </div>
-
         </div>
       </section>
     </>

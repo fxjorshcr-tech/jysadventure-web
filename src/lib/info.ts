@@ -1,3 +1,5 @@
+import type { Bilingual } from "@/i18n/text";
+
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://jysadventuretour.com";
 
@@ -21,7 +23,10 @@ export const CONTACT = {
 
 export const SCHEDULE = {
   departures: ["8:00 AM", "11:00 AM", "2:00 PM"],
-  note: "Flexible scheduling — ask us about other start times.",
+  note: {
+    en: "Flexible scheduling — ask us about other start times.",
+    es: "Horarios flexibles — pregúntanos por otros horarios.",
+  } satisfies Bilingual,
 };
 
 export type TransportZone = {
@@ -29,75 +34,110 @@ export type TransportZone = {
   name: string;
   basePrice: number;
   extraPerPerson: number;
-  note?: string;
+  note?: Bilingual;
 };
 
+/**
+ * IVA: tour prices already include tax. Transport rates below ARE FINAL —
+ * the 13% IVA has been baked into both basePrice and extraPerPerson, so the
+ * booking total can simply add transportSubtotal without further math.
+ */
 export const TRANSPORT_ZONES: TransportZone[] = [
   {
     slug: "riu",
     name: "Hotel RIU",
     basePrice: 0,
     extraPerPerson: 0,
-    note: "Complimentary round-trip transport.",
+    note: {
+      en: "Complimentary round-trip transport.",
+      es: "Transporte ida y vuelta cortesía.",
+    },
   },
-  { slug: "el-coco", name: "El Coco", basePrice: 60, extraPerPerson: 10 },
-  { slug: "playa-hermosa", name: "Playa Hermosa", basePrice: 60, extraPerPerson: 10 },
-  { slug: "playa-panama", name: "Playa Panamá", basePrice: 60, extraPerPerson: 10 },
-  { slug: "andaz", name: "Andaz Papagayo", basePrice: 130, extraPerPerson: 15 },
-  { slug: "planet-hollywood", name: "Planet Hollywood", basePrice: 130, extraPerPerson: 15 },
-  { slug: "four-seasons", name: "Four Seasons", basePrice: 150, extraPerPerson: 15 },
-  { slug: "ritz", name: "Hotel Ritz", basePrice: 150, extraPerPerson: 15 },
+  // 60 + 13% = 67.80 → 68; 10 + 13% = 11.30 → 11
+  { slug: "el-coco", name: "El Coco", basePrice: 68, extraPerPerson: 11 },
+  { slug: "playa-hermosa", name: "Playa Hermosa", basePrice: 68, extraPerPerson: 11 },
+  { slug: "playa-panama", name: "Playa Panamá", basePrice: 68, extraPerPerson: 11 },
+  // 130 + 13% = 146.90 → 147; 15 + 13% = 16.95 → 17
+  { slug: "andaz", name: "Andaz Papagayo", basePrice: 147, extraPerPerson: 17 },
+  { slug: "planet-hollywood", name: "Planet Hollywood", basePrice: 147, extraPerPerson: 17 },
+  // 150 + 13% = 169.50 → 170
+  { slug: "four-seasons", name: "Four Seasons", basePrice: 170, extraPerPerson: 17 },
+  { slug: "ritz", name: "Hotel Ritz", basePrice: 170, extraPerPerson: 17 },
 ];
 
 export const TRANSPORT_INFO = {
   includedPassengers: 5,
-  pricesIncludeTax: true,
+  /**
+   * Whether the listed transport prices already include the 13% IVA.
+   * Tour prices include tax; transport rates above were updated to bake the
+   * 13% in so the same is now true for transport. The UI uses this to label
+   * the price breakdown ("13% IVA included") instead of adding it on top.
+   */
+  transportTaxIncluded: true,
 };
 
 export type SeasonalRoute = {
-  season: "Winter" | "Summer";
-  months: string;
-  title: string;
-  description: string;
+  season: "Year-round";
+  months: Bilingual;
+  title: Bilingual;
+  description: Bilingual;
 };
 
+/**
+ * One single route, adapted by the guides depending on the season's terrain
+ * and weather. Kept as an array so existing UI that maps over it still works.
+ */
 export const SEASONAL_ROUTES: SeasonalRoute[] = [
   {
-    season: "Winter",
-    months: "May — November",
-    title: "Las Pilas waterfall & local villages",
-    description:
-      "Green-season route through jungle trails to the Las Pilas waterfall, with stops in Guanacaste villages.",
-  },
-  {
-    season: "Summer",
-    months: "December — April",
-    title: "Rivers & local villages",
-    description:
-      "Dry-season route across riverbeds and through authentic Guanacaste villages for a full cultural ride.",
+    season: "Year-round",
+    months: { en: "Year-round", es: "Todo el año" },
+    title: {
+      en: "Our Guanacaste route",
+      es: "Nuestra ruta por Guanacaste",
+    },
+    description: {
+      en: "A single route through the trails, rivers and villages of Guanacaste — adapted by our guides depending on the season's terrain and weather.",
+      es: "Una ruta única por los caminos, ríos y pueblos de Guanacaste — adaptada por nuestros guías según el terreno y clima de la temporada.",
+    },
   },
 ];
 
 export type AddOn = {
   slug: string;
-  name: string;
+  name: Bilingual;
   price: number;
-  description: string;
+  description: Bilingual;
 };
 
 export const ADD_ONS: AddOn[] = [
   {
     slug: "bandana",
-    name: "Bandana",
+    name: { en: "Bandana", es: "Bandana" },
     price: 10,
-    description: "Add a JYS bandana for dust protection and a souvenir to take home.",
+    description: {
+      en: "Add a JYS bandana for dust protection and a souvenir to take home.",
+      es: "Agrega una bandana JYS para protección contra el polvo y un recuerdo del tour.",
+    },
   },
 ];
 
-export const INCLUSIONS = {
-  safety: ["Helmet", "Goggles", "Bottled water"],
+export const INCLUSIONS: {
+  safety: Bilingual[];
+  accessibility: Bilingual[];
+} = {
+  safety: [
+    { en: "Helmet", es: "Casco" },
+    { en: "Goggles", es: "Goggles" },
+    { en: "Bottled water", es: "Agua embotellada" },
+  ],
   accessibility: [
-    "Baby seats available on request.",
-    "Wheelchair accessible — riders with mobility needs can travel in the rear of the UTV (max 2–3 passengers in this configuration).",
+    {
+      en: "Baby seats available on request.",
+      es: "Sillas de bebé disponibles bajo pedido.",
+    },
+    {
+      en: "Riders with mobility needs are welcome — they can travel either in the front or in the rear of the UTV. Contact us before booking so we can arrange the best setup for the group.",
+      es: "Personas con movilidad reducida son bienvenidas — pueden ir adelante o atrás en el UTV. Contáctennos antes de reservar para coordinar la mejor opción del grupo.",
+    },
   ],
 };
