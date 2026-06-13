@@ -101,10 +101,11 @@ const schema = z
       (op) => op.slug === d.canopyOperator,
     );
     if (tour.pricingMode === "per-variant") {
-      if ((d.singles ?? 0) + (d.doubles ?? 0) <= 0) {
+      const totalRiders = (d.singles ?? 0) + (d.doubles ?? 0) * 2;
+      if (totalRiders < 2) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Add at least 1 rider or vehicle",
+          message: "Minimum 2 riders per booking — add a Double or two Singles.",
           path: ["riders"],
         });
       }
@@ -119,7 +120,13 @@ const schema = z
           path: ["utvs"],
         });
       }
-      if (riders < utvs) {
+      if (utvs > 0 && riders < 2) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Minimum 2 riders per booking.",
+          path: ["riders"],
+        });
+      } else if (riders < utvs) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "At least 1 rider per UTV",
@@ -285,10 +292,11 @@ export function BookingForm({
   useEffect(() => {
     if (currentTour && currentTour.pricingMode !== "per-variant") {
       const cap = utvs * effectiveMaxSeats;
+      const floor = utvs > 0 ? Math.max(utvs, 2) : utvs;
       if (riders > cap) {
         setValue("riders", cap, { shouldValidate: true });
-      } else if (riders < utvs) {
-        setValue("riders", utvs, { shouldValidate: true });
+      } else if (riders < floor) {
+        setValue("riders", floor, { shouldValidate: true });
       }
     }
   }, [utvs, currentTour, riders, effectiveMaxSeats, setValue]);
@@ -468,6 +476,10 @@ export function BookingForm({
   const change = locale === "es" ? "Cambiar" : "Change";
   const preSelected = locale === "es" ? "Pre-seleccionado" : "Pre-selected";
   const howManyEach = locale === "es" ? "¿Cuántos de cada uno?" : "How many of each?";
+  const minPaxNote =
+    locale === "es"
+      ? "Reserva mínima: 2 personas."
+      : "Minimum booking: 2 riders.";
   const oneRiderPerQuad = locale === "es" ? "1 persona por cuadraciclo" : "1 rider per quad";
   const twoRiderPerQuad = (age: number) =>
     locale === "es"
@@ -614,6 +626,7 @@ export function BookingForm({
                   {pricingShownWith(selectedOperator.name)}
                 </p>
               )}
+              <p className="mt-2 text-xs text-white/55">{minPaxNote}</p>
               {errors.riders && (
                 <p className={errorCls}>{errors.riders.message}</p>
               )}
@@ -661,6 +674,7 @@ export function BookingForm({
                           ? perPersonLabel
                           : includedLabel
                     }
+                    min={utvs > 0 ? Math.max(utvs, 2) : 0}
                     max={Math.max(1, utvs) * effectiveMaxSeats}
                     value={riders}
                     onChange={(v) => setValue("riders", v, { shouldValidate: true })}
@@ -673,6 +687,7 @@ export function BookingForm({
                   {currentTour.seatingNote && (
                     <p className="text-xs text-white/55">{currentTour.seatingNote}</p>
                   )}
+                  <p className="text-xs text-white/55">{minPaxNote}</p>
                 </div>
               ) : (
                 <QuantityRow
@@ -1159,6 +1174,7 @@ function QuantityRow({
   price,
   priceLabel = "per quad",
   prefix,
+  min = 0,
   max = 30,
   value,
   onChange,
@@ -1168,11 +1184,12 @@ function QuantityRow({
   price: number;
   priceLabel?: string;
   prefix?: string;
+  min?: number;
   max?: number;
   value: number;
   onChange: (n: number) => void;
 }) {
-  const dec = () => onChange(Math.max(0, value - 1));
+  const dec = () => onChange(Math.max(min, value - 1));
   const inc = () => onChange(Math.min(max, value + 1));
   return (
     <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/[0.04] px-3 py-3 sm:gap-4 sm:px-4">
@@ -1191,7 +1208,7 @@ function QuantityRow({
           type="button"
           onClick={dec}
           className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 transition hover:border-lava-400 hover:text-white disabled:opacity-40 sm:h-9 sm:w-9"
-          disabled={value <= 0}
+          disabled={value <= min}
           aria-label="-"
         >
           <Minus className="h-4 w-4" />
