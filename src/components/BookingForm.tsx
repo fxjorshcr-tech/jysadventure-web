@@ -120,13 +120,7 @@ const schema = z
           path: ["utvs"],
         });
       }
-      if (utvs > 0 && riders < 2) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Minimum 2 riders per booking.",
-          path: ["riders"],
-        });
-      } else if (riders < utvs) {
+      if (riders < utvs) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "At least 1 rider per UTV",
@@ -292,11 +286,10 @@ export function BookingForm({
   useEffect(() => {
     if (currentTour && currentTour.pricingMode !== "per-variant") {
       const cap = utvs * effectiveMaxSeats;
-      const floor = utvs > 0 ? Math.max(utvs, 2) : utvs;
       if (riders > cap) {
         setValue("riders", cap, { shouldValidate: true });
-      } else if (riders < floor) {
-        setValue("riders", floor, { shouldValidate: true });
+      } else if (riders < utvs) {
+        setValue("riders", utvs, { shouldValidate: true });
       }
     }
   }, [utvs, currentTour, riders, effectiveMaxSeats, setValue]);
@@ -674,7 +667,6 @@ export function BookingForm({
                           ? perPersonLabel
                           : includedLabel
                     }
-                    min={utvs > 0 ? Math.max(utvs, 2) : 0}
                     max={Math.max(1, utvs) * effectiveMaxSeats}
                     value={riders}
                     onChange={(v) => setValue("riders", v, { shouldValidate: true })}
@@ -687,7 +679,6 @@ export function BookingForm({
                   {currentTour.seatingNote && (
                     <p className="text-xs text-white/55">{currentTour.seatingNote}</p>
                   )}
-                  <p className="text-xs text-white/55">{minPaxNote}</p>
                 </div>
               ) : (
                 <QuantityRow
