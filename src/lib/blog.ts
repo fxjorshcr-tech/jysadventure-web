@@ -13,6 +13,8 @@ export type BlogPost = {
   title: Bilingual;
   excerpt: Bilingual;
   date: Bilingual;
+  /** ISO 8601 publish date (YYYY-MM-DD) used for structured data and sitemaps. */
+  dateISO: string;
   readTime: Bilingual;
   image: string;
   tag: Bilingual;
@@ -35,6 +37,7 @@ export const BLOG_POSTS: BlogPost[] = [
       es: "De caminos abiertos a cruces de ríos y pueblos tranquilos — la ruta que escogimos a mano para compartir la verdadera Guanacaste con nuestros riders.",
     },
     date: { en: "April 2026", es: "Abril 2026" },
+    dateISO: "2026-04-05",
     readTime: { en: "3 min", es: "3 min" },
     image: IMAGES.gallery[0],
     tag: { en: "Trails", es: "Rutas" },
@@ -104,6 +107,7 @@ export const BLOG_POSTS: BlogPost[] = [
       es: "Una guía rápida para elegir entre un cuadraciclo solo y un side-by-side familiar para tu aventura en Costa Rica.",
     },
     date: { en: "April 2026", es: "Abril 2026" },
+    dateISO: "2026-04-08",
     readTime: { en: "2 min", es: "2 min" },
     image: IMAGES.gallery[2],
     tag: { en: "Guide", es: "Guía" },
@@ -155,6 +159,7 @@ export const BLOG_POSTS: BlogPost[] = [
       es: "Zapatos, ropa, protector solar y lo único que la mayoría olvida. Una lista completa para empacar.",
     },
     date: { en: "April 2026", es: "Abril 2026" },
+    dateISO: "2026-04-12",
     readTime: { en: "2 min", es: "2 min" },
     image: IMAGES.gallery[4],
     tag: { en: "Tips", es: "Consejos" },
@@ -213,6 +218,7 @@ export const BLOG_POSTS: BlogPost[] = [
       es: "Consejos de seguridad, edades recomendadas y cómo hacer que el primer tour todoterreno de tu hijo sea inolvidable.",
     },
     date: { en: "April 2026", es: "Abril 2026" },
+    dateISO: "2026-04-16",
     readTime: { en: "2 min", es: "2 min" },
     image: IMAGES.gallery[5],
     tag: { en: "Family", es: "Familia" },
@@ -268,6 +274,7 @@ export const BLOG_POSTS: BlogPost[] = [
       es: "Por qué mezclar un tour con adrenalina y una cabalgata en finca puede ser la mejor decisión de viaje.",
     },
     date: { en: "April 2026", es: "Abril 2026" },
+    dateISO: "2026-04-20",
     readTime: { en: "2 min", es: "2 min" },
     image: IMAGES.gallery[1],
     tag: { en: "Combos", es: "Combos" },
@@ -323,6 +330,7 @@ export const BLOG_POSTS: BlogPost[] = [
       es: "Temporada seca, temporada verde, lluvia — cómo el clima cambia los caminos y cuándo reservar.",
     },
     date: { en: "April 2026", es: "Abril 2026" },
+    dateISO: "2026-04-24",
     readTime: { en: "2 min", es: "2 min" },
     image: IMAGES.gallery[6],
     tag: { en: "Travel", es: "Viajes" },
@@ -378,6 +386,7 @@ export type LocalizedBlogPost = {
   title: string;
   excerpt: string;
   date: string;
+  dateISO: string;
   readTime: string;
   image: string;
   tag: string;
@@ -394,6 +403,7 @@ export function localizePost(post: BlogPost, locale: Locale): LocalizedBlogPost 
     title: t(post.title, locale),
     excerpt: t(post.excerpt, locale),
     date: t(post.date, locale),
+    dateISO: post.dateISO,
     readTime: t(post.readTime, locale),
     image: post.image,
     tag: t(post.tag, locale),

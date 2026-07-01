@@ -4,7 +4,9 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { JsonLd } from "@/components/JsonLd";
 import { SITE_URL, GA_ID } from "@/lib/info";
+import { siteGraph } from "@/lib/schema";
 import { getLocale } from "@/i18n/request";
 import { getDictionary } from "@/i18n/dictionaries";
 
@@ -81,6 +83,7 @@ export default async function RootLayout({
       <head>
         <meta name="google" content="notranslate" />
         <meta httpEquiv="Content-Language" content={locale} />
+        <JsonLd data={siteGraph(locale)} />
       </head>
       <body className="min-h-[100dvh] w-full overflow-x-hidden bg-night-950 font-sans text-white antialiased">
         <Header locale={locale} dict={dict} />

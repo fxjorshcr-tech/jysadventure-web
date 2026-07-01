@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.8,
+      images: [t.image],
     },
     {
       url: `${SITE_URL}/tours/${t.slug}/book`,
@@ -32,9 +33,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const blogRoutes: MetadataRoute.Sitemap = BLOG_POSTS.map((p) => ({
     url: `${SITE_URL}/blog/${p.slug}`,
-    lastModified: now,
+    lastModified: new Date(p.dateISO),
     changeFrequency: "monthly",
     priority: 0.6,
+    images: [p.image],
   }));
 
   return [...staticRoutes, ...tourRoutes, ...blogRoutes];

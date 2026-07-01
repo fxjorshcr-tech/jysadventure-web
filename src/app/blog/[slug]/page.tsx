@@ -3,6 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Calendar, Clock } from "lucide-react";
 import { BLOG_POSTS, getPost, localizePost } from "@/lib/blog";
+import { JsonLd } from "@/components/JsonLd";
+import { SITE_URL } from "@/lib/info";
+import { blogPostingNode, breadcrumbNode, CRUMB_LABELS } from "@/lib/schema";
+import { t } from "@/i18n/text";
 import { getLocale } from "@/i18n/request";
 import { getDictionary } from "@/i18n/dictionaries";
 
@@ -47,8 +51,18 @@ export default async function BlogPostPage({
     .slice(0, 3)
     .map((p) => localizePost(p, locale));
 
+  const schema = [
+    blogPostingNode(post, locale),
+    breadcrumbNode([
+      { name: t(CRUMB_LABELS.home, locale), url: `${SITE_URL}/` },
+      { name: t(CRUMB_LABELS.blog, locale), url: `${SITE_URL}/blog` },
+      { name: post.title, url: `${SITE_URL}/blog/${post.slug}` },
+    ]),
+  ];
+
   return (
     <>
+      <JsonLd data={schema} />
       {/* Hero */}
       <section className="relative flex min-h-[55svh] w-full max-w-full items-end overflow-hidden bg-night-950 pb-12 pt-32 sm:pb-16 sm:pt-40">
         <Image
