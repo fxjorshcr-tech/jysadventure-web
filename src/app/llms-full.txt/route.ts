@@ -20,6 +20,17 @@ export async function GET() {
   lines.push(`- Email: ${CONTACT.email}`);
   lines.push(`- Phone / WhatsApp: ${CONTACT.phone}`);
   lines.push(`- Location: ${CONTACT.location}`);
+  lines.push("- Languages: English and Spanish (bilingual guides).");
+  lines.push("- Rating: 5.0 on Google Reviews.");
+  lines.push("");
+
+  lines.push("## Policies");
+  lines.push("- Drivers must be 18+ with a valid driver's license from any country; no license means passenger only.");
+  lines.push("- Passenger minimum age: 5+ on an ATV Double, 2+ in a UTV.");
+  lines.push("- Free cancellation up to 24 hours before the tour; inside 24 hours we do our best to reschedule.");
+  lines.push("- Payment: cash (USD or CRC) or Visa/Mastercard, paid the day of the tour at our base. Usually no deposit required.");
+  lines.push("- Tours run year-round; rain rarely cancels a tour — only unsafe conditions do, with a full refund or free reschedule.");
+  lines.push("- All tour prices include 13% IVA. Transport rates also include IVA.");
   lines.push("");
 
   lines.push("## Daily schedule");

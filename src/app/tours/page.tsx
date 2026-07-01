@@ -11,6 +11,9 @@ import { IMAGES } from "@/lib/images";
 import { FeaturedTourCard, ComboTourCard } from "@/components/TourCard";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Marquee } from "@/components/Marquee";
+import { JsonLd } from "@/components/JsonLd";
+import { SITE_URL } from "@/lib/info";
+import { tourListNode, breadcrumbNode, CRUMB_LABELS } from "@/lib/schema";
 import {
   IdCard,
   Users,
@@ -53,8 +56,17 @@ export default async function ToursPage() {
     String(TRANSPORT_INFO.includedPassengers),
   );
 
+  const schema = [
+    tourListNode(tours, dict.tours.metaTitle),
+    breadcrumbNode([
+      { name: t(CRUMB_LABELS.home, locale), url: `${SITE_URL}/` },
+      { name: t(CRUMB_LABELS.tours, locale), url: `${SITE_URL}/tours` },
+    ]),
+  ];
+
   return (
     <>
+      <JsonLd data={schema} />
       {/* Hero */}
       <section className="relative flex min-h-[70svh] w-full max-w-full items-end overflow-hidden bg-night-950 pb-16 pt-32 sm:pb-20 sm:pt-40">
         <Image

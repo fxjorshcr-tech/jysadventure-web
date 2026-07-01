@@ -1,7 +1,9 @@
 import Image from "next/image";
 import { IMAGES } from "@/lib/images";
 import { SectionHeader } from "@/components/SectionHeader";
+import { JsonLd } from "@/components/JsonLd";
 import { localizeFaqs } from "@/lib/faqs";
+import { faqPageNode } from "@/lib/schema";
 import { getLocale } from "@/i18n/request";
 import { getDictionary } from "@/i18n/dictionaries";
 import { FaqAccordion } from "./FaqAccordion";
@@ -22,6 +24,7 @@ export default async function FAQsPage() {
 
   return (
     <>
+      <JsonLd data={faqPageNode(groups)} />
       {/* Hero */}
       <section className="relative flex min-h-[55svh] w-full max-w-full items-end overflow-hidden bg-night-950 pb-12 pt-32 sm:pb-16 sm:pt-40">
         <Image
