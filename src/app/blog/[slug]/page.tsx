@@ -5,7 +5,12 @@ import { ArrowLeft, ArrowRight, Calendar, Clock } from "lucide-react";
 import { BLOG_POSTS, getPost, localizePost } from "@/lib/blog";
 import { JsonLd } from "@/components/JsonLd";
 import { SITE_URL } from "@/lib/info";
-import { blogPostingNode, breadcrumbNode, CRUMB_LABELS } from "@/lib/schema";
+import {
+  blogFaqNode,
+  blogPostingNode,
+  breadcrumbNode,
+  CRUMB_LABELS,
+} from "@/lib/schema";
 import { t } from "@/i18n/text";
 import { getLocale } from "@/i18n/request";
 import { getDictionary } from "@/i18n/dictionaries";
@@ -51,8 +56,10 @@ export default async function BlogPostPage({
     .slice(0, 3)
     .map((p) => localizePost(p, locale));
 
+  const faqSchema = blogFaqNode(post);
   const schema = [
     blogPostingNode(post, locale),
+    ...(faqSchema ? [faqSchema] : []),
     breadcrumbNode([
       { name: t(CRUMB_LABELS.home, locale), url: `${SITE_URL}/` },
       { name: t(CRUMB_LABELS.blog, locale), url: `${SITE_URL}/blog` },
@@ -115,7 +122,11 @@ export default async function BlogPostPage({
                     {s.heading}
                   </h2>
                 )}
-                <p className="mt-3 text-white/75 md:text-lg">{s.body}</p>
+                {s.body.split("\n\n").map((paragraph, j) => (
+                  <p key={j} className="mt-3 text-white/75 md:text-lg">
+                    {paragraph}
+                  </p>
+                ))}
               </div>
             ))}
           </div>
@@ -124,6 +135,31 @@ export default async function BlogPostPage({
             <p className="mt-10 rounded-3xl border border-lava-500/30 bg-lava-500/5 p-6 text-white/80 md:text-lg">
               {post.closing}
             </p>
+          )}
+
+          {post.faqs && post.faqs.length > 0 && (
+            <div className="mt-14">
+              <h2 className="font-display text-2xl tracking-wide text-white md:text-3xl">
+                {locale === "es"
+                  ? "Preguntas frecuentes"
+                  : "Frequently asked questions"}
+              </h2>
+              <div className="mt-6 space-y-4">
+                {post.faqs.map((f, i) => (
+                  <div
+                    key={i}
+                    className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+                  >
+                    <h3 className="font-display text-lg tracking-wide text-white">
+                      {f.q}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-white/70 md:text-base">
+                      {f.a}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
 
           <div className="mt-12 flex flex-col gap-3 sm:flex-row">
