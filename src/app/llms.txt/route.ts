@@ -26,6 +26,7 @@ export async function GET() {
   lines.push(`- Daily departures: ${SCHEDULE.departures.join(", ")} (schedule is flexible — other start times on request).`);
   lines.push("- Drivers must be 18+ with a valid driver's license (any country). No license = passenger only.");
   lines.push("- Passenger minimum age: 5+ on an ATV Double, 2+ in a UTV.");
+  lines.push("- ATV bookings require a minimum of 2 machines per reservation (any mix of Single and Double); this also applies to ATV combo tours. The UTV can be booked as a single vehicle.");
   lines.push("- Free cancellation up to 24 hours before the tour.");
   lines.push("- Payment: cash (USD or CRC) or Visa/Mastercard, paid on the day at our base. No deposit usually required.");
   lines.push("- Tours run year-round on a single route adapted by season. All prices include 13% IVA.");

@@ -34,10 +34,15 @@ const schema = z.object({
   vehicles: z.union([
     z.object({
       mode: z.literal("atv"),
-      singles: z.number().int(),
-      doubles: z.number().int(),
+      singles: z.number().int().min(0),
+      doubles: z.number().int().min(0),
       totalRiders: z.number().int(),
-    }),
+    })
+      // ATV tours (and ATV combos) require at least 2 machines per booking —
+      // a lone Single or lone Double is not accepted.
+      .refine((v) => v.singles + v.doubles >= 2, {
+        message: "ATV bookings require a minimum of 2 machines",
+      }),
     z.object({
       mode: z.literal("utv"),
       utvs: z.number().int(),

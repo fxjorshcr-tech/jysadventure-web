@@ -101,11 +101,12 @@ const schema = z
       (op) => op.slug === d.canopyOperator,
     );
     if (tour.pricingMode === "per-variant") {
-      const totalRiders = (d.singles ?? 0) + (d.doubles ?? 0) * 2;
-      if (totalRiders < 2) {
+      const machines = (d.singles ?? 0) + (d.doubles ?? 0);
+      if (machines < 2) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Minimum 2 riders per booking — add a Double or two Singles.",
+          message:
+            "Minimum 2 ATVs per booking — we can't send out a single machine (Single or Double). Add at least one more ATV.",
           path: ["riders"],
         });
       }
@@ -471,8 +472,8 @@ export function BookingForm({
   const howManyEach = locale === "es" ? "¿Cuántos de cada uno?" : "How many of each?";
   const minPaxNote =
     locale === "es"
-      ? "Reserva mínima: 2 personas."
-      : "Minimum booking: 2 riders.";
+      ? "Reserva mínima: 2 cuadraciclos (cualquier mezcla de Single y Double). No es posible reservar una sola máquina — aplica también para los combos."
+      : "Minimum booking: 2 ATVs (any mix of Single and Double). Single-machine bookings aren't available — this also applies to combos.";
   const oneRiderPerQuad = locale === "es" ? "1 persona por cuadraciclo" : "1 rider per quad";
   const twoRiderPerQuad = (age: number) =>
     locale === "es"

@@ -66,6 +66,16 @@ export const FAQ_GROUPS: FaqGroup[] = [
       },
       {
         q: {
+          en: "Can I book just one ATV?",
+          es: "¿Puedo reservar un solo ATV?",
+        },
+        a: {
+          en: "No — ATV bookings require a minimum of 2 machines per reservation (any mix of Single and Double). This also applies to ATV combo tours. A single Double still counts as one machine, so it can't go out alone. If you're a solo traveler or a couple who prefers one vehicle, the UTV Side by Side is bookable on its own.",
+          es: "No — las reservas de ATV requieren un mínimo de 2 máquinas por reserva (cualquier combinación de Single y Double). Esto también aplica para los combos de ATV. Un solo Double sigue siendo una sola máquina, así que no puede salir solo. Si viajas solo o en pareja y prefieres un solo vehículo, el UTV Side by Side sí se puede reservar individualmente.",
+        },
+      },
+      {
+        q: {
           en: "Is a deposit required to book?",
           es: "¿Se requiere depósito para reservar?",
         },

@@ -27,6 +27,7 @@ export async function GET() {
   lines.push("## Policies");
   lines.push("- Drivers must be 18+ with a valid driver's license from any country; no license means passenger only.");
   lines.push("- Passenger minimum age: 5+ on an ATV Double, 2+ in a UTV.");
+  lines.push("- ATV bookings require a minimum of 2 machines per reservation (any mix of Single and Double); this also applies to ATV combo tours. The UTV can be booked as a single vehicle.");
   lines.push("- Free cancellation up to 24 hours before the tour; inside 24 hours we do our best to reschedule.");
   lines.push("- Payment: cash (USD or CRC) or Visa/Mastercard, paid the day of the tour at our base. Usually no deposit required.");
   lines.push("- Tours run year-round; rain rarely cancels a tour — only unsafe conditions do, with a full refund or free reschedule.");
@@ -133,6 +134,14 @@ export async function GET() {
     if (p.closing) {
       lines.push("");
       lines.push(p.closing);
+    }
+    if (p.faqs?.length) {
+      lines.push("");
+      lines.push("#### FAQs");
+      for (const f of p.faqs) {
+        lines.push(`- Q: ${f.q}`);
+        lines.push(`  A: ${f.a}`);
+      }
     }
   }
   lines.push("");

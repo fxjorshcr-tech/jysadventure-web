@@ -223,7 +223,7 @@ export function blogPostingNode(post: LocalizedBlogPost, locale: Locale) {
     description: post.metaDescription,
     image: [post.image],
     datePublished: post.dateISO,
-    dateModified: post.dateISO,
+    dateModified: post.modifiedISO ?? post.dateISO,
     author: { "@id": ORG_ID },
     publisher: { "@id": ORG_ID },
     mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
@@ -231,6 +231,20 @@ export function blogPostingNode(post: LocalizedBlogPost, locale: Locale) {
     keywords: post.keywords.join(", "),
     articleSection: post.tag,
     articleBody: body,
+  };
+}
+
+/** FAQPage node for a blog post's question/answer block, keyed to the post's URL. */
+export function blogFaqNode(post: LocalizedBlogPost) {
+  if (!post.faqs?.length) return null;
+  return {
+    "@type": "FAQPage",
+    "@id": `${SITE_URL}/blog/${post.slug}#faq`,
+    mainEntity: post.faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
   };
 }
 
