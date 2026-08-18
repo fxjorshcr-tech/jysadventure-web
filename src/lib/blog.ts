@@ -143,8 +143,8 @@ export const BLOG_POSTS: BlogPost[] = [
           es: "¿Cómo reservo y cuánto cuesta?",
         },
         body: {
-          en: "The ATV Adventure costs $105 per rider on a Single quad or $120 per Double quad (driver + passenger 5+), tax included. One thing to know: ATV bookings require a minimum of 2 machines per reservation — any mix of Singles and Doubles — and that applies to the ATV combos too. Traveling solo or prefer one vehicle? The UTV Side by Side ($339 for up to 5 riders) can be booked on its own.\n\nBooking is simple: pick your tour, fill in the form and we confirm availability within the hour. No deposit is usually needed — you pay in cash (USD or colones) or by card on the day of the tour. Cancellation is free up to 24 hours before.",
-          es: "La Aventura en ATV cuesta $105 por persona en un cuadraciclo Single o $120 por cuadraciclo Double (conductor + pasajero 5+), impuestos incluidos. Algo importante: las reservas de ATV requieren un mínimo de 2 máquinas por reserva — cualquier mezcla de Singles y Doubles — y aplica también para los combos de ATV. ¿Viajas solo o prefieres un solo vehículo? El UTV Side by Side ($339 para hasta 5 personas) sí se puede reservar individualmente.\n\nReservar es simple: elige tu tour, llena el formulario y confirmamos disponibilidad en una hora. Normalmente no se necesita depósito — pagas en efectivo (USD o colones) o con tarjeta el día del tour. La cancelación es gratis hasta 24 horas antes.",
+          en: "The ATV Adventure costs $95 per rider on a Single quad or $105 per Double quad (driver + passenger 5+), tax included. One thing to know: ATV bookings require a minimum of 2 machines per reservation — any mix of Singles and Doubles — and that applies to the ATV combos too. Traveling solo or prefer one vehicle? The UTV Side by Side ($300 for up to 5 riders) can be booked on its own.\n\nBooking is simple: pick your tour, fill in the form and we confirm availability within the hour. No deposit is usually needed — you pay in cash (USD or colones) or by card on the day of the tour. Cancellation is free up to 24 hours before.",
+          es: "La Aventura en ATV cuesta $95 por persona en un cuadraciclo Single o $105 por cuadraciclo Double (conductor + pasajero 5+), impuestos incluidos. Algo importante: las reservas de ATV requieren un mínimo de 2 máquinas por reserva — cualquier mezcla de Singles y Doubles — y aplica también para los combos de ATV. ¿Viajas solo o prefieres un solo vehículo? El UTV Side by Side ($300 para hasta 5 personas) sí se puede reservar individualmente.\n\nReservar es simple: elige tu tour, llena el formulario y confirmamos disponibilidad en una hora. Normalmente no se necesita depósito — pagas en efectivo (USD o colones) o con tarjeta el día del tour. La cancelación es gratis hasta 24 horas antes.",
         },
       },
     ],
@@ -285,8 +285,8 @@ export const BLOG_POSTS: BlogPost[] = [
           es: "¿Cuánto cuesta cada uno?",
         },
         body: {
-          en: "All prices include Costa Rica's 13% IVA. The ATV Adventure runs $105 per Single (1 rider) and $120 per Double quad (2 riders — that's $60 per person). The UTV is $339 per vehicle for up to 5 riders, which works out to as little as $68 per person with a full crew.\n\nOn combos: ATV + Cabalgata is $150 (Single) / $195 (Double); ATV + Canopy is $165 (Single) / $205 (Double) with Congo Trail. The UTV combos keep the $339 vehicle price and add the activity per person — $45 for the cabalgata, $40 for the canopy.",
-          es: "Todos los precios incluyen el 13% de IVA. La Aventura en ATV cuesta $105 por Single (1 persona) y $120 por cuadraciclo Double (2 personas — sale a $60 por persona). El UTV cuesta $339 por vehículo para hasta 5 personas, lo que puede salir en apenas $68 por persona con el vehículo lleno.\n\nEn los combos: ATV + Cabalgata cuesta $150 (Single) / $195 (Double); ATV + Canopy cuesta $165 (Single) / $205 (Double) con Congo Trail. Los combos de UTV mantienen los $339 del vehículo y suman la actividad por persona — $45 la cabalgata, $40 el canopy.",
+          en: "All prices include Costa Rica's 13% IVA. The ATV Adventure runs $95 per Single (1 rider) and $105 per Double quad (2 riders — that's about $53 per person). The UTV is $300 per vehicle for up to 5 riders, which works out to as little as $60 per person with a full crew.\n\nOn combos: ATV + Cabalgata is $150 (Single) / $195 (Double); ATV + Canopy is $165 (Single) / $205 (Double) with Congo Trail. The UTV combos keep the $339 vehicle price and add the activity per person — $45 for the cabalgata, $40 for the canopy.",
+          es: "Todos los precios incluyen el 13% de IVA. La Aventura en ATV cuesta $95 por Single (1 persona) y $105 por cuadraciclo Double (2 personas — sale a unos $53 por persona). El UTV cuesta $300 por vehículo para hasta 5 personas, lo que puede salir en apenas $60 por persona con el vehículo lleno.\n\nEn los combos: ATV + Cabalgata cuesta $150 (Single) / $195 (Double); ATV + Canopy cuesta $165 (Single) / $205 (Double) con Congo Trail. Los combos de UTV mantienen los $339 del vehículo y suman la actividad por persona — $45 la cabalgata, $40 el canopy.",
         },
       },
       {
@@ -371,8 +371,8 @@ export const BLOG_POSTS: BlogPost[] = [
           es: "¿Cuánto cuestan los tours?",
         },
         a: {
-          en: "ATV: $105 per Single, $120 per Double quad. UTV: $339 per vehicle for up to 5 riders. Combos add horseback or canopy — see each tour page for exact pricing. All prices include 13% IVA.",
-          es: "ATV: $105 por Single, $120 por cuadraciclo Double. UTV: $339 por vehículo para hasta 5 personas. Los combos suman cabalgata o canopy — mira cada página de tour para el precio exacto. Todos los precios incluyen 13% de IVA.",
+          en: "ATV: $95 per Single, $105 per Double quad. UTV: $300 per vehicle for up to 5 riders. Combos add horseback or canopy — see each tour page for exact pricing. All prices include 13% IVA.",
+          es: "ATV: $95 por Single, $105 por cuadraciclo Double. UTV: $300 por vehículo para hasta 5 personas. Los combos suman cabalgata o canopy — mira cada página de tour para el precio exacto. Todos los precios incluyen 13% de IVA.",
         },
       },
     ],
@@ -597,8 +597,8 @@ export const BLOG_POSTS: BlogPost[] = [
           es: "¿Cuánto cuesta un tour familiar?",
         },
         body: {
-          en: "The UTV is priced per vehicle, not per person: $339 (tax included) for up to 5 riders. For a family of four, that's about $85 per person; a full crew of five brings it down to $68 each. For all-adult groups we suggest 4 per UTV for comfort, but with kids in the mix, five fit happily.\n\nWant to make a half-day of it? The UTV + Cabalgata combo adds a guided horseback finca ride at $45 per person, and UTV + Canopy adds a zipline tour at $40 per person, both on top of the $339 vehicle price.",
-          es: "El UTV se cobra por vehículo, no por persona: $339 (impuestos incluidos) para hasta 5 personas. Para una familia de cuatro, eso da unos $85 por persona; con cinco a bordo baja a $68 cada uno. Para grupos de solo adultos sugerimos 4 por UTV por comodidad, pero con niños en la mezcla, cinco van felices.\n\n¿Quieres hacerlo de medio día? El combo UTV + Cabalgata suma una cabalgata guiada por la finca a $45 por persona, y UTV + Canopy suma un tour de canopy a $40 por persona, ambos sobre los $339 del vehículo.",
+          en: "The UTV is priced per vehicle, not per person: $300 (tax included) for up to 5 riders. For a family of four, that's $75 per person; a full crew of five brings it down to $60 each. For all-adult groups we suggest 4 per UTV for comfort, but with kids in the mix, five fit happily.\n\nWant to make a half-day of it? The UTV + Cabalgata combo adds a guided horseback finca ride at $45 per person, and UTV + Canopy adds a zipline tour at $40 per person, both on top of the $339 vehicle price.",
+          es: "El UTV se cobra por vehículo, no por persona: $300 (impuestos incluidos) para hasta 5 personas. Para una familia de cuatro, eso da $75 por persona; con cinco a bordo baja a $60 cada uno. Para grupos de solo adultos sugerimos 4 por UTV por comodidad, pero con niños en la mezcla, cinco van felices.\n\n¿Quieres hacerlo de medio día? El combo UTV + Cabalgata suma una cabalgata guiada por la finca a $45 por persona, y UTV + Canopy suma un tour de canopy a $40 por persona, ambos sobre los $339 del vehículo.",
         },
       },
       {
@@ -653,8 +653,8 @@ export const BLOG_POSTS: BlogPost[] = [
           es: "¿Cuántas personas caben en un UTV?",
         },
         a: {
-          en: "Up to 5 riders of slim to medium build. For groups of all adults we recommend 4 per UTV for extra comfort. The UTV is priced per vehicle: $339, tax included.",
-          es: "Hasta 5 personas de complexión delgada a media. Para grupos de solo adultos recomendamos 4 por UTV para mayor comodidad. El UTV se cobra por vehículo: $339, impuestos incluidos.",
+          en: "Up to 5 riders of slim to medium build. For groups of all adults we recommend 4 per UTV for extra comfort. The UTV is priced per vehicle: $300, tax included.",
+          es: "Hasta 5 personas de complexión delgada a media. Para grupos de solo adultos recomendamos 4 por UTV para mayor comodidad. El UTV se cobra por vehículo: $300, impuestos incluidos.",
         },
       },
       {
