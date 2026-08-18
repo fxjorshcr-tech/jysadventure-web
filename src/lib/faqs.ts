@@ -251,8 +251,8 @@ export const FAQ_GROUPS: FaqGroup[] = [
           es: "¿Cómo funciona el precio del combo en UTV?",
         },
         a: {
-          en: "The UTV is priced per vehicle ($339, tax included, up to 5 riders). On combo tours, each rider adds the horseback portion ($45/person) or the canopy portion ($40/person). We recommend a max of 4 adults in the UTV for extra comfort.",
-          es: "El UTV se cobra por vehículo ($339, impuestos incluidos, hasta 5 personas). En los combos, cada persona suma la parte de cabalgata ($45/persona) o canopy ($40/persona). Recomendamos máximo 4 adultos en el UTV para mayor comodidad.",
+          en: "The UTV is priced per vehicle ($300, tax included, up to 5 riders). On combo tours the vehicle is $339 and each rider adds the horseback portion ($45/person) or the canopy portion ($40/person). We recommend a max of 4 adults in the UTV for extra comfort.",
+          es: "El UTV se cobra por vehículo ($300, impuestos incluidos, hasta 5 personas). En los combos el vehículo cuesta $339 y cada persona suma la parte de cabalgata ($45/persona) o canopy ($40/persona). Recomendamos máximo 4 adultos en el UTV para mayor comodidad.",
         },
       },
       {

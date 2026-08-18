@@ -171,7 +171,7 @@ export const TOURS: Tour[] = [
     ],
     duration: { en: "2 hours", es: "2 horas" },
     difficulty: "Moderate",
-    price: 105,
+    price: 95,
     pricingMode: "per-variant",
     minAge: 18,
     minPassengerAge: 5,
@@ -183,7 +183,7 @@ export const TOURS: Tour[] = [
       {
         type: "single",
         label: { en: "ATV Single", es: "ATV Single" },
-        price: 105,
+        price: 95,
         seats: 1,
         description: {
           en: "One rider, one quad. Full control, full throttle.",
@@ -193,7 +193,7 @@ export const TOURS: Tour[] = [
       {
         type: "double",
         label: { en: "ATV Double", es: "ATV Double" },
-        price: 120,
+        price: 105,
         seats: 2,
         description: {
           en: "Driver + one passenger (5+ years). Shared thrill.",
@@ -236,7 +236,7 @@ export const TOURS: Tour[] = [
     ],
     duration: { en: "2 hours", es: "2 horas" },
     difficulty: "Easy",
-    price: 339,
+    price: 300,
     pricingMode: "flat-vehicle",
     maxSeats: 5,
     seatingNote: {
