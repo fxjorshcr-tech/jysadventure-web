@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/info";
 import { TOURS } from "@/lib/tours";
 import { BLOG_POSTS } from "@/lib/blog";
+import { PHOTOS } from "@/lib/images";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -13,6 +14,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE_URL}/faqs`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    {
+      url: `${SITE_URL}/gallery`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+      images: PHOTOS.map((p) => p.src),
+    },
   ];
 
   const tourRoutes: MetadataRoute.Sitemap = TOURS.flatMap((t) => [

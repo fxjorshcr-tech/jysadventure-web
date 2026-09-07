@@ -6,6 +6,7 @@ const en = {
     tours: "Tours",
     about: "About",
     blog: "Blog",
+    gallery: "Gallery",
     faqs: "FAQs",
     contact: "Contact",
     bookNow: "Book Now",
@@ -96,6 +97,7 @@ const en = {
       title: "Real riders.",
       titleHighlight: "Real adventure.",
       subtitle: "Candid shots from our latest tours across Guanacaste.",
+      viewAll: "See the full gallery",
     },
     testimonials: {
       kicker: "The hype",
@@ -152,6 +154,36 @@ const en = {
       kicker: "Behind the wheel",
       title: "Moments from",
       titleHighlight: "the trail",
+    },
+  },
+  gallery: {
+    metaTitle: "Photo Gallery — JYS Adventure Tour",
+    metaDescription:
+      "Real photos from our ATV and UTV tours in Guanacaste, Costa Rica: river crossings, mud, wildlife and our base camp.",
+    badge: "Photo gallery",
+    title: "SEE THE",
+    titleHighlight: "RIDE",
+    subtitle:
+      "No stock photos. Every shot here was taken on a real JYS tour — rivers, mud, monkeys, owls and the faces of riders who came back covered in dust and smiling.",
+    filters: {
+      all: "All",
+      atv: "ATV",
+      utv: "UTV",
+      wildlife: "Wildlife",
+      basecamp: "Base camp",
+    },
+    countSingular: "photo",
+    countPlural: "photos",
+    lightbox: {
+      close: "Close",
+      prev: "Previous photo",
+      next: "Next photo",
+      open: "Open photo",
+    },
+    cta: {
+      title: "Want to be in the next one?",
+      subtitle: "Pick a ride, choose a date and we handle the rest — including the photos.",
+      button: "See tours",
     },
   },
   faqs: {
@@ -438,6 +470,7 @@ const es: typeof en = {
     tours: "Tours",
     about: "Nosotros",
     blog: "Blog",
+    gallery: "Galería",
     faqs: "Preguntas",
     contact: "Contacto",
     bookNow: "Reservar",
@@ -528,6 +561,7 @@ const es: typeof en = {
       title: "Personas reales.",
       titleHighlight: "Aventura real.",
       subtitle: "Fotos espontáneas de nuestros tours en Guanacaste.",
+      viewAll: "Ver toda la galería",
     },
     testimonials: {
       kicker: "Lo que dicen",
@@ -584,6 +618,36 @@ const es: typeof en = {
       kicker: "Detrás del manillar",
       title: "Momentos del",
       titleHighlight: "camino",
+    },
+  },
+  gallery: {
+    metaTitle: "Galería de fotos — JYS Adventure Tour",
+    metaDescription:
+      "Fotos reales de nuestros tours en ATV y UTV en Guanacaste, Costa Rica: cruces de río, barro, fauna y nuestro base camp.",
+    badge: "Galería de fotos",
+    title: "MIRA LA",
+    titleHighlight: "AVENTURA",
+    subtitle:
+      "Nada de fotos de stock. Cada imagen fue tomada en un tour real de JYS: ríos, barro, monos, búhos y las caras de quienes volvieron llenos de polvo y sonriendo.",
+    filters: {
+      all: "Todas",
+      atv: "ATV",
+      utv: "UTV",
+      wildlife: "Fauna",
+      basecamp: "Base camp",
+    },
+    countSingular: "foto",
+    countPlural: "fotos",
+    lightbox: {
+      close: "Cerrar",
+      prev: "Foto anterior",
+      next: "Foto siguiente",
+      open: "Abrir foto",
+    },
+    cta: {
+      title: "¿Quieres salir en la próxima?",
+      subtitle: "Elige un tour, escoge la fecha y nosotros nos encargamos del resto, fotos incluidas.",
+      button: "Ver tours",
     },
   },
   faqs: {

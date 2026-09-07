@@ -63,6 +63,7 @@ export async function GET() {
   lines.push(`- [Contact](${SITE_URL}/contact): Reach the team or send a quick booking request.`);
   lines.push(`- [FAQs](${SITE_URL}/faqs): Common questions about ages, license, transport and weather.`);
   lines.push(`- [Blog](${SITE_URL}/blog): Short reads on Guanacaste trails, gear and travel tips.`);
+  lines.push(`- [Gallery](${SITE_URL}/gallery): Real photos from the tours — river crossings, mud, wildlife and base camp.`);
   lines.push("");
 
   lines.push("## Blog");
