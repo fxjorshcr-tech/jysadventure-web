@@ -8,7 +8,7 @@ const NEW = `${BASE}/Fotos%20Nuevas`;
  *
  * Landscape/portrait notes matter for hero crops (object-cover):
  *   - atvMud, utvRiver, utvMudSplash, monkey  -> landscape
- *   - atvGroupRoad, owls, kidsFarm, utvCattle, utvCattleHerd,
+ *   - atvGroupRoad, owls, kidsFarm, kidsFawn, utvCattle, utvCattleHerd,
  *     utvMudPortrait, utvCanopyTrail, atvBlueMud, atvPinkRoad -> portrait
  */
 export const IMAGES = {
@@ -24,6 +24,7 @@ export const IMAGES = {
   owls: `${NEW}/aves.jpeg`, // pair of spectacled owls in the canopy
   monkey: `${NEW}/mono.jpeg`, // white-faced capuchin resting on a branch
   kidsFarm: `${NEW}/ninos.jpeg`, // kid with a sheep at base camp
+  kidsFawn: `${NEW}/ninos2.jpeg`, // kids petting a fawn at base camp
   utvCattle: `${NEW}/utv.jpeg`, // UTV sharing the trail with cattle
   utvCattleHerd: `${NEW}/utv1.jpeg`, // UTV behind a herd on the trail
   utvMudPortrait: `${NEW}/utv2.jpeg`, // UTV mud splash, portrait
@@ -36,7 +37,6 @@ export const IMAGES = {
   atvArmsOpen: `${BASE}/893288_295807.webp`, // rider celebrating on ATV
   utvSplash: `${BASE}/842930_310.webp`, // UTV river splash, landscape
   crewFicus: `${BASE}/596402_712455.webp`, // group with UTV at the ficus tree
-  familyUtv: `${BASE}/575269_858397.webp`, // family in a UTV at base camp
   utvCamoRiver: `${BASE}/477658_15781.webp`, // camo UTV crossing the river
   atvPinkRoad: `${BASE}/309058_952674.webp`, // ATV convoy on the orange road
   atvBlueMud: `${BASE}/128400_649303.webp`, // blue ATV mud splash, UTV behind

@@ -542,7 +542,7 @@ export const BLOG_POSTS: BlogPost[] = [
     dateISO: "2026-04-16",
     modifiedISO: "2026-08-05",
     readTime: { en: "6 min", es: "6 min" },
-    image: IMAGES.kidsFarm,
+    image: IMAGES.kidsFawn,
     tag: { en: "Family", es: "Familia" },
     metaDescription: {
       en: "Family UTV tours in Guanacaste, Costa Rica — kids from 2 years old, safety gear, baby seats, family pricing and tips to make a first off-road ride unforgettable.",

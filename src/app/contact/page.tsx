@@ -136,8 +136,8 @@ export default async function ContactPage() {
 
               <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-white/10">
                 <Image
-                  src={IMAGES.familyUtv}
-                  alt="JYS base camp"
+                  src={IMAGES.kidsFarm}
+                  alt="Kids meeting the farm animals at JYS base camp"
                   fill
                   sizes="(min-width:1024px) 40vw, 100vw"
                   className="object-cover"
