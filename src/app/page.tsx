@@ -143,6 +143,11 @@ export default async function HomePage() {
           <div className="mt-16">
             <Gallery />
           </div>
+          <div className="mt-12 flex justify-center">
+            <Link href="/gallery" className="btn-ghost">
+              {dict.home.gallery.viewAll} <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </section>
 

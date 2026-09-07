@@ -18,6 +18,7 @@ export function Footer({
     { href: "/tours", label: dict.nav.tours },
     { href: "/about", label: dict.nav.about },
     { href: "/blog", label: dict.nav.blog },
+    { href: "/gallery", label: dict.nav.gallery },
     { href: "/faqs", label: dict.nav.faqs },
     { href: "/contact", label: dict.nav.contact },
   ];

@@ -268,6 +268,7 @@ export const CRUMB_LABELS = {
   home: { en: "Home", es: "Inicio" },
   tours: { en: "Tours", es: "Tours" },
   blog: { en: "Blog", es: "Blog" },
+  gallery: { en: "Gallery", es: "Galería" },
   faqs: { en: "FAQs", es: "Preguntas frecuentes" },
   about: { en: "About", es: "Nosotros" },
   contact: { en: "Contact", es: "Contacto" },
