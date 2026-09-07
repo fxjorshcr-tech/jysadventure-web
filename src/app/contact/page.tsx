@@ -49,7 +49,7 @@ export default async function ContactPage() {
       {/* Hero */}
       <section className="relative flex min-h-[60svh] w-full max-w-full items-end overflow-hidden bg-night-950 pb-12 pt-32 sm:pb-16 sm:pt-40">
         <Image
-          src={IMAGES.gallery[2]}
+          src={IMAGES.utvRiver}
           alt="Contact JYS"
           fill
           priority
@@ -136,7 +136,7 @@ export default async function ContactPage() {
 
               <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-white/10">
                 <Image
-                  src={IMAGES.gallery[5]}
+                  src={IMAGES.familyUtv}
                   alt="JYS base camp"
                   fill
                   sizes="(min-width:1024px) 40vw, 100vw"

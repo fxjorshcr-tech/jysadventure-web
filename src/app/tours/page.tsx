@@ -70,7 +70,7 @@ export default async function ToursPage() {
       {/* Hero */}
       <section className="relative flex min-h-[70svh] w-full max-w-full items-end overflow-hidden bg-night-950 pb-16 pt-32 sm:pb-20 sm:pt-40">
         <Image
-          src={IMAGES.heroAlt}
+          src={IMAGES.atvMud}
           alt="Tours"
           fill
           priority

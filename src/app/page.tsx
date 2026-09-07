@@ -73,8 +73,8 @@ export default async function HomePage() {
             <div className="relative">
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl border border-white/10">
                 <Image
-                  src={IMAGES.heroAlt}
-                  alt="ATV rider Costa Rica"
+                  src={IMAGES.utvCanopyTrail}
+                  alt="UTV side by side riding under the Guanacaste tree canopy"
                   fill
                   sizes="(min-width:1024px) 50vw, 100vw"
                   className="object-cover"

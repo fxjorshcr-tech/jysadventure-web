@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { IMAGES } from "@/lib/images";
+import { GALLERY } from "@/lib/images";
 
 export function Gallery() {
-  const imgs = IMAGES.gallery;
+  const imgs = GALLERY;
   return (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-      {imgs.map((src, i) => (
+      {imgs.map(({ src, alt }, i) => (
         <motion.div
           key={i}
           initial={{ opacity: 0, y: 30 }}
@@ -21,7 +21,7 @@ export function Gallery() {
         >
           <Image
             src={src}
-            alt="JYS Adventure Tour gallery"
+            alt={alt}
             fill
             sizes="(min-width:1024px) 25vw, 50vw"
             className="object-cover transition-transform duration-700 group-hover:scale-110"

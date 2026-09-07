@@ -26,7 +26,7 @@ export default async function BlogPage() {
       {/* Hero */}
       <section className="relative flex min-h-[60svh] w-full max-w-full items-end overflow-hidden bg-night-950 pb-12 pt-32 sm:pb-16 sm:pt-40">
         <Image
-          src={IMAGES.gallery[3]}
+          src={IMAGES.utvSplash}
           alt="Blog"
           fill
           priority
