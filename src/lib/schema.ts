@@ -69,7 +69,7 @@ export function organizationNode(locale: Locale) {
     url: SITE_URL,
     description: t(ORG_DESCRIPTION, locale),
     logo: { "@type": "ImageObject", url: IMAGES.logo },
-    image: [IMAGES.hero, IMAGES.heroAlt],
+    image: [IMAGES.hero, IMAGES.utvRiver, IMAGES.atvMud],
     telephone: CONTACT.phoneE164,
     email: CONTACT.email,
     address: {

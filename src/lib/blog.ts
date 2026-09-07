@@ -47,7 +47,7 @@ export const BLOG_POSTS: BlogPost[] = [
     dateISO: "2026-04-05",
     modifiedISO: "2026-08-05",
     readTime: { en: "7 min", es: "7 min" },
-    image: IMAGES.gallery[0],
+    image: IMAGES.utvCattle,
     tag: { en: "Trails", es: "Rutas" },
     metaDescription: {
       en: "What to expect on an ATV / UTV tour in Guanacaste, Costa Rica: where the route starts, river crossings, the finca stop, how long it takes and how to book.",
@@ -219,7 +219,7 @@ export const BLOG_POSTS: BlogPost[] = [
     dateISO: "2026-04-08",
     modifiedISO: "2026-08-05",
     readTime: { en: "7 min", es: "7 min" },
-    image: IMAGES.gallery[2],
+    image: IMAGES.atvBlueMud,
     tag: { en: "Guide", es: "Guía" },
     metaDescription: {
       en: "ATV or UTV in Costa Rica? Full comparison: differences, prices, ages, license rules, safety and which to pick by group — plus the 2-ATV minimum explained.",
@@ -391,7 +391,7 @@ export const BLOG_POSTS: BlogPost[] = [
     dateISO: "2026-04-12",
     modifiedISO: "2026-08-05",
     readTime: { en: "6 min", es: "6 min" },
-    image: IMAGES.gallery[4],
+    image: IMAGES.crewFicus,
     tag: { en: "Tips", es: "Consejos" },
     metaDescription: {
       en: "What to wear and bring on an ATV or UTV tour in Guanacaste, Costa Rica — shoes, clothing by season, sunscreen, what we provide and what first-timers forget.",
@@ -542,7 +542,7 @@ export const BLOG_POSTS: BlogPost[] = [
     dateISO: "2026-04-16",
     modifiedISO: "2026-08-05",
     readTime: { en: "6 min", es: "6 min" },
-    image: IMAGES.gallery[5],
+    image: IMAGES.kidsFawn,
     tag: { en: "Family", es: "Familia" },
     metaDescription: {
       en: "Family UTV tours in Guanacaste, Costa Rica — kids from 2 years old, safety gear, baby seats, family pricing and tips to make a first off-road ride unforgettable.",
@@ -683,7 +683,7 @@ export const BLOG_POSTS: BlogPost[] = [
     dateISO: "2026-04-20",
     modifiedISO: "2026-08-05",
     readTime: { en: "6 min", es: "6 min" },
-    image: IMAGES.gallery[1],
+    image: IMAGES.atvArmsOpen,
     tag: { en: "Combos", es: "Combos" },
     metaDescription: {
       en: "ATV plus horseback (cabalgata) combo in Guanacaste, Costa Rica: 4-hour half-day, prices from $150, no riding experience needed. What to expect, hour by hour.",
@@ -834,7 +834,7 @@ export const BLOG_POSTS: BlogPost[] = [
     dateISO: "2026-04-24",
     modifiedISO: "2026-08-05",
     readTime: { en: "7 min", es: "7 min" },
-    image: IMAGES.gallery[6],
+    image: IMAGES.utvCamoRiver,
     tag: { en: "Travel", es: "Viajes" },
     metaDescription: {
       en: "Best time for ATV / UTV tours in Guanacaste, Costa Rica: dry vs green season compared month by month, rain policy, best time of day and when to book ahead.",

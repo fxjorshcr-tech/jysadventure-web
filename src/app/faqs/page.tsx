@@ -28,12 +28,12 @@ export default async function FAQsPage() {
       {/* Hero */}
       <section className="relative flex min-h-[55svh] w-full max-w-full items-end overflow-hidden bg-night-950 pb-12 pt-32 sm:pb-16 sm:pt-40">
         <Image
-          src={IMAGES.gallery[7]}
+          src={IMAGES.owls}
           alt="FAQs"
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[center_25%] opacity-55"
+          className="object-cover object-[center_40%] opacity-55"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-night-950/70 via-night-950/50 to-night-950" />
         <div className="absolute inset-0 bg-hero-radial" />

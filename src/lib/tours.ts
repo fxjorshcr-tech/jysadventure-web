@@ -211,7 +211,7 @@ export const TOURS: Tour[] = [
       },
     ],
     includes: [HELMET_GOGGLES, BOTTLED_WATER, BILINGUAL_GUIDE, FUEL],
-    image: IMAGES.gallery[0],
+    image: IMAGES.atvMud,
   },
   {
     slug: "utv-tour-guanacaste",
@@ -256,7 +256,7 @@ export const TOURS: Tour[] = [
       { en: "Finca visit", es: "Visita a la finca" },
     ],
     includes: [HELMET_GOGGLES_ALL, BOTTLED_WATER, BILINGUAL_GUIDE, FUEL],
-    image: IMAGES.gallery[4],
+    image: IMAGES.utvMudSplash,
   },
   {
     slug: "atv-horseback-tour-guanacaste",
@@ -323,7 +323,7 @@ export const TOURS: Tour[] = [
       BILINGUAL_GUIDE,
       { en: "Light snack", es: "Snack ligero" },
     ],
-    image: IMAGES.gallery[1],
+    image: IMAGES.atvArmsOpen,
   },
   {
     slug: "atv-canopy-zipline-tour-guanacaste",
@@ -395,7 +395,7 @@ export const TOURS: Tour[] = [
       BILINGUAL_GUIDE,
       BOTTLED_WATER,
     ],
-    image: IMAGES.gallery[3],
+    image: IMAGES.atvTrio,
   },
   {
     slug: "utv-horseback-tour-guanacaste",
@@ -446,7 +446,7 @@ export const TOURS: Tour[] = [
       BILINGUAL_GUIDE,
       { en: "Light snack", es: "Snack ligero" },
     ],
-    image: IMAGES.gallery[7],
+    image: IMAGES.utvCattle,
   },
   {
     slug: "utv-canopy-zipline-tour-guanacaste",
@@ -502,7 +502,7 @@ export const TOURS: Tour[] = [
       BILINGUAL_GUIDE,
       BOTTLED_WATER,
     ],
-    image: IMAGES.gallery[8],
+    image: IMAGES.utvCanopyTrail,
   },
 ];
 

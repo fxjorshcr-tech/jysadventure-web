@@ -32,7 +32,7 @@ export default async function AboutPage() {
       {/* Hero */}
       <section className="relative flex min-h-[70svh] w-full max-w-full items-end overflow-hidden bg-night-950 pb-16 pt-32 sm:pb-20 sm:pt-40">
         <Image
-          src={IMAGES.gallery[4]}
+          src={IMAGES.crewFicus}
           alt="JYS crew"
           fill
           priority
@@ -65,7 +65,7 @@ export default async function AboutPage() {
             <div className="relative">
               <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-white/10">
                 <Image
-                  src={IMAGES.hero}
+                  src={IMAGES.utvMudPortrait}
                   alt="JYS"
                   fill
                   sizes="(min-width:1024px) 50vw, 100vw"
