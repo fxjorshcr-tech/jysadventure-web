@@ -7,6 +7,7 @@ import { z } from "zod";
 import { Send, Loader2, CheckCircle2 } from "lucide-react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
+import { FormShield, useFormShield } from "./FormShield";
 
 const schema = z.object({
   name: z.string().min(2),
@@ -14,6 +15,7 @@ const schema = z.object({
   phone: z.string().optional(),
   subject: z.string().optional(),
   message: z.string().min(5),
+  website: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -28,6 +30,7 @@ export function ContactForm({
   const cf = dict.contactForm;
   const [sent, setSent] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const shield = useFormShield();
 
   const {
     register,
@@ -51,6 +54,8 @@ export function ContactForm({
           subject: data.subject ?? "",
           message: data.message,
           locale,
+          ...shield.values(),
+          website: data.website ?? "",
         }),
       });
       if (!res.ok) {
@@ -64,6 +69,7 @@ export function ContactForm({
     }
     setSent(true);
     reset();
+    shield.reset();
     setTimeout(() => setSent(false), 4500);
   };
 
@@ -129,6 +135,12 @@ export function ContactForm({
         </div>
       </div>
 
+      <FormShield
+        shield={shield}
+        locale={locale}
+        honeypotProps={register("website")}
+      />
+
       {submitError && (
         <p className="mt-4 rounded-2xl border border-lava-500/40 bg-lava-500/10 p-3 text-sm text-lava-300">
           {submitError}
@@ -137,7 +149,7 @@ export function ContactForm({
 
       <button
         type="submit"
-        disabled={isSubmitting || sent}
+        disabled={isSubmitting || sent || shield.blocked}
         className="btn-primary mt-6 w-full disabled:opacity-70"
       >
         {isSubmitting ? (

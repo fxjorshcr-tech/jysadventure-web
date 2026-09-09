@@ -32,6 +32,7 @@ import { DatePicker } from "./DatePicker";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { t as translate } from "@/i18n/text";
+import { FormShield, useFormShield } from "./FormShield";
 
 const BANDANA = ADD_ONS.find((a) => a.slug === "bandana")!;
 
@@ -93,6 +94,7 @@ const schema = z
     pickupOther: z.string().optional(),
     license: z.boolean().optional(),
     message: z.string().optional(),
+    website: z.string().optional(),
   })
   .superRefine((d, ctx) => {
     const tour = getTour(d.tour);
@@ -328,6 +330,7 @@ export function BookingForm({
   const totalPrice = tourSubtotal + bandanaSubtotal + transportSubtotal;
 
   const router = useRouter();
+  const shield = useFormShield();
 
   const onSubmit = async (data: FormData) => {
     const baseTour = getTour(data.tour);
@@ -394,7 +397,11 @@ export function BookingForm({
       const res = await fetch("/api/booking", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(summary),
+        body: JSON.stringify({
+          ...summary,
+          ...shield.values(),
+          website: data.website ?? "",
+        }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
@@ -1140,9 +1147,15 @@ export function BookingForm({
           </div>
         </div>
 
+        <FormShield
+          shield={shield}
+          locale={locale}
+          honeypotProps={register("website")}
+        />
+
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || shield.blocked}
           className="btn-primary mt-6 w-full disabled:opacity-70"
         >
           {isSubmitting ? (

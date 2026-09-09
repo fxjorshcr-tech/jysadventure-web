@@ -10,20 +10,27 @@ import {
   contactEmailText,
 } from "@/lib/emails";
 import { CONTACT } from "@/lib/info";
+import {
+  antispamFieldsSchema,
+  checkForSpam,
+  spamResponseBody,
+} from "@/lib/antispam";
 
 export const runtime = "nodejs";
 
 const FROM = "JYS Adventure Tour <reservations@jysadventuretour.com>";
 const TO = [CONTACT.email];
 
-const schema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  phone: z.string(),
-  subject: z.string(),
-  message: z.string().min(1),
-  locale: z.enum(["en", "es"]).optional(),
-});
+const schema = z
+  .object({
+    name: z.string().trim().min(2).max(120),
+    email: z.string().trim().email().max(200),
+    phone: z.string().trim().max(60),
+    subject: z.string().trim().max(200),
+    message: z.string().trim().min(5).max(5000),
+    locale: z.enum(["en", "es"]).optional(),
+  })
+  .merge(antispamFieldsSchema);
 
 export async function POST(req: Request) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -54,6 +61,17 @@ export async function POST(req: Request) {
   }
 
   const payload = parsed.data;
+
+  const verdict = await checkForSpam(req, "contact", payload);
+  if (verdict.spam) {
+    console.warn(
+      `[api/contact] Blocked submission (${verdict.reason}) from ${payload.email}`,
+    );
+    return NextResponse.json(spamResponseBody(verdict), {
+      status: verdict.status,
+    });
+  }
+
   const resend = new Resend(apiKey);
 
   try {

@@ -10,6 +10,11 @@ import {
   bookingEmailText,
 } from "@/lib/emails";
 import { CONTACT } from "@/lib/info";
+import {
+  antispamFieldsSchema,
+  checkForSpam,
+  spamResponseBody,
+} from "@/lib/antispam";
 
 export const runtime = "nodejs";
 
@@ -18,9 +23,9 @@ const TO = [CONTACT.email];
 
 const schema = z.object({
   contact: z.object({
-    name: z.string().min(1),
-    email: z.string().email(),
-    phone: z.string(),
+    name: z.string().trim().min(2).max(120),
+    email: z.string().trim().email().max(200),
+    phone: z.string().trim().max(60),
   }),
   tour: z.object({
     slug: z.string(),
@@ -61,7 +66,7 @@ const schema = z.object({
     cost: z.number(),
     confirmedRate: z.boolean(),
   }),
-  message: z.string(),
+  message: z.string().trim().max(5000),
   pricing: z.object({
     tourSubtotal: z.number(),
     bandanaSubtotal: z.number(),
@@ -69,7 +74,7 @@ const schema = z.object({
     total: z.number(),
   }),
   locale: z.enum(["en", "es"]).optional(),
-});
+}).merge(antispamFieldsSchema);
 
 export async function POST(req: Request) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -100,6 +105,24 @@ export async function POST(req: Request) {
   }
 
   const payload = parsed.data;
+
+  const verdict = await checkForSpam(req, "booking", {
+    website: payload.website,
+    startedAt: payload.startedAt,
+    turnstileToken: payload.turnstileToken,
+    name: payload.contact.name,
+    email: payload.contact.email,
+    message: payload.message,
+  });
+  if (verdict.spam) {
+    console.warn(
+      `[api/booking] Blocked submission (${verdict.reason}) from ${payload.contact.email}`,
+    );
+    return NextResponse.json(spamResponseBody(verdict), {
+      status: verdict.status,
+    });
+  }
+
   const resend = new Resend(apiKey);
 
   try {
