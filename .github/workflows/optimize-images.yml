@@ -1,0 +1,48 @@
+# Regenerates public/photos whenever the photo list changes, so nobody has
+# to run `npm run optimize-images` locally. Add a photo URL to
+# scripts/photo-sources.mjs (on GitHub, the pencil icon is enough), commit,
+# and this workflow commits the optimized WebP files back to the branch.
+name: Optimize photos
+
+on:
+  push:
+    paths:
+      - scripts/photo-sources.mjs
+      - scripts/optimize-images.mjs
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: optimize-images-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      - run: npm run optimize-images
+
+      - name: Commit optimized photos
+        run: |
+          git add public/photos src/lib/photos.manifest.json
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Add optimized photo variants"
+          git push

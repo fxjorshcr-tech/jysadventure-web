@@ -3,8 +3,10 @@
  * `npm run optimize-images`, which downloads each one, writes resized WebP
  * variants to public/photos and the size manifest to src/lib/photos.manifest.json.
  *
- * Add a new photo here, run the script, then reference it from
- * src/lib/images.ts with `photo("key")`. The key is the file name.
+ * To add a photo: upload it to the Supabase bucket, paste its public URL
+ * here with a new key, and commit. The "Optimize photos" GitHub Action
+ * runs the script and commits the WebP variants automatically; then use
+ * `photo("key")` in src/lib/images.ts. Nothing to run locally.
  */
 export const PHOTO_SOURCES = {
   logo: "https://mmlbslwljvmscbgsqkkq.supabase.co/storage/v1/object/public/jys/logo-jys%20(1).png",
