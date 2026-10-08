@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import type { Dictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
@@ -41,7 +41,7 @@ export function TestimonialsCarousel({
           <Quote className="absolute -right-2 -top-2 h-20 w-20 text-lava-500/10 sm:-right-4 sm:-top-4 sm:h-28 sm:w-28 md:h-40 md:w-40" />
 
           <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
+            <m.div
               key={index}
               custom={direction}
               initial={{ opacity: 0, x: direction * 60 }}
@@ -76,7 +76,7 @@ export function TestimonialsCarousel({
                   {dict.home.testimonials.verifiedRider}
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           </AnimatePresence>
         </div>
 

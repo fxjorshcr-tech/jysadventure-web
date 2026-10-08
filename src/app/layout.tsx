@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Lexend } from "next/font/google";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { JsonLd } from "@/components/JsonLd";
+import { Analytics } from "@/components/Analytics";
+import { MotionProvider } from "@/components/MotionProvider";
 import { SITE_URL, GA_ID } from "@/lib/info";
 import { siteGraph } from "@/lib/schema";
 import { getLocale } from "@/i18n/request";
@@ -86,11 +87,13 @@ export default async function RootLayout({
         <JsonLd data={siteGraph(locale)} />
       </head>
       <body className="min-h-[100dvh] w-full overflow-x-hidden bg-night-950 font-sans text-white antialiased">
-        <Header locale={locale} dict={dict} />
-        <main className="relative w-full overflow-x-hidden">{children}</main>
-        <Footer locale={locale} dict={dict} />
+        <MotionProvider>
+          <Header locale={locale} dict={dict} />
+          <main className="relative w-full overflow-x-hidden">{children}</main>
+          <Footer locale={locale} dict={dict} />
+        </MotionProvider>
+        {GA_ID && <Analytics gaId={GA_ID} />}
       </body>
-      {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
     </html>
   );
 }

@@ -7,7 +7,7 @@ import { z } from "zod";
 import { Send, Loader2, CheckCircle2 } from "lucide-react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
-import { FormShield, useFormShield } from "./FormShield";
+import { CHALLENGE_ERROR_CODE, FormShield, useFormShield } from "./FormShield";
 
 const schema = z.object({
   name: z.string().min(2),
@@ -43,6 +43,7 @@ export function ContactForm({
 
   const onSubmit = async (data: FormData) => {
     setSubmitError(null);
+    if (!shield.validate()) return;
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -60,11 +61,17 @@ export function ContactForm({
       });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
+        if (body?.code === CHALLENGE_ERROR_CODE) {
+          shield.rejected();
+          return;
+        }
         throw new Error(body?.error ?? "Contact request failed");
       }
     } catch (err) {
       console.error("Contact submit failed", err);
       setSubmitError(cf.error);
+      // A used token cannot be replayed; fetch a fresh question for the retry.
+      void shield.loadChallenge();
       return;
     }
     setSent(true);
@@ -138,6 +145,7 @@ export function ContactForm({
       <FormShield
         shield={shield}
         locale={locale}
+        labels={dict.formShield}
         honeypotProps={register("website")}
       />
 

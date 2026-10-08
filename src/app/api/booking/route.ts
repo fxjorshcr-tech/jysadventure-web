@@ -110,6 +110,8 @@ export async function POST(req: Request) {
     website: payload.website,
     startedAt: payload.startedAt,
     turnstileToken: payload.turnstileToken,
+    challengeToken: payload.challengeToken,
+    challengeAnswer: payload.challengeAnswer,
     name: payload.contact.name,
     email: payload.contact.email,
     message: payload.message,

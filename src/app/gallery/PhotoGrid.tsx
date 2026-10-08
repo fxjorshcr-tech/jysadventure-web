@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { PhotoCategory } from "@/lib/images";
@@ -99,7 +99,7 @@ export function PhotoGrid({
       {/* Masonry grid */}
       <div className="mt-8 columns-2 gap-3 md:columns-3 md:gap-4 lg:columns-4">
         {visible.map((p, i) => (
-          <motion.button
+          <m.button
             key={p.src}
             type="button"
             initial={{ opacity: 0, y: 20 }}
@@ -121,14 +121,14 @@ export function PhotoGrid({
             <span className="absolute inset-x-0 bottom-0 translate-y-2 p-4 text-xs font-semibold text-white opacity-0 transition group-hover:translate-y-0 group-hover:opacity-100">
               {p.alt}
             </span>
-          </motion.button>
+          </m.button>
         ))}
       </div>
 
       {/* Lightbox */}
       <AnimatePresence>
         {active !== null && visible[active] && (
-          <motion.div
+          <m.div
             key="lightbox"
             role="dialog"
             aria-modal="true"
@@ -172,7 +172,7 @@ export function PhotoGrid({
               <ChevronRight className="h-5 w-5" />
             </button>
 
-            <motion.figure
+            <m.figure
               key={visible[active].src}
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -203,8 +203,8 @@ export function PhotoGrid({
                   {active + 1} / {visible.length}
                 </span>
               </figcaption>
-            </motion.figure>
-          </motion.div>
+            </m.figure>
+          </m.div>
         )}
       </AnimatePresence>
     </>

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { IMAGES } from "@/lib/images";
 import { GoogleBadge } from "./GoogleBadge";
@@ -28,7 +28,7 @@ export function Hero({ dict }: { dict: Dictionary }) {
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col justify-between px-4 pb-12 pt-24 sm:px-5 sm:pt-36 sm:pb-14 lg:px-8 lg:pt-44">
         <div>
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -41,9 +41,9 @@ export function Hero({ dict }: { dict: Dictionary }) {
             <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-lava-100">
               {dict.hero.badge}
             </span>
-          </motion.div>
+          </m.div>
 
-          <motion.h1
+          <m.h1
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.1 }}
@@ -53,9 +53,9 @@ export function Hero({ dict }: { dict: Dictionary }) {
             <br />
             {dict.hero.titleB}{" "}
             <span className="text-gradient-fire">{dict.hero.titleC}</span>
-          </motion.h1>
+          </m.h1>
 
-          <motion.p
+          <m.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.35 }}
@@ -66,9 +66,9 @@ export function Hero({ dict }: { dict: Dictionary }) {
               {dict.hero.subtitleHighlight}
             </span>
             .
-          </motion.p>
+          </m.p>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
@@ -78,16 +78,16 @@ export function Hero({ dict }: { dict: Dictionary }) {
               {dict.common.explore}{" "}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
             className="mt-8"
           >
             <GoogleBadge />
-          </motion.div>
+          </m.div>
         </div>
       </div>
 

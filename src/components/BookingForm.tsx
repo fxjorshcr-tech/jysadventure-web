@@ -32,7 +32,7 @@ import { DatePicker } from "./DatePicker";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { t as translate } from "@/i18n/text";
-import { FormShield, useFormShield } from "./FormShield";
+import { CHALLENGE_ERROR_CODE, FormShield, useFormShield } from "./FormShield";
 
 const BANDANA = ADD_ONS.find((a) => a.slug === "bandana")!;
 
@@ -333,6 +333,7 @@ export function BookingForm({
   const shield = useFormShield();
 
   const onSubmit = async (data: FormData) => {
+    if (!shield.validate()) return;
     const baseTour = getTour(data.tour);
     const localizedTour = baseTour ? localizeTour(baseTour, locale) : undefined;
     // Send tour title in English for the operator-facing email and in
@@ -405,11 +406,17 @@ export function BookingForm({
       });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
+        if (body?.code === CHALLENGE_ERROR_CODE) {
+          shield.rejected();
+          return;
+        }
         throw new Error(body?.error ?? "Booking request failed");
       }
     } catch (err) {
       console.error("Booking submit failed", err);
       alert(bf.error);
+      // A used token cannot be replayed; fetch a fresh question for the retry.
+      void shield.loadChallenge();
       return;
     }
 
@@ -1150,6 +1157,7 @@ export function BookingForm({
         <FormShield
           shield={shield}
           locale={locale}
+          labels={dict.formShield}
           honeypotProps={register("website")}
         />
 
