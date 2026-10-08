@@ -1,24 +1,29 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    // Image optimization stays OFF on purpose: photos are served straight
-    // from Supabase so they do not count against Vercel's image/bandwidth
-    // usage. Do not re-enable without checking the Vercel plan first.
-    unoptimized: true,
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "mmlbslwljvmscbgsqkkq.supabase.co",
-      },
-    ],
+    // Vercel image optimization stays OFF on purpose (plan usage). Photos are
+    // pre-resized once by `npm run optimize-images` into public/photos and
+    // served as static files; the loader picks the right width per device.
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
+    deviceSizes: [480, 960, 1440],
+    imageSizes: [192, 384],
   },
   async headers() {
     return [
       {
+        // Pre-optimized photos never change under the same name (a replaced
+        // photo gets a new key), so browsers and the CDN may keep them a year.
+        source: "/photos/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
         // Pages are rendered per request (locale cookie), so Next marks them
         // `no-store`, which blocks the browser back/forward cache. `no-cache`
         // keeps the same freshness guarantee without disabling bfcache.
-        source: "/((?!api/|_next/).*)",
+        source: "/((?!api/|_next/|photos/).*)",
         headers: [
           { key: "Cache-Control", value: "private, no-cache, max-age=0, must-revalidate" },
           { key: "X-Content-Type-Options", value: "nosniff" },
