@@ -7,16 +7,28 @@
  *  3. Minimum fill time      — bots submit in milliseconds, humans do not.
  *  4. Gibberish filter       — random-letter names/messages ("mKJYfGFTLrpp…").
  *  5. Per-IP rate limit      — best-effort, in-memory per server instance.
- *  6. Cloudflare Turnstile   — optional, enabled when TURNSTILE_SECRET_KEY is set.
+ *  6. Math challenge         — "what is 3 + 4?", issued and verified server-side
+ *                              (see src/lib/challenge.ts).
+ *  7. Cloudflare Turnstile   — optional, enabled when TURNSTILE_SECRET_KEY is set.
  *
  * Silent rejections return { ok: true } to the caller so bots learn nothing.
+ * A wrong challenge answer is the one visible rejection (code "challenge"),
+ * so a person who mistyped can fix it.
  */
 
 import { z } from "zod";
+import { verifyChallenge } from "./challenge";
 
 export type SpamVerdict =
   | { spam: false }
-  | { spam: true; reason: string; silent: boolean; status: number };
+  | {
+      spam: true;
+      reason: string;
+      silent: boolean;
+      status: number;
+      /** Machine-readable hint for the client on visible rejections. */
+      code?: "challenge";
+    };
 
 const MIN_FILL_MS = 3000;
 const MAX_FILL_MS = 1000 * 60 * 60 * 6; // 6h: stale tab, treat as fresh
@@ -34,6 +46,10 @@ export const antispamFieldsSchema = z.object({
   startedAt: z.number().optional(),
   /** Cloudflare Turnstile response token (when the widget is enabled). */
   turnstileToken: z.string().optional(),
+  /** Signed math challenge issued by GET /api/challenge. */
+  challengeToken: z.string().max(200).optional(),
+  /** The visitor's answer to that challenge. */
+  challengeAnswer: z.union([z.string().max(10), z.number()]).optional(),
 });
 
 export type AntispamFields = z.infer<typeof antispamFieldsSchema>;
@@ -153,7 +169,11 @@ export function clientIp(req: Request): string {
   return req.headers.get("x-real-ip") ?? "unknown";
 }
 
-export function isRateLimited(key: string, now = Date.now()): boolean {
+export function isRateLimited(
+  key: string,
+  now = Date.now(),
+  maxHits = RATE_MAX_HITS,
+): boolean {
   const windowStart = now - RATE_WINDOW_MS;
   const recent = (hits.get(key) ?? []).filter((t) => t > windowStart);
   recent.push(now);
@@ -166,11 +186,11 @@ export function isRateLimited(key: string, now = Date.now()): boolean {
     }
   }
 
-  return recent.length > RATE_MAX_HITS;
+  return recent.length > maxHits;
 }
 
 // ---------------------------------------------------------------------------
-// 6. Cloudflare Turnstile (optional)
+// 7. Cloudflare Turnstile (optional)
 // ---------------------------------------------------------------------------
 
 export function turnstileEnabled(): boolean {
@@ -248,6 +268,25 @@ export async function checkForSpam(
     return { spam: true, reason: contentReason, silent: true, status: 200 };
   }
 
+  const challenge = verifyChallenge(
+    fields.challengeToken,
+    fields.challengeAnswer,
+  );
+  if (!challenge.ok) {
+    // No token at all means the request skipped our form entirely: stay
+    // silent. Anything else is visible so a person can answer again.
+    if (challenge.reason === "missing") {
+      return { spam: true, reason: "challenge-missing", silent: true, status: 200 };
+    }
+    return {
+      spam: true,
+      reason: `challenge-${challenge.reason}`,
+      silent: false,
+      status: 400,
+      code: "challenge",
+    };
+  }
+
   if (turnstileEnabled()) {
     const ok = await verifyTurnstile(fields.turnstileToken, ip);
     if (!ok) {
@@ -262,6 +301,13 @@ export function spamResponseBody(verdict: Extract<SpamVerdict, { spam: true }>) 
   if (verdict.silent) return { ok: true };
   if (verdict.status === 429) {
     return { ok: false, error: "Too many requests. Please try again later." };
+  }
+  if (verdict.code === "challenge") {
+    return {
+      ok: false,
+      code: "challenge",
+      error: "The answer to the verification question was not correct.",
+    };
   }
   return { ok: false, error: "Request rejected" };
 }

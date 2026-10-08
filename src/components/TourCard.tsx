@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import {
   Clock,
   Users,
@@ -75,7 +75,7 @@ export function TourCard({
   dict: Dictionary;
 }) {
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
@@ -130,7 +130,7 @@ export function TourCard({
           </div>
         </div>
       </Link>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -155,7 +155,7 @@ export function FeaturedTourCard({
   const seeDetails = lang === "es" ? "Ver detalles" : "See details";
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
@@ -216,7 +216,7 @@ export function FeaturedTourCard({
           </div>
         </div>
       </Link>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -240,7 +240,7 @@ export function ComboTourCard({
   const AddonIcon = addonIcon;
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
@@ -304,7 +304,7 @@ export function ComboTourCard({
           </div>
         </div>
       </Link>
-    </motion.div>
+    </m.div>
   );
 }
 

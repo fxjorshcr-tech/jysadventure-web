@@ -387,6 +387,15 @@ const en = {
     required: "This field is required.",
     invalidEmail: "Please enter a valid email address.",
   },
+  formShield: {
+    question: "Quick check: what is {a} + {b}?",
+    placeholder: "Your answer",
+    loading: "Loading question…",
+    reload: "New question",
+    wrong: "That answer was not correct. Please try the new question.",
+    required: "Please answer the verification question.",
+    unavailable: "Could not load the verification question.",
+  },
   bookingForm: {
     chooseTour: "Choose your tour",
     date: "Date",
@@ -850,6 +859,15 @@ const es: typeof en = {
     error: "Algo salió mal. Inténtalo de nuevo o contáctanos directamente.",
     required: "Este campo es obligatorio.",
     invalidEmail: "Ingresa un correo válido.",
+  },
+  formShield: {
+    question: "Comprobación rápida: ¿cuánto es {a} + {b}?",
+    placeholder: "Tu respuesta",
+    loading: "Cargando pregunta…",
+    reload: "Otra pregunta",
+    wrong: "La respuesta no es correcta. Intenta con la nueva pregunta.",
+    required: "Responde la pregunta de verificación, por favor.",
+    unavailable: "No se pudo cargar la pregunta de verificación.",
   },
   bookingForm: {
     chooseTour: "Elige tu tour",
