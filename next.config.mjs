@@ -1,21 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    // Photos live in Supabase storage as full-size JPEG/PNG served with
-    // `cache-control: no-cache`. Letting Next/Vercel optimize them resizes
-    // each one to the rendered width, converts to AVIF/WebP and caches the
-    // result for a year — roughly 5 MB → <1 MB on the home page.
-    formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 60 * 60 * 24 * 365,
-    // Fewer breakpoints = fewer transformations on Vercel's quota.
-    deviceSizes: [640, 828, 1080, 1440, 1920],
-    imageSizes: [96, 192, 256, 384],
-    qualities: [60, 75],
+    // Image optimization stays OFF on purpose: photos are served straight
+    // from Supabase so they do not count against Vercel's image/bandwidth
+    // usage. Do not re-enable without checking the Vercel plan first.
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
         hostname: "mmlbslwljvmscbgsqkkq.supabase.co",
-        pathname: "/storage/v1/object/public/jys/**",
       },
     ],
   },
