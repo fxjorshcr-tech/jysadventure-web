@@ -1,8 +1,21 @@
 import type { Bilingual } from "@/i18n/text";
 
-const BASE =
-  "https://mmlbslwljvmscbgsqkkq.supabase.co/storage/v1/object/public/jys";
-const NEW = `${BASE}/Fotos%20Nuevas`;
+import { SITE_URL } from "./info";
+import manifest from "./photos.manifest.json";
+
+/**
+ * Photos are pre-optimized once by `npm run optimize-images` (see
+ * scripts/optimize-images.mjs) into public/photos as WebP at several widths,
+ * so nothing is transformed at request time on Vercel. `photo(key)` is the
+ * canonical absolute URL (largest variant), used for <Image>, Open Graph,
+ * sitemap and JSON-LD; src/lib/image-loader.ts picks the right width.
+ */
+export type PhotoKey = keyof typeof manifest;
+
+export function photo(key: PhotoKey): string {
+  const { widths } = manifest[key];
+  return `${SITE_URL}/photos/${key}-${widths[widths.length - 1]}.webp`;
+}
 
 /**
  * Every photo the site uses, addressed by name so a tour or page never
@@ -14,35 +27,35 @@ const NEW = `${BASE}/Fotos%20Nuevas`;
  *     utvMudPortrait, utvCanopyTrail, atvBlueMud, atvPinkRoad -> portrait
  */
 export const IMAGES = {
-  logo: `${BASE}/logo-jys%20(1).png`,
+  logo: photo("logo"),
 
   // Home hero (full-screen backdrop)
-  hero: `${BASE}/ChatGPT%20Image%2013%20abr%202026,%2021_45_30.webp`,
-  heroAlt: `${BASE}/ChatGPT%20Image%2013%20abr%202026,%2021_48_11.webp`,
+  hero: photo("hero"),
+  heroAlt: photo("heroAlt"),
 
   // --- Real ride photos (Fotos Nuevas) ---
-  atvMud: `${NEW}/atv.jpeg`, // ATV blasting through a muddy river crossing
-  atvGroupRoad: `${NEW}/atv2.jpeg`, // four ATVs on a dirt road, blue sky
-  owls: `${NEW}/aves.jpeg`, // pair of spectacled owls in the canopy
-  monkey: `${NEW}/mono.jpeg`, // white-faced capuchin resting on a branch
-  kidsFarm: `${NEW}/ninos.jpeg`, // kid with a sheep at base camp
-  kidsFawn: `${NEW}/ninos2.jpeg`, // kids petting a fawn at base camp
-  utvCattle: `${NEW}/utv.jpeg`, // UTV sharing the trail with cattle
-  utvCattleHerd: `${NEW}/utv1.jpeg`, // UTV behind a herd on the trail
-  utvMudPortrait: `${NEW}/utv2.jpeg`, // UTV mud splash, portrait
-  utvCanopyTrail: `${NEW}/utv3.jpeg`, // UTV under the tree canopy, portrait
-  utvRiver: `${NEW}/utv4.jpeg`, // UTV crossing the river by the fallen tree
-  utvMudSplash: `${NEW}/utv5.jpeg`, // UTV mud splash, landscape
+  atvMud: photo("atvMud"), // ATV blasting through a muddy river crossing
+  atvGroupRoad: photo("atvGroupRoad"), // four ATVs on a dirt road, blue sky
+  owls: photo("owls"), // pair of spectacled owls in the canopy
+  monkey: photo("monkey"), // white-faced capuchin resting on a branch
+  kidsFarm: photo("kidsFarm"), // kid with a sheep at base camp
+  kidsFawn: photo("kidsFawn"), // kids petting a fawn at base camp
+  utvCattle: photo("utvCattle"), // UTV sharing the trail with cattle
+  utvCattleHerd: photo("utvCattleHerd"), // UTV behind a herd on the trail
+  utvMudPortrait: photo("utvMudPortrait"), // UTV mud splash, portrait
+  utvCanopyTrail: photo("utvCanopyTrail"), // UTV under the tree canopy, portrait
+  utvRiver: photo("utvRiver"), // UTV crossing the river by the fallen tree
+  utvMudSplash: photo("utvMudSplash"), // UTV mud splash, landscape
 
   // --- Real ride photos (original set) ---
-  atvTrio: `${BASE}/912169_490058.webp`, // three ATVs on a forest trail
-  atvArmsOpen: `${BASE}/893288_295807.webp`, // rider celebrating on ATV
-  utvSplash: `${BASE}/842930_310.webp`, // UTV river splash, landscape
-  crewFicus: `${BASE}/596402_712455.webp`, // group with UTV at the ficus tree
-  familyUtv: `${BASE}/575269_858397.webp`, // family in a UTV at base camp
-  utvCamoRiver: `${BASE}/477658_15781.webp`, // camo UTV crossing the river
-  atvPinkRoad: `${BASE}/309058_952674.webp`, // ATV convoy on the orange road
-  atvBlueMud: `${BASE}/128400_649303.webp`, // blue ATV mud splash, UTV behind
+  atvTrio: photo("atvTrio"), // three ATVs on a forest trail
+  atvArmsOpen: photo("atvArmsOpen"), // rider celebrating on ATV
+  utvSplash: photo("utvSplash"), // UTV river splash, landscape
+  crewFicus: photo("crewFicus"), // group with UTV at the ficus tree
+  familyUtv: photo("familyUtv"), // family in a UTV at base camp
+  utvCamoRiver: photo("utvCamoRiver"), // camo UTV crossing the river
+  atvPinkRoad: photo("atvPinkRoad"), // ATV convoy on the orange road
+  atvBlueMud: photo("atvBlueMud"), // blue ATV mud splash, UTV behind
 } as const;
 
 /** Home gallery. Every 5th item (0, 5, ...) renders as a 2x2 tile. */
