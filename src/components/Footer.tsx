@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Instagram, Facebook, Mail, Phone, MapPin, Star } from "lucide-react";
 import { IMAGES } from "@/lib/images";
+import PoweredByMaxDigital from "@/components/PoweredByMaxDigital";
 import { CONTACT, SOCIAL_LINKS } from "@/lib/info";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
@@ -124,6 +125,8 @@ export function Footer({
           <p>© {new Date().getFullYear()} JYS Adventure Tour. {dict.footer.rights}</p>
           <p className="font-display tracking-widest">{dict.footer.tagline}</p>
         </div>
+
+        <PoweredByMaxDigital className="mt-10" />
       </div>
     </footer>
   );
