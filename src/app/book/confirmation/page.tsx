@@ -2,8 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, ArrowRight, Mail, Phone } from "lucide-react";
-import { CONTACT } from "@/lib/info";
+import {
+  CheckCircle2,
+  ArrowRight,
+  Mail,
+  MessageCircle,
+  Phone,
+} from "lucide-react";
+import { CONTACT, whatsappUrl } from "@/lib/info";
 
 type Summary = {
   contact: { name: string; email: string; phone: string };
@@ -105,6 +111,11 @@ export default function ConfirmationPage() {
         addonsLabel: "Extras",
         transportLabel: "Transporte",
         needChange: "¿Necesitas cambiar algo?",
+        whatsappCta: "Confirma más rápido por WhatsApp",
+        whatsappHelp:
+          "También te enviamos este resumen por correo — si no lo ves, revisa spam.",
+        whatsappText: (name: string, tour: string, date: string) =>
+          `¡Hola! Soy ${name}. Acabo de solicitar una reserva en la web para ${tour} el ${date}.`,
         browseMore: "Ver más tours",
         backHome: "Volver al inicio",
       }
@@ -151,6 +162,11 @@ export default function ConfirmationPage() {
         addonsLabel: "Add-ons",
         transportLabel: "Transport",
         needChange: "Need to change something?",
+        whatsappCta: "Confirm faster on WhatsApp",
+        whatsappHelp:
+          "We also emailed you this summary — if you don't see it, check your spam folder.",
+        whatsappText: (name: string, tour: string, date: string) =>
+          `Hi! I'm ${name}. I just sent a booking request on your website for ${tour} on ${date}.`,
         browseMore: "Browse more tours",
         backHome: "Back to home",
       };
@@ -338,6 +354,28 @@ export default function ConfirmationPage() {
               {T.needChange}
             </div>
             <div className="mt-3 grid gap-3 text-sm text-white/80 sm:grid-cols-2">
+              <a
+                href={whatsappUrl(
+                  T.whatsappText(
+                    summary.contact.name,
+                    tourTitle,
+                    summary.schedule.date,
+                  ),
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 rounded-2xl border border-jungle-500/40 bg-jungle-500/10 p-4 transition hover:border-jungle-500 sm:col-span-2"
+              >
+                <MessageCircle className="h-5 w-5 shrink-0 text-jungle-500" />
+                <span>
+                  <span className="block font-semibold text-white">
+                    {T.whatsappCta}
+                  </span>
+                  <span className="block text-xs text-white/60">
+                    {T.whatsappHelp}
+                  </span>
+                </span>
+              </a>
               <a
                 href={`mailto:${CONTACT.email}`}
                 className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition hover:border-lava-400/50"

@@ -1,4 +1,4 @@
-import { CONTACT } from "./info";
+import { CONTACT, guestWhatsappUrl, whatsappUrl } from "./info";
 import type { Locale } from "@/i18n/config";
 
 const escape = (s: string) =>
@@ -64,6 +64,11 @@ const section = (heading: string, rowsHtml: string) => `
     </table>
   </div>`;
 
+const waButton = (href: string, label: string) => `
+  <a href="${escape(href)}" style="display:inline-block;background-color:#128c7e;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:12px 22px;border-radius:999px;">${escape(label)}</a>`;
+
+const firstName = (name: string) => name.trim().split(/\s+/)[0] || name;
+
 // Translation helpers
 type Strings = Record<string, string>;
 const STR: Record<Locale, Strings> = {
@@ -112,6 +117,9 @@ const STR: Record<Locale, Strings> = {
     fasterReply: "Need a faster reply? Call us at",
     yourBookingSubject: "Your JYS Adventure booking",
     weGotMessageSubject: "We got your message",
+    whatsappUs: "Message us on WhatsApp",
+    noReplyNote:
+      "Haven't seen our reply within a couple of hours? Check your spam folder, or message us on WhatsApp — it's the fastest way to reach us.",
   },
   es: {
     newBooking: "Nueva reserva",
@@ -158,6 +166,9 @@ const STR: Record<Locale, Strings> = {
     fasterReply: "¿Necesitas respuesta más rápida? Llámanos al",
     yourBookingSubject: "Tu reserva con JYS Adventure",
     weGotMessageSubject: "Recibimos tu mensaje",
+    whatsappUs: "Escríbenos por WhatsApp",
+    noReplyNote:
+      "¿No ves nuestra respuesta en un par de horas? Revisa tu carpeta de spam, o escríbenos por WhatsApp — es la forma más rápida de contactarnos.",
   },
 };
 
@@ -240,6 +251,48 @@ const pricingTable = (b: BookingPayload, s: Strings) => `
     </tr>
   </table>`;
 
+// Prefilled WhatsApp messages. The ones the team sends are written in the
+// guest's language, because the guest is the one who reads them.
+const bookingWaToGuest = (b: BookingPayload) => {
+  const locale: Locale = b.locale ?? "en";
+  const tour = b.tour.titleLocalized || b.tour.title;
+  const date = formatDate(b.schedule.date, locale);
+  const at = b.schedule.departure;
+  return locale === "es"
+    ? `¡Hola ${firstName(b.contact.name)}! Te escribimos de JYS Adventure Tour. Recibimos tu solicitud de reserva para ${tour} el ${date}${at ? ` a las ${at}` : ""}.`
+    : `Hi ${firstName(b.contact.name)}! This is JYS Adventure Tour. We received your booking request for ${tour} on ${date}${at ? ` at ${at}` : ""}.`;
+};
+
+const bookingWaToUs = (b: BookingPayload) => {
+  const locale: Locale = b.locale ?? "en";
+  const tour = b.tour.titleLocalized || b.tour.title;
+  const date = formatDate(b.schedule.date, locale);
+  return locale === "es"
+    ? `¡Hola! Soy ${b.contact.name}. Acabo de solicitar una reserva en la web para ${tour} el ${date}.`
+    : `Hi! I'm ${b.contact.name}. I just sent a booking request on your website for ${tour} on ${date}.`;
+};
+
+const contactWaToGuest = (c: ContactPayload) =>
+  c.locale === "es"
+    ? `¡Hola ${firstName(c.name)}! Te escribimos de JYS Adventure Tour por el mensaje que nos dejaste en la web.`
+    : `Hi ${firstName(c.name)}! This is JYS Adventure Tour, following up on the message you sent us through our website.`;
+
+const contactWaToUs = (c: ContactPayload) =>
+  c.locale === "es"
+    ? `¡Hola! Soy ${c.name}. Les acabo de escribir por el formulario de la web.`
+    : `Hi! I'm ${c.name}. I just sent you a message through your website.`;
+
+const guestWaBlock = (href: string | null) =>
+  href
+    ? `<div style="margin:-12px 0 28px 0;">${waButton(href, "Reply on WhatsApp")}</div>`
+    : "";
+
+const customerWaBlock = (href: string, s: Strings) => `
+    <div style="margin:24px 0 0 0;padding:18px 20px;background-color:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;">
+      <p style="margin:0 0 14px 0;font-size:13px;line-height:1.6;color:#14532d;">${s.noReplyNote}</p>
+      ${waButton(href, s.whatsappUs)}
+    </div>`;
+
 export function bookingEmailHtml(b: BookingPayload) {
   // Operator-facing email is always English (internal team).
   const locale: Locale = "en";
@@ -284,6 +337,7 @@ export function bookingEmailHtml(b: BookingPayload) {
     </p>
     <p style="margin:0 0 24px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#777;">${guestLabel}</p>
     ${section(s.contact, contactRows)}
+    ${guestWaBlock(b.contact.phone ? guestWhatsappUrl(b.contact.phone, bookingWaToGuest(b)) : null)}
     ${section(s.rideDetails, tourRows)}
     ${messageHtml ? `<div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#c2410c;margin-bottom:10px;">${s.messageFromGuest}</div>${messageHtml}` : ""}
     ${pricingTable(b, s)}
@@ -322,6 +376,7 @@ export function bookingCustomerEmailHtml(b: BookingPayload) {
     </p>
     ${section(s.yourRide, tourRows)}
     ${pricingTable(b, s)}
+    ${customerWaBlock(whatsappUrl(bookingWaToUs(b)), s)}
     <p style="margin:24px 0 0 0;font-size:13px;line-height:1.6;color:#666;">
       ${s.questions} <a href="tel:${escape(CONTACT.phone.replace(/\s/g, ""))}" style="color:#c2410c;text-decoration:none;">${escape(CONTACT.phone)}</a>. ${s.puraVida}
     </p>
@@ -367,6 +422,9 @@ export function bookingCustomerEmailText(b: BookingPayload) {
   lines.push("");
   lines.push(`${s.total}: $${b.pricing.total}`);
   lines.push("");
+  lines.push(s.noReplyNote);
+  lines.push(`WhatsApp: ${whatsappUrl(bookingWaToUs(b))}`);
+  lines.push("");
   lines.push(`${s.questions} ${CONTACT.phone}. ${s.puraVida}`);
   lines.push("");
   lines.push("— JYS Adventure Tour");
@@ -382,6 +440,10 @@ export function bookingEmailText(b: BookingPayload) {
   lines.push(`${s.name}: ${b.contact.name}`);
   lines.push(`${s.email}: ${b.contact.email}`);
   lines.push(`${s.phone}: ${b.contact.phone || "—"}`);
+  const guestWa = b.contact.phone
+    ? guestWhatsappUrl(b.contact.phone, bookingWaToGuest(b))
+    : null;
+  if (guestWa) lines.push(`WhatsApp: ${guestWa}`);
   lines.push("");
   lines.push(`${s.date}: ${formatDate(b.schedule.date, locale)}`);
   lines.push(`${s.departure}: ${b.schedule.departure || "—"}`);
@@ -451,6 +513,7 @@ export function contactEmailHtml(c: ContactPayload) {
     </p>
     <p style="margin:0 0 24px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#777;">${guestLabel}</p>
     ${section(s.contact, contactRows)}
+    ${guestWaBlock(c.phone ? guestWhatsappUrl(c.phone, contactWaToGuest(c)) : null)}
     <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#c2410c;margin-bottom:10px;">${s.message}</div>
     ${messageHtml}
   `;
@@ -475,6 +538,7 @@ export function contactCustomerEmailHtml(c: ContactPayload) {
     </p>
     <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#c2410c;margin-bottom:10px;">${s.yourMessage}</div>
     ${messageHtml}
+    ${customerWaBlock(whatsappUrl(contactWaToUs(c)), s)}
     <p style="margin:24px 0 0 0;font-size:13px;line-height:1.6;color:#666;">
       ${s.fasterReply} <a href="tel:${escape(CONTACT.phone.replace(/\s/g, ""))}" style="color:#c2410c;text-decoration:none;">${escape(CONTACT.phone)}</a>. ${s.puraVida}
     </p>
@@ -502,6 +566,9 @@ export function contactCustomerEmailText(c: ContactPayload) {
   lines.push(`${s.yourMessage}:`);
   lines.push(c.message);
   lines.push("");
+  lines.push(s.noReplyNote);
+  lines.push(`WhatsApp: ${whatsappUrl(contactWaToUs(c))}`);
+  lines.push("");
   lines.push(`${s.fasterReply} ${CONTACT.phone}. ${s.puraVida}`);
   lines.push("");
   lines.push("— JYS Adventure Tour");
@@ -517,6 +584,8 @@ export function contactEmailText(c: ContactPayload) {
   lines.push(`${s.name}: ${c.name}`);
   lines.push(`${s.email}: ${c.email}`);
   lines.push(`${s.phone}: ${c.phone || "—"}`);
+  const guestWa = c.phone ? guestWhatsappUrl(c.phone, contactWaToGuest(c)) : null;
+  if (guestWa) lines.push(`WhatsApp: ${guestWa}`);
   if (c.subject) lines.push(`${s.subject}: ${c.subject}`);
   lines.push(`Customer language: ${c.locale === "es" ? "Spanish" : "English"}`);
   lines.push("");

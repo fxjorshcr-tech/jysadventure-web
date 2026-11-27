@@ -10,6 +10,7 @@ import {
   bookingEmailText,
 } from "@/lib/emails";
 import { CONTACT } from "@/lib/info";
+import { notificationRecipients } from "@/lib/notify";
 import {
   antispamFieldsSchema,
   checkForSpam,
@@ -19,7 +20,6 @@ import {
 export const runtime = "nodejs";
 
 const FROM = "JYS Adventure Tour <reservations@jysadventuretour.com>";
-const TO = [CONTACT.email];
 
 const schema = z.object({
   contact: z.object({
@@ -130,7 +130,7 @@ export async function POST(req: Request) {
   try {
     const { error } = await resend.emails.send({
       from: FROM,
-      to: TO,
+      to: notificationRecipients(),
       replyTo: payload.contact.email,
       subject: bookingEmailSubject(payload),
       html: bookingEmailHtml(payload),

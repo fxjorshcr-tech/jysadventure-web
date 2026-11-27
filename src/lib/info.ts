@@ -11,7 +11,7 @@ export const SOCIAL_LINKS = {
   facebook: "https://www.facebook.com/profile.php?id=61570254192510",
   tripadvisor: "https://www.tripadvisor.com/Profile/JYSAdventuretours",
   google: "https://share.google/7LIO8qkavRpwe1nXn",
-  whatsapp: "#",
+  whatsapp: "https://wa.me/50685757272",
 };
 
 export const CONTACT = {
@@ -19,6 +19,31 @@ export const CONTACT = {
   phoneE164: "+50685757272",
   email: "reservations@jysadventuretour.com",
   location: "Sardinal, Guanacaste · Costa Rica",
+};
+
+/** Click-to-chat link to the JYS WhatsApp line, optionally with a prefilled message. */
+export const whatsappUrl = (text?: string) =>
+  `https://wa.me/${CONTACT.phoneE164.replace(/\D/g, "")}${
+    text ? `?text=${encodeURIComponent(text)}` : ""
+  }`;
+
+/**
+ * Best-effort click-to-chat link for a number typed by a guest. Guests often
+ * skip the country code, so 8 digits are read as Costa Rica (+506) and 10
+ * digits as US/Canada (+1). Returns null when it cannot be a real number.
+ */
+export const guestWhatsappUrl = (phone: string, text?: string) => {
+  const hasPlus = phone.trim().startsWith("+");
+  let digits = phone.replace(/\D/g, "");
+  if (!hasPlus) {
+    if (digits.startsWith("00")) digits = digits.slice(2);
+    else if (digits.length === 8) digits = `506${digits}`;
+    else if (digits.length === 10) digits = `1${digits}`;
+  }
+  if (digits.length < 10 || digits.length > 15) return null;
+  return `https://wa.me/${digits}${
+    text ? `?text=${encodeURIComponent(text)}` : ""
+  }`;
 };
 
 export const SCHEDULE = {
